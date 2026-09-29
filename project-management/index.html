@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Project Management by Cristian</title>
+<title>Project Management by Alexandru Ioan</title>
 <meta name="description" content="My Level 3 IT presentation about project management, explained with a made-up click and collect website for a local bakery.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
 <style>
 /* =========================================================
    Project Management presentation
-   by Cristian · Level 3 IT
+   by Alexandru Ioan · Student ID 25002954 · Level 3 IT
    ========================================================= */
 
 /* layout: one full-screen slide at a time on a squared "planning board",
@@ -351,6 +351,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 }
 .slide--title .lead { max-width: 32ch; font-size: 1.2rem; }
 .byline { font-weight: 700; font-size: 1.05rem; }
+.byline-id { margin-top: -0.75rem; font: 500 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .byline span { font: 500 0.72rem var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-right: 0.4rem; }
 .title-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.9rem 1.2rem; margin-top: 0.4rem; }
 .keys { font: 0.72rem/1.9 var(--mono); color: var(--muted); }
@@ -837,7 +838,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 /* ---------- slide 12: risks ---------- */
 .cols--risk { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
 .risk-types { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
-.risk-types .small { margin-bottom: 0.35rem; }
+.risk-types .small { margin-bottom: 0.25rem; }
 .register { display: grid; gap: 0.2rem; }
 .reg-row {
   width: 100%;
@@ -870,7 +871,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 .matrix {
   display: grid;
   grid-template-columns: 1.4rem repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(5, 2.3rem) 1.3rem;
+  grid-template-rows: repeat(5, 2.24rem) 1.3rem;
   gap: 3px;
 }
 .mx-axis { display: grid; place-items: center; font: 500 0.72rem var(--mono); color: var(--muted); }
@@ -903,6 +904,11 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 .response p { font-size: 0.88rem; color: var(--ink-2); }
 .response__eg { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; padding-top: 0.5rem; border-top: 1px dashed var(--line-strong); }
 .response p.response__eg { color: var(--ink); font-size: 0.82rem; }
+.riskcycle { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.4rem; }
+.riskcycle li { position: relative; display: grid; gap: 0.1rem; padding: 0.55rem 0.75rem; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--card); }
+.riskcycle li + li::before { content: "→"; position: absolute; left: -1.2rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-weight: 700; }
+.riskcycle b { font-size: 0.9rem; }
+.riskcycle span { font-size: 0.8rem; color: var(--ink-2); line-height: 1.3; }
 .stepper { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
 .stepper li { display: flex; align-items: center; gap: 0.35rem; }
 .stepper li + li::before { content: "→"; color: var(--muted); font-size: 0.85rem; }
@@ -1074,6 +1080,8 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 /* ---------- smaller screens ---------- */
 @media (max-width: 1000px) {
   .responses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .riskcycle { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 0.7rem; }
+  .riskcycle li:nth-child(4)::before { display: none; }
   .story { grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
   .story .btn { justify-self: start; }
 }
@@ -1093,7 +1101,9 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   .track__seg { height: 1.8rem; }
 }
 @media (max-width: 560px) {
-  .responses, .risk-types, .benefits, .roi__inputs, .pour { grid-template-columns: minmax(0, 1fr); }
+  .responses, .risk-types, .benefits, .roi__inputs, .pour, .riskcycle { grid-template-columns: minmax(0, 1fr); }
+  .riskcycle { gap: 0.6rem; }
+  .riskcycle li + li::before { content: "↓"; left: 50%; top: -0.95rem; transform: translateX(-50%); }
   .tools li, .people li, .brief__list > div { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
   .estimate__row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .estimate__row .formula { grid-column: 1 / -1; }
@@ -1136,7 +1146,8 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
           <p class="kicker"><span class="kicker__num">01</span>Level 3 IT · Project Management unit</p>
           <h1>Project<br>Management</h1>
           <p class="lead">How I would plan, run and control a real IT project, from the first budget to the last risk.</p>
-          <p class="byline"><span>By</span>Cristian</p>
+          <p class="byline"><span>By</span>Alexandru Ioan</p>
+          <p class="byline-id">Student ID 25002954</p>
           <div class="title-actions">
             <button class="btn" type="button" data-go="2">Start the presentation <span aria-hidden="true">→</span></button>
             <p class="keys"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>O</kbd> all slides · <kbd>T</kbd> dark mode</p>
@@ -1256,7 +1267,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         </header>
         <div class="cols cols--wide-right">
           <div class="stack">
-            <p class="lead">The budget is my estimate of what the project will cost. Once the owner approves it, it becomes the <mark>cost baseline</mark>, and at every review I compare what we've really spent against it.</p>
+            <p class="lead">Costs and timescales means planning how much the project will cost and how long it will take, including things like software licences, hosting and staff time. The <mark>budget</mark> is the money available. Once the owner approves it, it becomes the cost baseline, and I compare our real spending with it at every review.</p>
             <dl class="terms">
               <div><dt>Direct costs</dt><dd>Only exist because of this project, like the developers' days.</dd></div>
               <div><dt>Indirect costs</dt><dd>Shared costs the bakery pays anyway, like electricity. They're not in my budget, but they're still real.</dd></div>
@@ -1347,10 +1358,10 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
           </div>
           <div class="stack">
             <dl class="defs">
-              <div><dt><span class="sw sw--ms"></span>Milestone</dt><dd>A checkpoint with zero duration that shows real progress. Mine are: requirements signed off, design approved, payments working and the launch.</dd></div>
-              <div><dt><span class="sw sw--deadline"></span>Deadline</dt><dd>The latest date something has to be finished. My launch deadline is the end of week 8.</dd></div>
-              <div><dt><span class="sw sw--review"></span>Interim review</dt><dd>A planned check during the project (end of weeks 3 and 6). The owner and I compare progress with the plan and decide what to do.</dd></div>
-              <div><dt><span class="sw sw--crit"></span>Critical path</dt><dd>The longest chain of tasks that depend on each other. They have no spare time, so if one of them is late, the launch is late. Mine is <b id="critPath">A → B → E → G</b>.</dd></div>
+              <div><dt><span class="sw sw--ms"></span>Milestone</dt><dd>An important point in the project, like finishing the design or the prototype. It takes no time itself. Mine: requirements signed off, design approved, payments working, launch.</dd></div>
+              <div><dt><span class="sw sw--deadline"></span>Deadline</dt><dd>The date a task has to be finished by. My launch deadline is the end of week 8.</dd></div>
+              <div><dt><span class="sw sw--review"></span>Interim review</dt><dd>Checking progress during the project, not just at the end. At the end of weeks 3 and 6 the owner and I compare progress with the plan and decide what to do.</dd></div>
+              <div><dt><span class="sw sw--crit"></span>Critical path</dt><dd>The most important chain of tasks: they depend on each other and have no spare time, so if one is late, the whole project is late. Mine is <b id="critPath">A → B → E → G</b>.</dd></div>
             </dl>
             <p class="hand gantt-hand">try C (the photos): the launch doesn't move!</p>
           </div>
@@ -1366,7 +1377,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">06</span>Costs &amp; time</p>
           <h2>PERT chart &amp; the software I'd use</h2>
-          <p class="lead lead--wide">A PERT chart shows the same tasks as a network, so you can see what depends on what. Red is the critical path.</p>
+          <p class="lead lead--wide">A PERT chart shows the order of the tasks and how they are connected. Red is the critical path.</p>
         </header>
         <div class="card scroll-x pert-wrap">
           <svg class="pert" viewBox="0 0 1020 250" role="img" aria-labelledby="pertTitle pertDesc">
@@ -1414,7 +1425,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
           <div class="stack">
             <h3>Project management software</h3>
             <ul class="tools">
-              <li><b>Microsoft Project</b><span>Gantt, network diagram, critical path, baselines. Costs money.</span></li>
+              <li><b>Microsoft Project</b><span>Plans, schedules and tracks progress (Gantt, PERT). Costs money.</span></li>
               <li><b>Trello / Jira</b><span>Great boards for daily tasks, but weak on dependencies.</span></li>
               <li><b>Excel / Sheets</b><span>Cheap and flexible, but Gantt charts are made by hand.</span></li>
               <li class="tools__pick"><b>My pick</b><span>GanttProject (free, does Gantt + PERT) and Trello for daily tasks.</span></li>
@@ -1432,12 +1443,12 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">07</span>Quality</p>
           <h2>Quality: working to standards</h2>
-          <p class="lead">Finishing on time and on budget isn't enough. If the site is slow, buggy or hard to use, the project has still failed. Standards give me a clear idea of what "good quality" means.</p>
+          <p class="lead"><mark>Quality</mark> means making sure the final software is reliable, safe and meets the required standards. Finishing on time and on budget isn't enough. If the site is slow, buggy or hard to use, the project has still failed.</p>
         </header>
         <div class="cols">
           <div class="stack">
             <h3>ISO/IEC 25010: software product quality</h3>
-            <p class="small">An international model for judging software. The unit names the 2011 version (8 characteristics), and the newer 2023 version has 9. Click one to see what it means for the bakery site.</p>
+            <p class="small">An international model for judging software quality, like usability, reliability, security and performance. The unit names the 2011 version (8 characteristics), and the newer 2023 version has 9. Click one to see what it means for the bakery site.</p>
             <div class="chips" id="isoChips" role="group" aria-label="ISO/IEC 25010 characteristics">
               <button type="button" class="chip is-on" aria-pressed="true" data-iso="0">Functional suitability</button>
               <button type="button" class="chip" aria-pressed="false" data-iso="1">Performance efficiency</button>
@@ -1456,7 +1467,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
           </div>
           <div class="stack">
             <h3>W3C and WCAG 2.2: web standards</h3>
-            <p class="small">The W3C (World Wide Web Consortium) writes the standards the web runs on, like HTML and CSS. Its accessibility guidelines, WCAG 2.2, have four principles:</p>
+            <p class="small">The W3C (World Wide Web Consortium) writes web standards, like HTML and CSS, so that websites work correctly everywhere. Its accessibility guidelines, WCAG 2.2, have four principles:</p>
             <dl class="pour">
               <div><dt>Perceivable</dt><dd>Alt text on product photos and good colour contrast.</dd></div>
               <div><dt>Operable</dt><dd>Works with just a keyboard, buttons big enough to tap.</dd></div>
@@ -1497,47 +1508,48 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
               <li>Final cost within £9,900</li>
               <li>Every "must have" requirement passes testing</li>
               <li>Passes a WCAG 2.2 AA accessibility check</li>
+              <li>Customers can create an account and log in successfully</li>
               <li>The owner signs it off after 10 real test orders</li>
             </ul>
           </div>
           <div class="stack">
             <h3>Functional or non-functional?</h3>
-            <p class="small"><b>Functional</b> = what the system does (its features). <b>Non-functional</b> = how well it does it (speed, security, accessibility) or rules it has to follow. Try sorting my requirements:</p>
+            <p class="small"><b>Customer requirements</b> explain what the customer wants the software to do. <b>Functional</b> = what the system must do. <b>Non-functional</b> = how well it should work (speed, security, ease of use). Try sorting mine:</p>
             <ol class="sorter" id="sorter">
               <li data-answer="f" data-why="It's a feature, something a customer can do.">
+                <p class="sorter__text">Customers can create an account and log in.</p>
+                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
+                <p class="sorter__fb" aria-live="polite"></p>
+              </li>
+              <li data-answer="n" data-why="It's about how well the site works (speed), not what it does.">
+                <p class="sorter__text">Every page loads within 3 seconds, even on a phone.</p>
+                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
+                <p class="sorter__fb" aria-live="polite"></p>
+              </li>
+              <li data-answer="f" data-why="It's a feature: something the system does.">
+                <p class="sorter__text">Customers can add products to a basket and the system calculates the total price.</p>
+                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
+                <p class="sorter__fb" aria-live="polite"></p>
+              </li>
+              <li data-answer="n" data-why="It's about security, how well the system protects people's data.">
+                <p class="sorter__text">User passwords must be kept secure.</p>
+                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
+                <p class="sorter__fb" aria-live="polite"></p>
+              </li>
+              <li data-answer="f" data-why="Picking a time is an action on the site, so it's functional.">
                 <p class="sorter__text">Customers can choose a collection time.</p>
                 <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
                 <p class="sorter__fb" aria-live="polite"></p>
               </li>
-              <li data-answer="n" data-why="It's about how well the site works (performance), not what it does.">
-                <p class="sorter__text">Every page loads in under 2 seconds on 4G.</p>
-                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
-                <p class="sorter__fb" aria-live="polite"></p>
-              </li>
-              <li data-answer="f" data-why="It's a feature: an action the system does.">
-                <p class="sorter__text">Staff can mark an order as ready, and the customer gets an email.</p>
-                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
-                <p class="sorter__fb" aria-live="polite"></p>
-              </li>
-              <li data-answer="n" data-why="It's a quality the whole site must have (accessibility).">
-                <p class="sorter__text">The site meets WCAG 2.2 level AA.</p>
-                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
-                <p class="sorter__fb" aria-live="polite"></p>
-              </li>
-              <li data-answer="f" data-why="Paying is something the system does, so it's a feature.">
-                <p class="sorter__text">Customers can pay by card, Apple Pay or Google Pay.</p>
-                <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
-                <p class="sorter__fb" aria-live="polite"></p>
-              </li>
-              <li data-answer="n" data-why="It's about compatibility, how well it works, not a new feature.">
-                <p class="sorter__text">The site works on phones, tablets and laptops.</p>
+              <li data-answer="n" data-why="Being easy to use and working on phones are about how well it works.">
+                <p class="sorter__text">The site is easy to use and works on mobile phones.</p>
                 <div class="sorter__btns"><button type="button" data-pick="f">Functional</button><button type="button" data-pick="n">Non-functional</button></div>
                 <p class="sorter__fb" aria-live="polite"></p>
               </li>
             </ol>
             <div class="sorter-foot">
               <p class="score" id="sorterScore">0 / 6 sorted</p>
-              <p class="small">Tip: a good requirement can be tested. "Fast" can't, "under 2 seconds" can.</p>
+              <p class="small">Tip: a good requirement can be tested. "Fast" can't, "within 3 seconds" can.</p>
             </div>
           </div>
         </div>
@@ -1552,7 +1564,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">09</span>Quality</p>
           <h2>Deliverables: what we're actually making</h2>
-          <p class="lead">A <mark>product breakdown structure</mark> (PBS) splits the final product into smaller parts. It shows <i>what</i> we're making, not when or how. Every box at the bottom is something I can tick off.</p>
+          <p class="lead">A <mark>deliverable</mark> is something we produce during or at the end of the project: the website, a prototype, a test plan, a user guide or a project report. A <mark>product breakdown structure</mark> (PBS) splits the final product into smaller parts, which makes it easier to plan and manage.</p>
         </header>
         <div class="cols cols--pbs">
           <figure class="pbs" aria-label="Product breakdown structure">
@@ -1561,14 +1573,14 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
               <li class="pbs__branch">
                 <p class="pbs__node"><span>1</span>Customer website</p>
                 <ul class="pbs__leaves">
-                  <li><span>1.1</span>Menu &amp; product pages with allergens</li>
-                  <li><span>1.2</span>Basket &amp; checkout</li>
-                  <li><span>1.3</span>Collection time picker</li>
-                  <li><span>1.4</span>Order emails</li>
+                  <li><span>1.1</span>Home &amp; menu pages with allergens</li>
+                  <li><span>1.2</span>Login &amp; account page</li>
+                  <li><span>1.3</span>Basket &amp; checkout</li>
+                  <li><span>1.4</span>Collection times &amp; order emails</li>
                 </ul>
               </li>
               <li class="pbs__branch">
-                <p class="pbs__node"><span>2</span>Staff dashboard</p>
+                <p class="pbs__node"><span>2</span>Admin dashboard</p>
                 <ul class="pbs__leaves">
                   <li><span>2.1</span>Today's orders</li>
                   <li><span>2.2</span>"Mark as ready" button</li>
@@ -1576,7 +1588,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
                 </ul>
               </li>
               <li class="pbs__branch">
-                <p class="pbs__node"><span>3</span>Data</p>
+                <p class="pbs__node"><span>3</span>Database</p>
                 <ul class="pbs__leaves">
                   <li><span>3.1</span>Product catalogue</li>
                   <li><span>3.2</span>Customer accounts</li>
@@ -1599,7 +1611,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
               <div><dt>Purpose</dt><dd>Let customers order and pay ahead, then collect in the shop.</dd></div>
               <div><dt>Users</dt><dd>Customers (mostly on phones), the 6 staff and the owner.</dd></div>
               <div><dt>Made of</dt><dd>Everything in the PBS.</dd></div>
-              <div><dt>Quality</dt><dd>Pages load in under 2 s · WCAG 2.2 AA · no lost orders in 50 test orders · allergens on every product</dd></div>
+              <div><dt>Quality</dt><dd>Pages load within 3 s · WCAG 2.2 AA · no lost orders in 50 test orders · allergens on every product</dd></div>
               <div><dt>Accepted by</dt><dd>The owner places 10 real test orders during user acceptance testing (UAT), then signs the acceptance form.</dd></div>
               <div><dt>Owner</dt><dd>The bakery owner accepts it. I'm responsible for delivering it.</dd></div>
             </dl>
@@ -1616,7 +1628,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">10</span>Issues &amp; benefits</p>
           <h2>Issues: dealing with problems as they happen</h2>
-          <p class="lead">A <mark>risk</mark> is something that <i>might</i> happen. An <mark>issue</mark> is a problem that's happening <i>now</i> and needs action. These are the kinds of issue a project manager has to deal with:</p>
+          <p class="lead"><mark>Issues</mark> are problems that happen during a project: the customer changes their requirements, a developer is absent, the software doesn't work as expected, we fall behind schedule, the team communicates badly, or a new law affects us. (A risk only <i>might</i> happen, an issue is happening <i>now</i>.)</p>
         </header>
         <div class="tabs">
           <div class="tabs__list" role="tablist" aria-label="Types of issue">
@@ -1652,7 +1664,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
                   <li>Update the plan</li><li class="loop__arrow" aria-hidden="true">→</li>
                   <li class="loop__back">back to measure</li>
                 </ol>
-                <p>Every Friday I compare where we are with the baseline: tasks done, money spent and the quality of what's been built. When we're behind, there are two common fixes: <b>crashing</b> (adding more people or hours) and <b>fast-tracking</b> (doing tasks at the same time instead of one after another).</p>
+                <p>Every Friday I compare where we are with the baseline: tasks done, money spent and the quality of what's been built. When we're behind, I take corrective action: change the plan, move people onto the late work (<b>crashing</b>), do tasks at the same time (<b>fast-tracking</b>), or drop less important features.</p>
               </div>
               <div class="eg">
                 <p class="eg__label">In my project</p>
@@ -1739,10 +1751,10 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <div class="cols cols--roi">
           <div class="stack">
             <dl class="benefits">
-              <div><dt>Financial</dt><dd>More sales from people who never had time to queue, and less waste because we bake for pre-orders.</dd></div>
-              <div><dt>Customer</dt><dd>Order any time, skip the queue, pay on your phone and check allergens first.</dd></div>
-              <div><dt>Growth</dt><dd>New customers find us online. Later we could add delivery or party orders.</dd></div>
-              <div><dt>Operational</dt><dd>Fewer phone calls, no lost paper orders, and staff know exactly what to bake.</dd></div>
+              <div><dt>Financial</dt><dd>Saves money and increases profit: more sales from people who never had time to queue, and less waste.</dd></div>
+              <div><dt>Customer</dt><dd>Better customer service: order any time, skip the queue, pay on your phone.</dd></div>
+              <div><dt>Growth</dt><dd>Attracts more customers and grows market share. Later we could add delivery.</dd></div>
+              <div><dt>Operational</dt><dd>Less manual work and better productivity: fewer phone calls, no lost paper orders.</dd></div>
             </dl>
             <div>
               <h3>Project justification</h3>
@@ -1753,6 +1765,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
               <p>My forecast is based on guesses, so it's not a promise. Before starting I'd ask regular customers if they'd actually use it, and after the launch I'd compare the real numbers with the forecast.</p>
             </div>
             <p class="formula">ROI = (benefit − cost) ÷ cost × 100</p>
+            <p class="small">Example: spend £10,000 on an online ordering system that brings in £20,000 of extra sales. ROI = (20,000 − 10,000) ÷ 10,000 × 100 = 100%.</p>
           </div>
           <div class="card roi" style="position: relative">
             <p class="hand hand--red roi-hand">try 25 orders a week…</p>
@@ -1789,7 +1802,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">12</span>Risks</p>
           <h2>Risks: what could go wrong?</h2>
-          <p class="lead">A risk is something uncertain that would affect the project if it happened. I can't get rid of every risk, but I can find them early, score them and plan for them.</p>
+          <p class="lead">A <mark>risk</mark> is something that might happen and cause a problem. I can't get rid of every risk, but I can find them early, score them and plan for them.</p>
         </header>
         <div class="cols cols--risk">
           <div class="stack">
@@ -1797,12 +1810,12 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
               <div>
                 <h3>Internal</h3>
                 <p class="small">Inside the project, so I have more control.</p>
-                <ul class="bullets"><li>A developer gets ill</li><li>Estimates were too optimistic</li><li>Scope creep</li><li>Staff don't use the new system</li></ul>
+                <ul class="bullets"><li>Going over budget</li><li>Missing a deadline</li><li>Key staff leaving or ill</li><li>Software failing in testing</li></ul>
               </div>
               <div>
                 <h3>External</h3>
                 <p class="small">Outside the project, so less control.</p>
-                <ul class="bullets"><li>The payment provider changes</li><li>A cyber attack</li><li>The hosting goes down</li><li>A new law or a price rise</li></ul>
+                <ul class="bullets"><li>Customer requirements changing</li><li>Cyber attack or losing data</li><li>The payment provider changes</li><li>A new law or a price rise</li></ul>
               </div>
             </div>
             <div>
@@ -1837,13 +1850,20 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   </section>
 
   <!-- ===================== 13. RISK RESPONSES ===================== -->
-  <section class="slide" data-title="Responding to risks" data-section="Risks">
+  <section class="slide" data-title="Managing risks" data-section="Risks">
     <div class="slide__inner">
       <div class="slide__body">
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">13</span>Risks</p>
-          <h2>Responding to risks</h2>
+          <h2>Managing risks</h2>
         </header>
+        <ol class="riskcycle" aria-label="The risk management cycle">
+          <li><b>1 Identify</b><span>What could go wrong?</span></li>
+          <li><b>2 Assess</b><span>How likely? How serious?</span></li>
+          <li><b>3 Decide</b><span>Accept, reduce, avoid or plan B</span></li>
+          <li><b>4 Monitor</b><span>Keep checking it</span></li>
+          <li><b>5 Take action</b><span>If it happens, deal with it</span></li>
+        </ol>
         <div class="responses">
           <article class="card response">
             <h3>Accept</h3>
@@ -1868,7 +1888,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
         </div>
         <p class="small">Some books also mention transferring a risk (like insurance), but the unit uses these four.</p>
         <div class="stack">
-          <h3>When a risk actually happens, it becomes an issue</h3>
+          <h3>Step 5: when a risk actually happens, it becomes an issue</h3>
           <ol class="stepper" id="stepper">
             <li><button type="button" class="stepper__btn is-on" aria-pressed="true" data-step="0"><span class="stepper__n">1</span>Log it</button></li>
             <li><button type="button" class="stepper__btn" aria-pressed="false" data-step="1"><span class="stepper__n">2</span>Start plan B</button></li>
@@ -1939,7 +1959,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 
 <!-- ===================== CONTROLS ===================== -->
 <nav class="controls" id="controls" aria-label="Presentation controls">
-  <p class="controls__brand"><b>PM</b> · Cristian</p>
+  <p class="controls__brand"><b>Alexandru Ioan</b> · 25002954</p>
   <button class="icon-btn" id="prevBtn" type="button" aria-label="Previous slide">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
@@ -2462,7 +2482,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
      ========================================================= */
   const ISO = [
     ['Functional suitability', 'Does it do the right things, correctly? Customers can order, pay and pick a time, and the total is always right.'],
-    ['Performance efficiency', 'Pages load in under 2 seconds on 4G, even on a busy Saturday morning.'],
+    ['Performance efficiency', 'Pages load within 3 seconds, even on a phone on a busy Saturday morning.'],
     ['Compatibility', 'Works on Chrome, Safari, Firefox and Edge, and works together with the payment provider and the email system.'],
     ['Interaction capability', 'Called "usability" in the 2011 version. A first-time customer can order in under 3 minutes without any help.'],
     ['Reliability', 'No orders ever get lost. If the server crashes it comes back quickly, and orders are backed up every night.'],
@@ -2843,7 +2863,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
       options: ['The cheapest way to finish the project', 'The longest chain of dependent tasks, which sets the earliest finish date', 'The list of tasks with the most risks'],
       answer: 1, why: 'It\'s the longest route through the tasks. If anything on it is late, the whole project is late.' },
     { q: 'Which of these is a non-functional requirement?',
-      options: ['Customers can pay by card', 'Staff can mark an order as ready', 'Every page loads in under 2 seconds'],
+      options: ['Customers can pay by card', 'Staff can mark an order as ready', 'Every page loads within 3 seconds'],
       answer: 2, why: 'It\'s about how well the site works (speed), not what it does.' },
     { q: 'A risk has likelihood 4 and impact 3. What\'s its score on my scale?',
       options: ['12, High', '7, Medium', '1, Low'],

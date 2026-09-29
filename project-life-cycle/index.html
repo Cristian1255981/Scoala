@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Project Life Cycle</title>
+<meta name="description" content="Presentation about the project life cycle by Alexandru Ioan, student ID 25002954.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Kalam:wght@400;700&family=Unbounded:wght@500;600;700&display=swap">
+<style>
+/* =========================================================
+   The Project Life Cycle
+   Alexandru Ioan · Student ID 25002954
+   ========================================================= */
+
+/* layout: one full-screen slide at a time, content in a 1160px column.
+   colour always means "stage": the five stage colours are the only colours,
+   everything else is ink on paper. the controls at the bottom are a route line. */
+:root {
+  /* paper & ink */
+  --bg: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #1b1f1d;
+  --ink-2: #4a534e;
+  --muted: #5f6964;
+  --line: #dfe3de;
+  --line-strong: #b7c0ba;
+  --focus: #2a78d6;
+  /* the five stages, always in this order */
+  --s1: #2a78d6;  /* initiation */
+  --s2: #eb6834;  /* planning */
+  --s3: #1baf7a;  /* execution */
+  --s4: #eda100;  /* monitoring & control */
+  --s5: #e87ba4;  /* closure */
+  /* good / bad (only for pros and cons) */
+  --good: #0ca30c;
+  --good-ink: #0a6e2a;
+  --bad: #d03b3b;
+  --bad-ink: #b3261e;
+  /* the QR code stays black on white in both themes so phones can scan it */
+  --qr-bg: #ffffff;
+  --qr-ink: #000000;
+  --shadow: 0 1px 2px rgba(20, 28, 24, 0.05), 0 10px 26px -14px rgba(20, 28, 24, 0.22);
+  --moon: inline;
+  --sun: none;
+  /* type */
+  --display: "Unbounded", "Arial Black", "Segoe UI", sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --hand: "Kalam", "Segoe Print", "Bradley Hand", cursive;
+  --fs: clamp(13.5px, min(calc(6px + 0.72vw), calc(4px + 1.7vh)), 22px);
+  --controls-h: 3.3rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111513;
+    --surface: #181e1b;
+    --ink: #e8eeea;
+    --ink-2: #bac5bf;
+    --muted: #93a09a;
+    --line: #2a3430;
+    --line-strong: #47534d;
+    --focus: #6ba3ff;
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+    --good-ink: #5fd68a;
+    --bad-ink: #ff8f86;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
+    --moon: none;
+    --sun: inline;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111513;
+  --surface: #181e1b;
+  --ink: #e8eeea;
+  --ink-2: #bac5bf;
+  --muted: #93a09a;
+  --line: #2a3430;
+  --line-strong: #47534d;
+  --focus: #6ba3ff;
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --s5: #d55181;
+  --good-ink: #5fd68a;
+  --bad-ink: #ff8f86;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
+  --moon: none;
+  --sun: inline;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { height: 100%; font-size: var(--fs); }
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 0.18em; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface);
+  font: 500 0.68rem/1 var(--mono);
+  text-align: center;
+}
+.mono { font-family: var(--mono); }
+.small { font-size: 0.82rem; color: var(--muted); }
+.cite { font-size: 0.78em; color: var(--muted); white-space: nowrap; }
+/* pencil notes in the margin */
+.pencil {
+  display: inline-block;
+  font-family: var(--hand);
+  font-size: 1.12rem;
+  line-height: 1.25;
+  color: var(--ink-2);
+  transform: rotate(-2deg);
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.15rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1;
+}
+.btn:hover { opacity: 0.88; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--small { padding: 0.5rem 0.85rem; font-size: 0.84rem; }
+.bullets { display: grid; gap: 0.28rem; }
+.bullets li { position: relative; padding-left: 1rem; font-size: 0.92rem; }
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0.1rem;
+  top: 0.6em;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  background: var(--c, var(--ink-2));
+}
+/* a stage number in a ring of its colour */
+.sn {
+  flex: none;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: inline-grid;
+  place-items: center;
+  border: 2.5px solid var(--c);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 0.8rem/1 var(--mono);
+}
+.tint { background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.s1 { --c: var(--s1); }
+.s2 { --c: var(--s2); }
+.s3 { --c: var(--s3); }
+.s4 { --c: var(--s4); }
+.s5 { --c: var(--s5); }
+.plus, .minus {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 700 1rem/1 var(--mono);
+  color: #ffffff;
+}
+.plus { background: var(--good); }
+.minus { background: var(--bad); }
+
+/* ---------- slides ---------- */
+.deck { position: relative; height: 100%; overflow: hidden; overflow: clip; }
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-block: clamp(16px, 4.2vh, 52px) calc(var(--controls-h) + 1.3rem + env(safe-area-inset-bottom, 0px));
+  padding-inline: max(16px, 3.5vw);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 0.4s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+}
+.slide.is-past { transform: translateY(-1.2rem); }
+.slide.is-active {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s ease, transform 0.45s ease, visibility 0s;
+}
+.slide__inner { max-width: 1160px; min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+.slide__body { margin-block: auto; display: grid; gap: 1.1rem; min-width: 0; }
+.slide__head { display: grid; gap: 0.5rem; }
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.kicker__num {
+  width: 1.55rem;
+  height: 1.55rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+h1, h2 { font-family: var(--display); letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-weight: 700; line-height: 1.02; }
+h2 { font-weight: 600; font-size: 2.05rem; line-height: 1.12; }
+h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
+.lead { font-size: 1.08rem; color: var(--ink-2); max-width: 70ch; text-wrap: pretty; }
+.stack { display: grid; gap: 0.85rem; align-content: start; min-width: 0; }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2.6vw, 2.4rem); align-items: start; }
+.cols--wide-left { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+.cols--wide-right { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+.scroll-x { overflow-x: auto; min-width: 0; }
+
+/* ---------- slide 1: title ---------- */
+.title-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; }
+.title-copy { display: grid; gap: 1.1rem; justify-items: start; }
+.slide--title h1 { font-size: clamp(2.2rem, 4.4vw, 3.7rem); }
+.slide--title .lead { font-size: 1.18rem; max-width: 30ch; }
+.byline { display: grid; gap: 0.15rem; }
+.byline b { font-size: 1.15rem; }
+.byline span { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.title-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.1rem; }
+.keys { font: 0.72rem/1.9 var(--mono); color: var(--muted); }
+.ring-wrap { position: relative; }
+.ring { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; }
+.ring__arc { fill: none; stroke: var(--c); stroke-width: 34; stroke-dasharray: 185; stroke-dashoffset: 0; animation: draw 0.7s ease-out both; animation-delay: calc(var(--i) * 0.14s + 0.15s); }
+@keyframes draw { from { stroke-dashoffset: 185; } to { stroke-dashoffset: 0; } }
+.ring__loop { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-dasharray: 5 6; }
+.ring__head { fill: var(--line-strong); }
+.ring__num { fill: var(--muted); font: 500 14px var(--mono); }
+.ring__name { fill: var(--ink); font: 700 18px var(--body); }
+.ring__big { fill: var(--ink); font: 600 30px var(--display); }
+.ring__sub { fill: var(--ink-2); font: 500 15px var(--body); }
+.ring-note { position: absolute; right: 0; bottom: 0.2rem; max-width: 15rem; text-align: right; }
+.agenda { display: grid; gap: 0.5rem; }
+.agenda__list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.agenda__list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.7rem 0.28rem 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+}
+.agenda__list button:hover { border-color: var(--ink); }
+.agenda__list b { width: 1.35rem; height: 1.35rem; display: inline-grid; place-items: center; border-radius: 50%; background: var(--bg); font: 500 0.68rem var(--mono); }
+
+/* ---------- slide 2: introduction ---------- */
+.q { display: grid; gap: 0.3rem; }
+.q h3 { display: flex; align-items: center; gap: 0.5rem; }
+.q h3 span { font: 500 0.7rem var(--mono); color: var(--muted); letter-spacing: 0.06em; }
+.aside { font-size: 0.85rem; color: var(--ink-2); padding-left: 0.8rem; border-left: 2px dashed var(--line-strong); }
+.nest { display: grid; gap: 0.4rem; }
+.nest__bar { display: grid; grid-template-columns: 1fr 1.2fr 1.9fr 1.2fr; gap: 3px; }
+.nest__bar span { padding: 0.45rem 0.4rem; border-radius: 6px; font-size: 0.74rem; font-weight: 700; text-align: center; border-top: 3px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.nest__zoom { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.3rem; padding: 0.55rem; border: 1.5px dashed var(--s3); border-radius: 10px; margin-inline: 12% 8%; }
+.nest__zoom::before { content: "the SDLC, inside execution"; position: absolute; top: -0.62rem; left: 0.7rem; padding: 0 0.3rem; background: var(--bg); font: 500 0.64rem var(--mono); color: var(--muted); letter-spacing: 0.05em; }
+.nest__zoom span { padding: 0.3rem; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font-size: 0.74rem; text-align: center; }
+
+/* ---------- slide 3: stages + flowchart ---------- */
+.stage-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.stage-row li { display: flex; align-items: center; gap: 0.4rem; }
+.stage-row li + li::before { content: "→"; color: var(--muted); }
+.stage-pill { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.25rem 0.8rem 0.25rem 0.25rem; border-radius: 999px; font-weight: 700; font-size: 0.9rem; background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.flow-card { padding: 0.6rem 0.8rem; }
+.flow { display: block; width: 100%; min-width: 50rem; height: auto; }
+.fc-stage rect { fill: color-mix(in srgb, var(--c) 16%, var(--surface)); stroke: var(--c); stroke-width: 2; }
+.fc-term { fill: var(--surface); stroke: var(--ink); stroke-width: 1.8; }
+.fc-diamond { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.6; }
+.fc-line { fill: none; stroke: var(--ink-2); stroke-width: 1.6; }
+.fc-line--back { stroke-dasharray: 5 5; }
+.fc-head { fill: var(--ink-2); }
+.fc-title { fill: var(--ink); font: 700 13.5px var(--body); }
+.fc-sub { fill: var(--ink-2); font: 500 11px var(--body); }
+.fc-text { fill: var(--ink); font: 600 11.5px var(--body); }
+.fc-labelbg { fill: var(--surface); }
+.fc-label { fill: var(--muted); font: 500 11px var(--mono); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.flow-key { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1.5rem; }
+
+/* ---------- slide 4: stage explorer ---------- */
+.explorer { display: grid; gap: 0; }
+.explorer__tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: -1px; position: relative; z-index: 1; }
+.explorer__tabs [role="tab"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
+  border: 1px solid var(--line);
+  border-bottom-color: transparent;
+  border-radius: 12px 12px 0 0;
+  background: var(--bg);
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+.explorer__tabs [role="tab"][aria-selected="true"] { background: var(--surface); color: var(--ink); }
+.explorer__panel { border-top-left-radius: 0; padding: 0; overflow: hidden; }
+.explorer__top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding: 0.75rem 1.15rem; background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.explorer__top p { font-size: 1rem; }
+.explorer__top b { font-family: var(--display); font-weight: 600; font-size: 1.1rem; }
+.explorer__cols { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); gap: 1.4rem; padding: 1rem 1.15rem 1.1rem; }
+.explorer__cols h3 { font: 500 0.7rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.chips li { padding: 0.28rem 0.65rem; border: 1px solid var(--line); border-radius: 999px; font-size: 0.84rem; background: var(--bg); }
+.docs { display: grid; gap: 0.35rem; }
+.docs li { display: flex; align-items: flex-start; gap: 0.45rem; font-size: 0.88rem; }
+.docs svg { flex: none; width: 0.95rem; height: 1.15rem; margin-top: 0.12rem; }
+.docs .doc-page { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.4; }
+.docs .doc-fold { fill: color-mix(in srgb, var(--c) 40%, var(--surface)); stroke: var(--ink-2); stroke-width: 1.4; }
+.explorer__foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 0.8rem; }
+
+/* ---------- slide 5: key features ---------- */
+.features { display: grid; gap: 0.7rem; }
+.features li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.6rem; align-items: start; }
+.features svg { width: 1.7rem; height: 1.7rem; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.features b { display: block; }
+.features span { font-size: 0.88rem; color: var(--ink-2); }
+.org { display: grid; justify-items: center; gap: 0.7rem; }
+.org__box { position: relative; padding: 0.35rem 0.8rem; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--surface); font-weight: 700; font-size: 0.84rem; text-align: center; line-height: 1.25; }
+.org__box small { display: block; font-weight: 400; font-size: 0.72rem; color: var(--muted); }
+.org__box + .org__box::before, .org__team::before { content: ""; position: absolute; left: 50%; top: -0.75rem; height: 0.7rem; border-left: 1.5px solid var(--ink); }
+.org__team { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; padding-top: 0.2rem; }
+.org__team span { padding: 0.25rem 0.55rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); font-size: 0.76rem; }
+.involve { position: relative; height: 190px; cursor: crosshair; }
+.involve svg { display: block; }
+.iv-band { fill: color-mix(in srgb, var(--c) 12%, transparent); }
+.iv-stage { fill: var(--ink-2); font: 600 10.5px var(--body); }
+.iv-axis { fill: var(--muted); font: 500 10px var(--mono); }
+.iv-monitor { fill: var(--s4); opacity: 0.75; }
+.iv-effort-area { fill: var(--ink); fill-opacity: 0.07; }
+.iv-effort { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+.iv-customer { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-dasharray: 6 5; stroke-linecap: round; }
+.iv-label { fill: var(--ink); font: 700 11px var(--body); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.iv-cross { stroke: var(--ink-2); stroke-width: 1; }
+.iv-hit { fill: transparent; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; font-size: 0.76rem; color: var(--ink-2); }
+.legend li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.key-solid { width: 1.4rem; border-top: 2px solid var(--ink); }
+.key-dashed { width: 1.4rem; border-top: 2px dashed var(--ink-2); }
+.key-band { width: 1.4rem; height: 0.4rem; border-radius: 3px; background: var(--s4); }
+
+/* ---------- slides 6 & 7: pros and cons ---------- */
+.pc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+.pc { display: grid; gap: 0.5rem; align-content: start; padding: 0.95rem 1.1rem 1rem; }
+.pc__head { display: flex; align-items: center; gap: 0.6rem; }
+.pc__head h3 { font: 600 1.02rem/1.25 var(--display); }
+.pc p { font-size: 0.92rem; }
+.pc__me { display: grid; gap: 0.15rem; padding: 0.55rem 0.75rem; border-radius: 10px; background: var(--bg); font-size: 0.88rem; }
+.pc__me span { font: 500 0.64rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.spark { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.7rem; }
+.spark svg { width: 8.5rem; height: 2.6rem; }
+.spark path { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+.spark .spark-area { fill: var(--ink); fill-opacity: 0.07; stroke: none; }
+.spark line { stroke: var(--line-strong); stroke-width: 1; }
+.spark p { font-size: 0.78rem; color: var(--muted); }
+
+/* ---------- slide 8: suitable projects ---------- */
+.checks { display: grid; gap: 0.35rem; }
+.checks li { position: relative; padding-left: 1.85rem; font-size: 0.92rem; }
+.checks li::before { content: "✓"; position: absolute; left: 0; top: 0.12rem; display: grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--good); color: #ffffff; font-size: 0.72rem; font-weight: 700; }
+.checks li.is-no::before { content: "✗"; background: var(--bad); }
+.example__title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
+.example__title h3 { font: 600 1.05rem/1.25 var(--display); }
+.phasemap { display: grid; gap: 4px; min-width: 44rem; }
+.pm-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.pm-nasa span { position: relative; padding: 0.35rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); font: 700 0.82rem/1.2 var(--mono); }
+.pm-nasa small { display: block; font: 400 0.7rem/1.25 var(--body); color: var(--ink-2); }
+.pm-nasa span:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: -7px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  background: var(--ink);
+  transform: rotate(45deg);
+  border: 1.5px solid var(--surface);
+}
+.pm-plc span { padding: 0.3rem 0.5rem; border-radius: 6px; font-size: 0.76rem; font-weight: 700; border-top: 3px solid var(--c); background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+.pm-plc .pm-ops { --c: var(--line-strong); color: var(--ink-2); font-weight: 500; }
+.pm-monitor { padding: 0.28rem 0.6rem; border-radius: 6px; font-size: 0.74rem; font-weight: 600; background: color-mix(in srgb, var(--s4) 22%, var(--surface)); }
+.pm-dates { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); font: 500 0.68rem var(--mono); color: var(--ink-2); }
+.pm-dates span:nth-child(1) { grid-column: 5; text-align: right; }
+.pm-dates span:nth-child(2) { grid-column: 6; text-align: center; }
+
+/* ---------- slide 9: my project ---------- */
+.plan-rows { display: grid; gap: 0.45rem; }
+.plan-rows li { display: grid; grid-template-columns: 1.7rem 8.8rem minmax(0, 1fr); gap: 0.6rem; align-items: start; padding: 0.5rem 0.7rem; border-radius: 10px; background: color-mix(in srgb, var(--c) 10%, var(--surface)); }
+.plan-rows b { font-size: 0.9rem; line-height: 1.7rem; }
+.plan-rows span { font-size: 0.88rem; }
+.verdict { display: grid; gap: 0.65rem; }
+.verdict__big { font: 600 1.5rem/1.15 var(--display); }
+
+/* ---------- slide 10: conclusion ---------- */
+.sl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+.sl { display: grid; gap: 0.5rem; align-content: start; }
+.sl h3 { display: flex; align-items: center; gap: 0.5rem; }
+.use-when { display: grid; gap: 0.45rem; }
+
+/* ---------- slide 11: references ---------- */
+.refs { display: grid; gap: 0.7rem; }
+.refs li { padding-left: 1.8rem; text-indent: -1.8rem; font-size: 0.9rem; line-height: 1.45; }
+.refs a { word-break: break-all; }
+
+/* ---------- slide 12: feedback ---------- */
+.thanks h2 { font-size: clamp(2.2rem, 4.2vw, 3.3rem); font-weight: 700; }
+.thanks__q { font: 600 1.6rem/1.2 var(--display); color: var(--ink-2); }
+.fb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.3rem; align-items: center; }
+.qr { width: 13.5rem; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; padding: 0.55rem; border-radius: 12px; background: var(--qr-bg); border: 1px solid var(--line); }
+.qr svg { width: 100%; height: 100%; display: block; }
+.qr .qr-bg { fill: var(--qr-bg); }
+.qr .qr-ink { fill: var(--qr-ink); }
+.qr--empty { border: 2px dashed var(--line-strong); background: var(--bg); color: var(--muted); font-size: 0.82rem; text-align: center; padding: 1rem; }
+.fb__text { display: grid; gap: 0.6rem; align-content: start; }
+.fb__text h3 { font: 600 1.25rem/1.25 var(--display); }
+.fb__link { font: 0.76rem var(--mono); color: var(--ink-2); word-break: break-all; }
+.qr-form { display: grid; gap: 0.4rem; }
+.qr-form label { font-size: 0.82rem; font-weight: 700; }
+.qr-form div { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.qr-form input { flex: 1 1 14rem; min-width: 0; padding: 0.5rem 0.7rem; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); font-size: 0.86rem; }
+.qr-form .error { color: var(--bad-ink); font-size: 0.8rem; }
+.text-btn { padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.78rem; text-decoration: underline; text-underline-offset: 0.18em; justify-self: start; }
+.whoami { display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; font: 500 0.78rem var(--mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ---------- controls: a route line at the bottom ---------- */
+.controls {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1vw, 0.9rem);
+  padding-block: 0.45rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+  padding-inline: max(16px, 2vw);
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+}
+.controls__who { font: 500 0.7rem var(--mono); color: var(--ink-2); white-space: nowrap; }
+.controls__who b { color: var(--ink); font-weight: 500; }
+.controls__where { display: grid; min-width: 7.5rem; font: 500 0.72rem/1.25 var(--mono); }
+.controls__where span { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 11rem; }
+.controls__tools { display: flex; gap: 0.35rem; }
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.3rem;
+  height: 2.3rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+}
+.icon-btn:hover:not(:disabled) { border-color: var(--ink); }
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn svg { width: 1.05rem; height: 1.05rem; }
+.i-moon { display: var(--moon); }
+.i-sun { display: var(--sun); }
+.route { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
+.route li { position: relative; flex: 1; display: grid; place-items: center; height: 2rem; }
+.route li::before { content: ""; position: absolute; left: -50%; right: 50%; top: 50%; border-top: 2px solid var(--line); }
+.route li:first-child::before { display: none; }
+.route li.is-done::before, .route li.is-current::before { border-color: var(--ink); }
+.station {
+  position: relative;
+  z-index: 1;
+  width: 0.8rem;
+  height: 0.8rem;
+  padding: 0;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  transition: transform 0.2s;
+}
+.station::after { content: ""; position: absolute; inset: -0.5rem; }
+.station:hover { transform: scale(1.25); }
+.is-done .station { border-color: var(--ink); background: var(--ink); }
+.is-current .station { width: 1.15rem; height: 1.15rem; border: 3px solid var(--ink); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 15%, transparent); }
+
+/* ---------- all slides ---------- */
+.overview {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  overflow-y: auto;
+  padding-block: 2rem;
+  padding-inline: max(16px, 4vw);
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.overview__inner { max-width: 1160px; margin: 0 auto; display: grid; gap: 1.2rem; }
+.overview__head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.overview__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); gap: 0.75rem; }
+.ov-card { display: grid; gap: 0.3rem; align-content: start; padding: 0.85rem 1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); text-align: left; }
+.ov-card:hover { border-color: var(--ink); }
+.ov-card.is-current { box-shadow: 0 0 0 2px var(--ink); }
+.ov-card__no { font: 500 0.72rem var(--mono); color: var(--muted); }
+.ov-card__title { font-weight: 700; line-height: 1.25; }
+
+/* ---------- tooltip ---------- */
+.tip { position: fixed; z-index: 40; max-width: 17rem; padding: 0.45rem 0.65rem; border-radius: 8px; background: var(--ink); color: var(--surface); font-size: 0.78rem; line-height: 1.35; pointer-events: none; box-shadow: var(--shadow); }
+.tip b { font-weight: 700; }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1000px) {
+  .explorer__cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .explorer__cols > :first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 860px) {
+  :root { --fs: 15px; }
+  h2 { font-size: 1.65rem; }
+  .cols, .cols--wide-left, .cols--wide-right, .title-grid, .pc-grid, .sl-grid, .fb { grid-template-columns: minmax(0, 1fr); }
+  .ring { max-width: 24rem; }
+  .ring-note { position: static; display: block; margin: 0.4rem 0 0 auto; }
+  .controls__who, .controls__where, #fsBtn { display: none; }
+  .station { width: 0.65rem; height: 0.65rem; }
+  .is-current .station { width: 0.95rem; height: 0.95rem; }
+}
+@media (max-width: 560px) {
+  .explorer__cols { grid-template-columns: minmax(0, 1fr); }
+  .plan-rows li { grid-template-columns: 1.7rem minmax(0, 1fr); }
+  .plan-rows li span { grid-column: 2; }
+  .controls { gap: 0.3rem; }
+  .controls__tools { gap: 0.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide, .slide.is-active { transition: none; transform: none; }
+  .ring__arc { animation: none; }
+}
+
+/* ---------- printing (Ctrl + P): one slide per page, every stage shown ---------- */
+@media print {
+  :root:root {
+    --bg: #ffffff; --surface: #ffffff; --ink: #1b1f1d; --ink-2: #4a534e; --muted: #5f6964;
+    --line: #dfe3de; --line-strong: #b7c0ba; --shadow: none;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+    color-scheme: light;
+  }
+  html, body { height: auto; overflow: visible; }
+  .deck { height: auto; overflow: visible; }
+  .slide { position: relative; inset: auto; visibility: visible; opacity: 1; transform: none; overflow: visible; padding: 10mm 0; break-after: page; }
+  .explorer__panel[hidden] { display: block !important; margin-top: 0.6rem; }
+  .controls, .overview, .tip, .qr-form, .text-btn { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<main class="deck" id="deck">
+
+  <!-- ===================== TITLE ===================== -->
+  <section class="slide slide--title is-active" data-title="The Project Life Cycle" data-section="Title">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <div class="title-grid">
+          <div class="title-copy">
+            <p class="kicker">Level 3 IT · Project Management</p>
+            <h1>The Project Life Cycle</h1>
+            <p class="lead">What it is, what happens at each stage, and when I would use it.</p>
+            <p class="byline"><b>Alexandru Ioan</b><span>Student ID 25002954</span></p>
+            <div class="title-actions">
+              <button class="btn" type="button" data-go="2">Start <span aria-hidden="true">→</span></button>
+              <p class="keys"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>O</kbd> all slides · <kbd>T</kbd> dark mode</p>
+            </div>
+          </div>
+          <div class="ring-wrap">
+            <svg class="ring" viewBox="0 0 680 500" role="img" aria-labelledby="ringTitle">
+              <title id="ringTitle">The five stages of the project life cycle in a ring: initiation, planning, execution, monitoring and control, closure</title>
+              <defs>
+                <marker id="ringHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path class="ring__head" d="M0,0 L10,5 L0,10 z"/></marker>
+              </defs>
+              <path class="ring__loop" d="M362.5,144.4 A108,108 0 1 1 296.1,151.3" marker-end="url(#ringHead)"/>
+              <path class="ring__arc s1" style="--i: 0" d="M348.4,90.2 A160,160 0 0 1 489.4,192.7"/>
+              <path class="ring__arc s2" style="--i: 1" d="M494.5,208.6 A160,160 0 0 1 440.7,374.3"/>
+              <path class="ring__arc s3" style="--i: 2" d="M427.1,384.2 A160,160 0 0 1 252.9,384.2"/>
+              <path class="ring__arc s4" style="--i: 3" d="M239.3,374.3 A160,160 0 0 1 185.5,208.6"/>
+              <path class="ring__arc s5" style="--i: 4" d="M190.6,192.7 A160,160 0 0 1 331.6,90.2"/>
+              <text class="ring__big" x="340" y="248" text-anchor="middle">5 stages</text>
+              <text class="ring__sub" x="340" y="276" text-anchor="middle">idea → handover</text>
+              <text x="470" y="66"><tspan class="ring__num">1 </tspan><tspan class="ring__name">Initiation</tspan></text>
+              <text x="548" y="312"><tspan class="ring__num">2 </tspan><tspan class="ring__name">Planning</tspan></text>
+              <text x="340" y="478" text-anchor="middle"><tspan class="ring__num">3 </tspan><tspan class="ring__name">Execution</tspan></text>
+              <text x="132" y="302" text-anchor="end"><tspan class="ring__num">4 </tspan><tspan class="ring__name">Monitoring</tspan><tspan class="ring__name" x="132" dy="22">&amp; control</tspan></text>
+              <text x="210" y="66" text-anchor="end"><tspan class="ring__num">5 </tspan><tspan class="ring__name">Closure</tspan></text>
+            </svg>
+            <p class="pencil ring-note">the loop: lessons learned go into the next project</p>
+          </div>
+        </div>
+        <nav class="agenda" aria-label="Sections">
+          <p class="small">In this presentation</p>
+          <ul class="agenda__list">
+            <li><button type="button" data-go="2"><b>1</b>Introduction</button></li>
+            <li><button type="button" data-go="3"><b>2</b>Stages</button></li>
+            <li><button type="button" data-go="4"><b>3</b>Each stage</button></li>
+            <li><button type="button" data-go="5"><b>4</b>Key features</button></li>
+            <li><button type="button" data-go="6"><b>5</b>Advantages</button></li>
+            <li><button type="button" data-go="7"><b>6</b>Disadvantages</button></li>
+            <li><button type="button" data-go="8"><b>7</b>Suitable projects</button></li>
+            <li><button type="button" data-go="9"><b>8</b>My own project</button></li>
+            <li><button type="button" data-go="10"><b>9</b>Conclusion</button></li>
+            <li><button type="button" data-go="11"><b>10</b>References</button></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1. INTRODUCTION ===================== -->
+  <section class="slide" data-title="What is the project life cycle?" data-section="1 · Introduction">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">1</span>Introduction</p>
+          <h2>What is the project life cycle?</h2>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <div class="q">
+              <h3><span>WHAT</span>What it is</h3>
+              <p>The project life cycle is the series of stages a project goes through, from the first idea to the finished result <span class="cite">(PMI, 2017)</span>. Every project, big or small, goes through the same stages in the same order: initiation, planning, execution, monitoring &amp; control and closure.</p>
+            </div>
+            <p class="aside">Strictly speaking, it's more of a framework than a full methodology like PRINCE2 or Scrum, but most methodologies are built on top of it.</p>
+            <div class="q">
+              <h3><span>WHY</span>Its purpose</h3>
+              <p>To give a project a clear structure: what needs doing, in what order, who is responsible and when to stop and check. It keeps time, cost and quality under control and makes sure nothing important, like testing or training, gets forgotten.</p>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="q">
+              <h3><span>WHERE</span>Why use it in software or systems development?</h3>
+              <ul class="bullets">
+                <li>Software projects are complex, and without stages they get out of control fast.</li>
+                <li>Lots of people have to agree: the client, users, developers, testers and IT support.</li>
+                <li>Clients want to know the cost and the delivery date before they pay.</li>
+                <li>The decision points mean a bad project can be stopped before too much money is wasted.</li>
+              </ul>
+            </div>
+            <figure class="nest" aria-label="The software development life cycle fits inside the execution stage">
+              <div class="nest__bar">
+                <span class="s1">Initiation</span>
+                <span class="s2">Planning</span>
+                <span class="s3">Execution + monitoring</span>
+                <span class="s5">Closure</span>
+              </div>
+              <div class="nest__zoom">
+                <span>Design</span><span>Build</span><span>Test</span><span>Deploy</span>
+              </div>
+              <figcaption class="small">In software projects, most of the software development life cycle (SDLC) happens inside the execution stage <span class="cite">(Schwalbe, 2019)</span>. The requirements are agreed earlier, in planning.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. STAGES ===================== -->
+  <section class="slide" data-title="The five stages, in order" data-section="2 · Stages">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">2</span>Stages</p>
+          <h2>The five stages, in order</h2>
+        </header>
+        <ol class="stage-row" aria-label="The stages in order">
+          <li><span class="stage-pill s1"><span class="sn">1</span>Initiation</span></li>
+          <li><span class="stage-pill s2"><span class="sn">2</span>Planning</span></li>
+          <li><span class="stage-pill s3"><span class="sn">3</span>Execution</span></li>
+          <li><span class="stage-pill s4"><span class="sn">4</span>Monitoring &amp; control</span></li>
+          <li><span class="stage-pill s5"><span class="sn">5</span>Closure</span></li>
+        </ol>
+        <p class="lead">Stage 4 runs at the same time as stage 3, and before moving on there's a decision point, called a stage gate. Here it is as a flow chart:</p>
+        <div class="card flow-card scroll-x">
+          <svg class="flow" viewBox="0 0 1120 292" role="img" aria-labelledby="flowTitle flowDesc">
+            <title id="flowTitle">Flow chart of the project life cycle</title>
+            <desc id="flowDesc">Start, then initiation. If the business case is not OK the project stops. If it is, planning. If the plan is not approved it goes back to planning. Then execution, with monitoring and control running alongside it. If the client does not accept the product it goes back to execution. If they do, closure, then the end. Lessons learned go into the next project.</desc>
+            <defs>
+              <marker id="fcHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="fc-head" d="M0,0 L10,5 L0,10 z"/></marker>
+            </defs>
+            <!-- lines first so the boxes sit on top -->
+            <path class="fc-line" d="M70,104 H90" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M212,104 H232" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M342,104 H362" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M484,104 H504" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M614,104 H634" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M756,104 H776" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M886,104 H906" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M1028,104 H1048" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M288,146 V190" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M560,62 V36 H424 V74" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M832,62 V36 H696 V74" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M676,132 V190" marker-end="url(#fcHead)"/>
+            <path class="fc-line" d="M716,192 V134" marker-end="url(#fcHead)"/>
+            <path class="fc-line fc-line--back" d="M1082,124 V280 H38 V126" marker-end="url(#fcHead)"/>
+            <!-- start / end -->
+            <rect class="fc-term" x="6" y="84" width="64" height="40" rx="20"/>
+            <text class="fc-title" x="38" y="109" text-anchor="middle">Start</text>
+            <rect class="fc-term" x="1050" y="84" width="64" height="40" rx="20"/>
+            <text class="fc-title" x="1082" y="109" text-anchor="middle">End</text>
+            <rect class="fc-term" x="248" y="192" width="80" height="36" rx="18"/>
+            <text class="fc-title" x="288" y="215" text-anchor="middle">Stop</text>
+            <!-- the stages -->
+            <g class="fc-stage s1"><rect x="92" y="76" width="120" height="56" rx="10"/><text class="fc-title" x="152" y="100" text-anchor="middle">1 Initiation</text><text class="fc-sub" x="152" y="117" text-anchor="middle">idea &amp; business case</text></g>
+            <g class="fc-stage s2"><rect x="364" y="76" width="120" height="56" rx="10"/><text class="fc-title" x="424" y="100" text-anchor="middle">2 Planning</text><text class="fc-sub" x="424" y="117" text-anchor="middle">plan, budget, risks</text></g>
+            <g class="fc-stage s3"><rect x="636" y="76" width="120" height="56" rx="10"/><text class="fc-title" x="696" y="100" text-anchor="middle">3 Execution</text><text class="fc-sub" x="696" y="117" text-anchor="middle">build &amp; test</text></g>
+            <g class="fc-stage s4"><rect x="636" y="192" width="120" height="56" rx="10"/><text class="fc-title" x="696" y="215" text-anchor="middle">4 Monitoring</text><text class="fc-title" x="696" y="232" text-anchor="middle">&amp; control</text></g>
+            <g class="fc-stage s5"><rect x="908" y="76" width="120" height="56" rx="10"/><text class="fc-title" x="968" y="100" text-anchor="middle">5 Closure</text><text class="fc-sub" x="968" y="117" text-anchor="middle">handover &amp; review</text></g>
+            <!-- the decisions (stage gates) -->
+            <polygon class="fc-diamond" points="288,62 342,104 288,146 234,104"/>
+            <text class="fc-text" x="288" y="101" text-anchor="middle">Business</text><text class="fc-text" x="288" y="115" text-anchor="middle">case OK?</text>
+            <polygon class="fc-diamond" points="560,62 614,104 560,146 506,104"/>
+            <text class="fc-text" x="560" y="101" text-anchor="middle">Plan</text><text class="fc-text" x="560" y="115" text-anchor="middle">approved?</text>
+            <polygon class="fc-diamond" points="832,62 886,104 832,146 778,104"/>
+            <text class="fc-text" x="832" y="101" text-anchor="middle">Client</text><text class="fc-text" x="832" y="115" text-anchor="middle">accepts it?</text>
+            <!-- labels -->
+            <text class="fc-label" x="352" y="96" text-anchor="middle">yes</text>
+            <text class="fc-label" x="624" y="96" text-anchor="middle">yes</text>
+            <text class="fc-label" x="896" y="96" text-anchor="middle">yes</text>
+            <text class="fc-label" x="296" y="172">no</text>
+            <text class="fc-label" x="492" y="30" text-anchor="middle">no: fix the plan</text>
+            <text class="fc-label" x="764" y="30" text-anchor="middle">no: fix it</text>
+            <text class="fc-label" x="668" y="166" text-anchor="end">progress</text>
+            <text class="fc-label" x="724" y="166">fixes</text>
+            <rect class="fc-labelbg" x="420" y="272" width="280" height="17" rx="3"/>
+            <text class="fc-label" x="560" y="284" text-anchor="middle">lessons learned go into the next project</text>
+          </svg>
+        </div>
+        <div class="flow-key">
+          <p class="small">Key: rounded box = start or end · rectangle = stage · diamond = decision (stage gate)</p>
+          <p class="small">Other books use different names, e.g. the APM calls them concept, definition, deployment and transition <span class="cite">(APM, 2019)</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. EACH STAGE ===================== -->
+  <section class="slide" data-title="What happens at each stage" data-section="3 · Each stage">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">3</span>Explanation of each stage</p>
+          <h2>What happens at each stage</h2>
+        </header>
+        <div class="explorer">
+          <div class="explorer__tabs" role="tablist" aria-label="Stages">
+            <button type="button" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" class="s1"><span class="sn">1</span>Initiation</button>
+            <button type="button" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" class="s2"><span class="sn">2</span>Planning</button>
+            <button type="button" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" class="s3"><span class="sn">3</span>Execution</button>
+            <button type="button" role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1" class="s4"><span class="sn">4</span>Monitoring &amp; control</button>
+            <button type="button" role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1" class="s5"><span class="sn">5</span>Closure</button>
+          </div>
+
+          <div class="card explorer__panel s1" role="tabpanel" id="panel-1" aria-labelledby="tab-1">
+            <div class="explorer__top"><b>1 · Initiation</b><p>Deciding if the project is worth doing at all.</p></div>
+            <div class="explorer__cols">
+              <div><h3>What happens</h3>
+                <ul class="bullets">
+                  <li>Someone spots a problem or an opportunity</li>
+                  <li>A feasibility study checks if it's possible (technically, financially, legally)</li>
+                  <li>A business case compares the costs with the benefits</li>
+                  <li>The stakeholders are identified</li>
+                  <li>A go / no-go decision is made</li>
+                </ul>
+              </div>
+              <div><h3>Who's involved</h3>
+                <ul class="chips"><li>Sponsor or client</li><li>Project manager</li><li>Business analyst</li><li>Senior managers</li><li>Key stakeholders</li></ul>
+              </div>
+              <div><h3>What's produced</h3>
+                <ul class="docs">
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Business case</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Feasibility report</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project charter or brief</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Stakeholder list</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card explorer__panel s2" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
+            <div class="explorer__top"><b>2 · Planning</b><p>Turning the idea into a detailed plan that everyone agrees on.</p></div>
+            <div class="explorer__cols">
+              <div><h3>What happens</h3>
+                <ul class="bullets">
+                  <li>Agree the scope and the requirements</li>
+                  <li>Break the work into tasks (work breakdown structure)</li>
+                  <li>Make the schedule, with milestones and the critical path</li>
+                  <li>Set the budget and the resources</li>
+                  <li>Plan for risks, quality and communication</li>
+                  <li>The plan is signed off and becomes the baseline</li>
+                </ul>
+              </div>
+              <div><h3>Who's involved</h3>
+                <ul class="chips"><li>Project manager</li><li>Business analyst</li><li>Team leaders</li><li>Client (signs off)</li><li>Finance</li></ul>
+              </div>
+              <div><h3>What's produced</h3>
+                <ul class="docs">
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project plan (PID)</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Requirements specification</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Gantt chart</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Budget</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Risk register</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Communication plan</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card explorer__panel s3" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
+            <div class="explorer__top"><b>3 · Execution</b><p>The team builds the product. In software projects this is where design, coding and testing happen.</p></div>
+            <div class="explorer__cols">
+              <div><h3>What happens</h3>
+                <ul class="bullets">
+                  <li>Design, build and test the product</li>
+                  <li>Give out tasks and hold team meetings</li>
+                  <li>Buy equipment or software and work with suppliers</li>
+                  <li>Keep the stakeholders updated</li>
+                  <li>User acceptance testing near the end</li>
+                </ul>
+              </div>
+              <div><h3>Who's involved</h3>
+                <ul class="chips"><li>Developers</li><li>Designers</li><li>Testers</li><li>Project manager</li><li>Suppliers</li><li>Users (for testing)</li></ul>
+              </div>
+              <div><h3>What's produced</h3>
+                <ul class="docs">
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>The product (software, website, network…)</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Test reports</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Progress reports</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>User guides</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card explorer__panel s4" role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden>
+            <div class="explorer__top"><b>4 · Monitoring &amp; control</b><p>Runs alongside execution: checking the project is going to plan and fixing problems early.</p></div>
+            <div class="explorer__cols">
+              <div><h3>What happens</h3>
+                <ul class="bullets">
+                  <li>Compare progress with the baseline (time, cost, quality)</li>
+                  <li>Keep track of risks and issues</li>
+                  <li>Change control: approve or reject changes</li>
+                  <li>Quality checks and stage reviews</li>
+                  <li>Take corrective action if we fall behind</li>
+                </ul>
+              </div>
+              <div><h3>Who's involved</h3>
+                <ul class="chips"><li>Project manager</li><li>Sponsor / project board</li><li>Quality assurance</li><li>Team leaders</li></ul>
+              </div>
+              <div><h3>What's produced</h3>
+                <ul class="docs">
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Status reports</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Updated plan and budget</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Change log</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Issue log</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Updated risk register</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="card explorer__panel s5" role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden>
+            <div class="explorer__top"><b>5 · Closure</b><p>Handing over the finished product and officially ending the project.</p></div>
+            <div class="explorer__cols">
+              <div><h3>What happens</h3>
+                <ul class="bullets">
+                  <li>The client tests and accepts the product (sign-off)</li>
+                  <li>Hand over to the users and the support team, and train staff</li>
+                  <li>Release the team and close any contracts</li>
+                  <li>Final review: did we hit time, cost and quality?</li>
+                  <li>Record the lessons learned and archive the documents</li>
+                </ul>
+              </div>
+              <div><h3>Who's involved</h3>
+                <ul class="chips"><li>Project manager</li><li>Client or sponsor</li><li>Users</li><li>IT support team</li><li>Project team</li></ul>
+              </div>
+              <div><h3>What's produced</h3>
+                <ul class="docs">
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Signed acceptance form</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>End project report</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Lessons learned report</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Training materials</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="explorer__foot">
+            <p class="small" id="stageCount">Stage 1 of 5</p>
+            <button type="button" class="btn btn--ghost btn--small" id="stageNext">Next stage →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. KEY FEATURES ===================== -->
+  <section class="slide" data-title="Key features" data-section="4 · Key features">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">4</span>Key features</p>
+          <h2>How it works: key features</h2>
+        </header>
+        <div class="cols">
+          <ul class="features">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4M10 12h4M17 12h4M7 9l3 3-3 3M14 9l3 3-3 3"/></svg><div><b>Stages in a fixed order</b><span>Each stage only starts when the one before it has been approved.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 9-9 9-9-9z"/><path d="M9 12l2 2 4-4"/></svg><div><b>Stage gates</b><span>A go / no-go decision between stages. PRINCE2 calls these stage boundaries <span class="cite">(AXELOS, 2017)</span>.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M9 12h6M9 16h6"/></svg><div><b>Deliverables at every stage</b><span>Each stage produces something that can be checked and signed off.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M6 16l4-5 3 3 5-7"/></svg><div><b>A baseline plan</b><span>Time, cost and quality are agreed up front and used to measure progress.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><div><b>Monitored all the way through</b><span>Progress is checked during the project, not just at the end.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16M20 4v16M4 12h16"/></svg><div><b>Temporary</b><span>A clear start and a clear end, then the team moves on.</span></div></li>
+          </ul>
+          <div class="stack">
+            <h3>How the project is organised</h3>
+            <div class="org">
+              <div class="org__box">Sponsor &amp; project board<small>make the big decisions at each gate</small></div>
+              <div class="org__box">Project manager<small>runs the project day to day</small></div>
+              <div class="org__team"><span>Developers</span><span>Designer</span><span>Tester</span><span>Business analyst</span></div>
+            </div>
+            <p class="small">The work is split into stages, then work packages, then tasks.</p>
+            <h3>How the customer and users are involved</h3>
+            <div class="involve" id="involve" tabindex="0" data-own-keys role="img" aria-label="Chart: the team is busiest during execution, while the customer is most involved at the start and at the end"></div>
+            <ul class="legend">
+              <li><span class="key-solid"></span>Team effort</li>
+              <li><span class="key-dashed"></span>Customer involvement</li>
+              <li><span class="key-band"></span>Monitoring &amp; control</li>
+              <li class="small">Typical pattern, my own sketch, not real data</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. ADVANTAGES ===================== -->
+  <section class="slide" data-title="Advantages" data-section="5 · Advantages">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">5</span>Advantages</p>
+          <h2>Advantages</h2>
+        </header>
+        <div class="pc-grid">
+          <article class="card pc">
+            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Clear structure</h3></div>
+            <p>Everyone knows which stage the project is in, what comes next and who is responsible for what.</p>
+            <p class="pc__me"><span>Why it helps me</span>I can plan my work stage by stage and explain progress to the client in a simple way.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Control of time and cost</h3></div>
+            <p>There's a baseline plan to compare against, and progress is checked the whole way through.</p>
+            <p class="pc__me"><span>Why it helps me</span>I can spot early if we're behind or over budget, and fix it before it's too late.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Bad projects get stopped early</h3></div>
+            <p>At every stage gate the project can be approved, changed or stopped.</p>
+            <p class="pc__me"><span>Why it helps me</span>I won't waste the client's money on something that clearly isn't going to work.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Clear deliverables and paperwork</h3></div>
+            <p>Each stage produces documents or products that get signed off.</p>
+            <p class="pc__me"><span>Why it helps me</span>I have proof of what was agreed if there's an argument, and the handover at the end is easy.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 6. DISADVANTAGES ===================== -->
+  <section class="slide" data-title="Disadvantages" data-section="6 · Disadvantages">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">6</span>Disadvantages</p>
+          <h2>Disadvantages</h2>
+        </header>
+        <div class="pc-grid">
+          <article class="card pc">
+            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Hard to change later</h3></div>
+            <div class="spark">
+              <svg viewBox="0 0 136 42" aria-hidden="true">
+                <line x1="2" y1="40" x2="134" y2="40"/>
+                <path class="spark-area" d="M2,38 C50,37 90,30 134,4 L134,40 L2,40 Z"/>
+                <path d="M2,38 C50,37 90,30 134,4"/>
+              </svg>
+              <p>The later a change is made, the more it costs <span class="cite">(PMI, 2017)</span>.</p>
+            </div>
+            <p class="pc__me"><span>How it could affect my project</span>If the client changes their mind halfway through, it could delay the project and push the cost up.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Lots of paperwork</h3></div>
+            <p>Business case, plans, reports, logs and sign-offs all take time to write.</p>
+            <p class="pc__me"><span>How it could affect my project</span>On a small project, writing documents could take time away from actually building the product.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Users see it late</h3></div>
+            <p>Users are mostly involved at the start and at the end, not much in the middle.</p>
+            <p class="pc__me"><span>How it could affect my project</span>If I misunderstood a requirement, I might only find out at acceptance testing, when fixing it is expensive.</p>
+          </article>
+          <article class="card pc">
+            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Only as good as the plan</h3></div>
+            <p>If the estimates in planning are wrong, everything after them is affected.</p>
+            <p class="pc__me"><span>How it could affect my project</span>One bad estimate could make my whole schedule and budget unrealistic from day one.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. SUITABLE PROJECTS ===================== -->
+  <section class="slide" data-title="Suitable projects" data-section="7 · Suitable projects">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">7</span>Suitable projects</p>
+          <h2>What projects is it good for?</h2>
+        </header>
+        <div class="cols cols--wide-right">
+          <div class="stack">
+            <h3>Best for projects where…</h3>
+            <ul class="checks">
+              <li>the goal and the requirements are clear and won't change much</li>
+              <li>the deadline and the budget are fixed</li>
+              <li>lots of people need to approve things</li>
+              <li>mistakes are expensive or dangerous (safety, the law, public money)</li>
+            </ul>
+            <p class="small">For example: installing a network, moving a company to a new system, or hospital and government IT.</p>
+            <ul class="checks">
+              <li class="is-no">Not ideal when the requirements keep changing, like a new app where you only find out what users want as you go. Agile suits that better <span class="cite">(Beck et al., 2001)</span>.</li>
+            </ul>
+          </div>
+          <div class="card stack">
+            <div class="example__title"><h3>Real-life example: NASA's Mars 2020 mission</h3></div>
+            <p>NASA runs every mission through a formal life cycle, from Pre-Phase A (concept) to Phase F (closeout), with a Key Decision Point before each phase <span class="cite">(NASA, 2016)</span>. The Perseverance rover launched on 30 July 2020 and landed on Mars on 18 February 2021 <span class="cite">(NASA, no date)</span>.</p>
+            <h3>Why it suits this project</h3>
+            <ul class="bullets">
+              <li><b>Fixed deadline:</b> Earth and Mars only line up for a launch about every 26 months. Miss it and you wait over two years.</li>
+              <li><b>No second chance:</b> you can't repair a rover on Mars, so everything is designed, built and tested in order and checked at each gate.</li>
+              <li><b>Huge budget, many teams:</b> formal approvals keep control of the money and the people.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="scroll-x">
+          <div class="phasemap" aria-label="NASA phases compared with the five stages">
+            <div class="pm-row pm-nasa">
+              <span>Pre-A<small>Concept studies</small></span>
+              <span>A<small>Concept &amp; technology</small></span>
+              <span>B<small>Preliminary design</small></span>
+              <span>C<small>Final design &amp; build</small></span>
+              <span>D<small>Assembly, test &amp; launch</small></span>
+              <span>E<small>Operations</small></span>
+              <span>F<small>Closeout</small></span>
+            </div>
+            <div class="pm-row pm-plc">
+              <span class="s1" style="grid-column: span 2">1 Initiation</span>
+              <span class="s2">2 Planning</span>
+              <span class="s3" style="grid-column: span 2">3 Execution</span>
+              <span class="pm-ops">using the rover</span>
+              <span class="s5">5 Closure</span>
+            </div>
+            <p class="pm-monitor">4 Monitoring &amp; control: reviews all the way through, and a Key Decision Point (◆) before each phase</p>
+            <p class="pm-dates"><span>launch 30 Jul 2020 ▸</span><span>landing 18 Feb 2021</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 8. MY OWN PROJECT ===================== -->
+  <section class="slide" data-title="Using it on my own project" data-section="8 · My own project">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">8</span>Link to my own project</p>
+          <h2>Using it on my own project</h2>
+          <p class="lead">My project: a click &amp; collect website for Northgate Bakery, a small local bakery (made up for this unit). It has 8 weeks, a £9,900 budget and a team of four.</p>
+        </header>
+        <div class="cols cols--wide-left">
+          <ol class="plan-rows">
+            <li class="s1"><span class="sn">1</span><b>Initiation</b><span>Meet the owner, write a business case (lost phone orders, long queues, waste) and check it's possible in 8 weeks for £9,900. The owner says go.</span></li>
+            <li class="s2"><span class="sn">2</span><b>Planning</b><span>Write the requirements with the owner, make the Gantt chart, budget and risk register, then get the plan signed off.</span></li>
+            <li class="s3"><span class="sn">3</span><b>Execution</b><span>Design, build and test the website with the team, with weekly check-ins and a demo for the owner.</span></li>
+            <li class="s4"><span class="sn">4</span><b>Monitoring &amp; control</b><span>Every Friday, compare progress with the Gantt chart and the budget. New ideas, like loyalty points, go through change control.</span></li>
+            <li class="s5"><span class="sn">5</span><b>Closure</b><span>10 real test orders with the owner, staff training, hand over the logins and user guide, get it signed off and write the lessons learned.</span></li>
+          </ol>
+          <div class="card verdict">
+            <p class="small">Would it work well for my project?</p>
+            <p class="verdict__big">Mostly, yes.</p>
+            <ul class="checks">
+              <li>The deadline (before Christmas) and the budget are fixed</li>
+              <li>The requirements are fairly clear from the start</li>
+              <li>The owner wants to approve things at each step</li>
+              <li class="is-no">The owner might change their mind once they see the design</li>
+            </ul>
+            <p>So I'd keep the life cycle, but show the owner a clickable prototype during planning to get feedback early. That's a bit of Agile inside it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 9. CONCLUSION ===================== -->
+  <section class="slide" data-title="Conclusion" data-section="9 · Conclusion">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">9</span>Conclusion</p>
+          <h2>Conclusion</h2>
+          <p class="lead">The project life cycle splits a project into five stages in a fixed order, initiation, planning, execution, monitoring &amp; control and closure, with a decision point between them. It keeps a project under control from the first idea to the handover.</p>
+        </header>
+        <div class="sl-grid">
+          <div class="card sl">
+            <h3><span class="plus" aria-hidden="true">+</span>Main strengths</h3>
+            <ul class="bullets">
+              <li>A clear structure that everyone understands</li>
+              <li>Good control of time, cost and quality</li>
+              <li>Clear deliverables and sign-offs</li>
+              <li>Bad projects can be stopped early</li>
+            </ul>
+          </div>
+          <div class="card sl">
+            <h3><span class="minus" aria-hidden="true">−</span>Main limitations</h3>
+            <ul class="bullets">
+              <li>Changes are hard and expensive later on</li>
+              <li>A lot of paperwork</li>
+              <li>Users see the result quite late</li>
+              <li>It's only as good as the plan</li>
+            </ul>
+          </div>
+        </div>
+        <div class="use-when">
+          <h3>When I think it should be used</h3>
+          <p>When the goal is clear, the deadline and budget are fixed and approvals or safety matter, like my bakery website or a NASA mission. When the requirements will keep changing, I'd use Agile instead, or mix the two.</p>
+          <p class="pencil">my opinion: the more you know at the start, the better it works</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 10. REFERENCES ===================== -->
+  <section class="slide" data-title="References" data-section="10 · References">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">10</span>References</p>
+          <h2>References</h2>
+        </header>
+        <ol class="refs">
+          <li>Association for Project Management (APM) (2019) <i>APM body of knowledge</i>. 7th edn. Princes Risborough: Association for Project Management.</li>
+          <li>AXELOS (2017) <i>Managing successful projects with PRINCE2</i>. 6th edn. London: TSO.</li>
+          <li>Beck, K. et al. (2001) <i>Manifesto for agile software development</i>. Available at: <a href="https://agilemanifesto.org/" target="_blank" rel="noopener">https://agilemanifesto.org/</a> (Accessed: 29 September 2026).</li>
+          <li>NASA (2016) <i>NASA systems engineering handbook</i>. Rev. 2 (NASA/SP-2016-6105). Washington, DC: National Aeronautics and Space Administration.</li>
+          <li>NASA (no date) <i>Mars 2020: Perseverance rover</i>. Available at: <a href="https://science.nasa.gov/mission/mars-2020-perseverance/" target="_blank" rel="noopener">https://science.nasa.gov/mission/mars-2020-perseverance/</a> (Accessed: 29 September 2026).</li>
+          <li>Project Management Institute (PMI) (2017) <i>A guide to the project management body of knowledge (PMBOK guide)</i>. 6th edn. Newtown Square, PA: Project Management Institute.</li>
+          <li>Schwalbe, K. (2019) <i>Information technology project management</i>. 9th edn. Boston, MA: Cengage Learning.</li>
+        </ol>
+        <p class="small">Referenced in the Harvard style. The citations on the slides, like (PMI, 2017), point to this list.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FEEDBACK ===================== -->
+  <section class="slide" data-title="Thank you + feedback" data-section="Feedback">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <div class="cols">
+          <div class="stack thanks">
+            <p class="kicker">That's the end</p>
+            <h2>Thank you for listening!</h2>
+            <p class="thanks__q">Any questions?</p>
+            <p class="whoami"><span>Alexandru Ioan</span><span>Student ID 25002954</span></p>
+          </div>
+          <div class="card fb">
+            <div class="qr qr--empty" id="qrBox">Add the link to your Microsoft Form to make the QR code</div>
+            <div class="fb__text">
+              <h3>How was my presentation?</h3>
+              <p>Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms. It only takes a minute.</p>
+              <p class="fb__link" id="qrLink"></p>
+              <form class="qr-form" id="qrForm" novalidate>
+                <label for="qrInput">Link to my Microsoft Form</label>
+                <div>
+                  <input type="url" id="qrInput" placeholder="https://forms.office.com/r/..." autocomplete="off">
+                  <button type="submit" class="btn btn--small">Make QR code</button>
+                </div>
+                <p class="error" id="qrError" hidden>That doesn't look like a link. It should start with https://</p>
+              </form>
+              <button type="button" class="text-btn" id="qrChange" hidden>change link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== CONTROLS ===================== -->
+<nav class="controls" id="controls" aria-label="Presentation controls">
+  <p class="controls__who"><b>Alexandru Ioan</b> · 25002954</p>
+  <button class="icon-btn" id="prevBtn" type="button" aria-label="Previous slide">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <ol class="route" id="route"></ol>
+  <button class="icon-btn" id="nextBtn" type="button" aria-label="Next slide">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <p class="controls__where" aria-live="polite"><b id="slideCount">01 / 12</b><span id="slideSection">Title</span></p>
+  <div class="controls__tools">
+    <button class="icon-btn" id="ovBtn" type="button" aria-label="Show all slides (O)">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.3"/></svg>
+    </button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark mode (T)">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+    </button>
+    <button class="icon-btn" id="fsBtn" type="button" aria-label="Full screen (F)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="overview" id="overview" hidden>
+  <div class="overview__inner" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+    <div class="overview__head">
+      <h2 id="ovTitle">All slides</h2>
+      <button class="btn btn--ghost btn--small" id="ovClose" type="button">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="overview__grid" id="ovGrid"></div>
+  </div>
+</div>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<!-- QR code library (qrcode-generator by Kazuhiko Arase, MIT licence) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* =========================================================
+   The Project Life Cycle · script
+   ========================================================= */
+(() => {
+  'use strict';
+
+  // ↓ paste the link to my Microsoft Forms feedback form here
+  const FORM_URL = '';
+
+  /* ---------- little helpers ---------- */
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const pad = n => String(n).padStart(2, '0');
+  const store = {
+    get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private window etc. */ } }
+  };
+
+  /* ---------- tooltip ---------- */
+  const tip = $('#tip');
+  function showTip(lines, x, y) {
+    tip.replaceChildren(...lines.map((text, i) => {
+      const row = document.createElement('div');
+      if (i === 0) {
+        const b = document.createElement('b');
+        b.textContent = text;
+        row.append(b);
+      } else {
+        row.textContent = text;
+      }
+      return row;
+    }));
+    tip.hidden = false;
+    const box = tip.getBoundingClientRect();
+    let left = x + 14;
+    let top = y + 14;
+    if (left + box.width > innerWidth - 8) left = x - box.width - 14;
+    if (top + box.height > innerHeight - 8) top = y - box.height - 14;
+    tip.style.left = Math.max(8, left) + 'px';
+    tip.style.top = Math.max(8, top) + 'px';
+  }
+  function hideTip() { tip.hidden = true; }
+
+  /* =========================================================
+     1. SLIDES & NAVIGATION
+     ========================================================= */
+  const root = document.documentElement;
+  const deck = $('#deck');
+  const controls = $('#controls');
+  const slides = $$('.slide');
+  const total = slides.length;
+  const prevBtn = $('#prevBtn');
+  const nextBtn = $('#nextBtn');
+  let current = 0;
+
+  slides.forEach((slide, i) => {
+    slide.setAttribute('role', 'group');
+    slide.setAttribute('aria-roledescription', 'slide');
+    slide.setAttribute('aria-label', `${i + 1} of ${total}: ${slide.dataset.title}`);
+  });
+
+  // the route line at the bottom: one station per slide
+  const route = $('#route');
+  const stops = slides.map((slide, i) => {
+    const li = document.createElement('li');
+    const station = document.createElement('button');
+    station.type = 'button';
+    station.className = 'station';
+    station.setAttribute('aria-label', `Go to slide ${i + 1}: ${slide.dataset.title}`);
+    station.addEventListener('click', () => goTo(i));
+    station.addEventListener('pointerenter', () => {
+      const r = station.getBoundingClientRect();
+      showTip([`${pad(i + 1)} · ${slide.dataset.title}`, slide.dataset.section], r.left + r.width / 2, r.top - 60);
+    });
+    station.addEventListener('pointerleave', hideTip);
+    li.append(station);
+    route.append(li);
+    return li;
+  });
+
+  function goTo(index, fromHash) {
+    index = Math.max(0, Math.min(total - 1, index));
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.classList.toggle('is-active', active);
+      slide.classList.toggle('is-past', i < index);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden', String(!active));
+    });
+    current = index;
+    slides[index].scrollTop = 0;
+    hideTip();
+    $('#slideCount').textContent = `${pad(index + 1)} / ${total}`;
+    $('#slideSection').textContent = slides[index].dataset.section;
+    stops.forEach((li, i) => {
+      li.classList.toggle('is-current', i === index);
+      li.classList.toggle('is-done', i < index);
+      const station = li.firstChild;
+      if (i === index) station.setAttribute('aria-current', 'step');
+      else station.removeAttribute('aria-current');
+    });
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === total - 1;
+    if (!fromHash) {
+      try { history.replaceState(null, '', '#slide-' + (index + 1)); } catch (e) { /* not allowed in some frames */ }
+    }
+    if (slides[index].contains(involve)) drawInvolvement();
+  }
+
+  function slideFromHash() {
+    const match = location.hash.match(/^#slide-(\d+)$/);
+    return match ? Number(match[1]) - 1 : null;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+  $$('[data-go]').forEach(btn => btn.addEventListener('click', () => goTo(Number(btn.dataset.go) - 1)));
+  window.addEventListener('hashchange', () => {
+    const i = slideFromHash();
+    if (i !== null && i !== current) goTo(i, true);
+  });
+
+  // keyboard: arrows, space, page up/down, home/end, O, T, F
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!overview.hidden) {
+      if (e.key === 'Escape') closeOverview();
+      return;
+    }
+    const el = document.activeElement;
+    if (el && el.closest('input, textarea, [role="tablist"], [data-own-keys]')) return;
+    const onButton = el && el.closest('button, a');
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'PageDown':
+        e.preventDefault(); goTo(current + 1); break;
+      case 'ArrowLeft':
+      case 'PageUp':
+        e.preventDefault(); goTo(current - 1); break;
+      case ' ':
+        if (onButton) return;
+        e.preventDefault(); goTo(current + (e.shiftKey ? -1 : 1)); break;
+      case 'Home':
+        e.preventDefault(); goTo(0); break;
+      case 'End':
+        e.preventDefault(); goTo(total - 1); break;
+      case 'o': case 'O': openOverview(); break;
+      case 't': case 'T': toggleTheme(); break;
+      case 'f': case 'F': toggleFullscreen(); break;
+    }
+  });
+
+  // swipe left / right on phones and tablets
+  let touchX = null;
+  let touchY = null;
+  deck.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1 || e.target.closest('input, .scroll-x, [data-own-keys]')) {
+      touchX = null;
+      return;
+    }
+    touchX = e.touches[0].clientX;
+    touchY = e.touches[0].clientY;
+  }, { passive: true });
+  deck.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    touchX = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goTo(current + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
+  /* ---------- overview of all slides ---------- */
+  const overview = $('#overview');
+  const ovGrid = $('#ovGrid');
+  slides.forEach((slide, i) => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'ov-card';
+    const no = document.createElement('span');
+    no.className = 'ov-card__no';
+    no.textContent = `${pad(i + 1)} · ${slide.dataset.section}`;
+    const title = document.createElement('span');
+    title.className = 'ov-card__title';
+    title.textContent = slide.dataset.title;
+    card.append(no, title);
+    card.addEventListener('click', () => { closeOverview(); goTo(i); });
+    ovGrid.append(card);
+  });
+  function openOverview() {
+    $$('.ov-card', ovGrid).forEach((card, i) => card.classList.toggle('is-current', i === current));
+    overview.hidden = false;
+    deck.inert = true;
+    controls.inert = true;
+    hideTip();
+    $$('.ov-card', ovGrid)[current].focus();
+  }
+  function closeOverview() {
+    overview.hidden = true;
+    deck.inert = false;
+    controls.inert = false;
+    $('#ovBtn').focus();
+  }
+  $('#ovBtn').addEventListener('click', openOverview);
+  $('#ovClose').addEventListener('click', closeOverview);
+  overview.addEventListener('click', e => { if (e.target === overview) closeOverview(); });
+
+  /* ---------- dark mode ---------- */
+  const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+  const savedTheme = store.get('plc-theme');
+  if ((savedTheme === 'dark' || savedTheme === 'light') && !root.dataset.theme) root.dataset.theme = savedTheme;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : darkQuery.matches;
+  function updateThemeButton() {
+    $('#themeBtn').setAttribute('aria-label', isDark() ? 'Switch to light mode (T)' : 'Switch to dark mode (T)');
+  }
+  function toggleTheme() {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    store.set('plc-theme', root.dataset.theme);
+    updateThemeButton();
+  }
+  $('#themeBtn').addEventListener('click', toggleTheme);
+  if (darkQuery.addEventListener) darkQuery.addEventListener('change', updateThemeButton);
+
+  /* ---------- full screen ---------- */
+  function toggleFullscreen() {
+    if (!document.fullscreenEnabled) return;
+    const request = document.fullscreenElement ? document.exitFullscreen() : root.requestFullscreen();
+    if (request && request.catch) request.catch(() => {});
+  }
+  if (!document.fullscreenEnabled) $('#fsBtn').hidden = true;
+  $('#fsBtn').addEventListener('click', toggleFullscreen);
+
+  /* =========================================================
+     2. STAGE EXPLORER (section 3)
+     ========================================================= */
+  const stageTabs = $$('.explorer__tabs [role="tab"]');
+  function selectStage(i) {
+    stageTabs.forEach((tab, j) => {
+      const on = j === i;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+      document.getElementById(tab.getAttribute('aria-controls')).hidden = !on;
+    });
+    $('#stageCount').textContent = `Stage ${i + 1} of ${stageTabs.length}`;
+    $('#stageNext').textContent = i < stageTabs.length - 1 ? 'Next stage →' : 'Back to stage 1 ↺';
+  }
+  stageTabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => selectStage(i));
+    tab.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const next = (i + (e.key === 'ArrowRight' ? 1 : stageTabs.length - 1)) % stageTabs.length;
+      selectStage(next);
+      stageTabs[next].focus();
+    });
+  });
+  $('#stageNext').addEventListener('click', () => {
+    const now = stageTabs.findIndex(tab => tab.getAttribute('aria-selected') === 'true');
+    selectStage((now + 1) % stageTabs.length);
+  });
+
+  /* =========================================================
+     3. "WHO IS BUSY WHEN" CHART (section 4)
+     ========================================================= */
+  // a typical pattern, drawn by hand from what I read, not real data
+  const PHASES = [
+    { name: 'Initiation', short: '1', from: 0, to: 15, color: '--s1', team: 'low', customer: 'high, explains what they need' },
+    { name: 'Planning', short: '2', from: 15, to: 32, color: '--s2', team: 'medium', customer: 'high, agrees the requirements and the plan' },
+    { name: 'Execution', short: '3', from: 32, to: 84, color: '--s3', team: 'very high', customer: 'low, gets reports and demos, then tests it' },
+    { name: 'Closure', short: '5', from: 84, to: 100, color: '--s5', team: 'low', customer: 'high, accepts it and gets trained' }
+  ];
+  const EFFORT = [[0, 0.1], [15, 0.3], [32, 0.62], [52, 0.94], [70, 0.95], [84, 0.5], [100, 0.12]];
+  const CUSTOMER = [[0, 0.82], [15, 0.78], [32, 0.48], [55, 0.22], [74, 0.32], [84, 0.7], [100, 0.82]];
+  const involve = $('#involve');
+  let chart = null;
+
+  // smooth line through the points (Catmull-Rom turned into Bezier curves)
+  function smoothPath(pts) {
+    let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[i + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+    }
+    return d;
+  }
+
+  function drawInvolvement() {
+    const W = involve.clientWidth;
+    if (!W) return;
+    const H = involve.clientHeight || 190;
+    const P = { l: 34, r: 6, t: 12, b: 52 };
+    const x = v => P.l + v / 100 * (W - P.l - P.r);
+    const y = v => P.t + (1 - v) * (H - P.t - P.b);
+    const plotBottom = H - P.b;
+    let svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="true">`;
+    PHASES.forEach(p => {
+      const w = x(p.to) - x(p.from);
+      svg += `<rect class="iv-band" style="--c: var(${p.color})" x="${x(p.from)}" y="${P.t}" width="${w - 2}" height="${plotBottom - P.t}"/>`;
+      svg += `<circle cx="${x(p.from) + 6}" cy="${plotBottom + 13}" r="4.5" style="fill: var(${p.color})"/>`;
+      svg += `<text class="iv-stage" x="${x(p.from) + 14}" y="${plotBottom + 17}">${w > 72 ? p.name : p.short}</text>`;
+    });
+    svg += `<rect class="iv-monitor" x="${x(15)}" y="${plotBottom + 28}" width="${x(100) - x(15)}" height="5" rx="2.5"/>`;
+    svg += `<text class="iv-stage" x="${x(15)}" y="${H - 4}">4 Monitoring &amp; control, all the way through</text>`;
+    svg += `<text class="iv-axis" x="${P.l - 6}" y="${P.t + 8}" text-anchor="end">high</text>`;
+    svg += `<text class="iv-axis" x="${P.l - 6}" y="${plotBottom}" text-anchor="end">low</text>`;
+    const effort = EFFORT.map(([a, b]) => [x(a), y(b)]);
+    const customer = CUSTOMER.map(([a, b]) => [x(a), y(b)]);
+    const effortLine = smoothPath(effort);
+    svg += `<path class="iv-effort-area" d="${effortLine} L${x(100)},${plotBottom} L${x(0)},${plotBottom} Z"/>`;
+    svg += `<path class="iv-effort" d="${effortLine}"/>`;
+    svg += `<path class="iv-customer" d="${smoothPath(customer)}"/>`;
+    svg += `<text class="iv-label" x="${x(61)}" y="${y(0.95) - 8}" text-anchor="middle">Team effort</text>`;
+    svg += `<text class="iv-label" x="${x(1)}" y="${y(0.82) - 8}">Customer involvement</text>`;
+    svg += `<line class="iv-cross" x1="0" x2="0" y1="${P.t}" y2="${plotBottom}" visibility="hidden"/>`;
+    svg += `<rect class="iv-hit" x="${P.l}" y="${P.t}" width="${W - P.l - P.r}" height="${plotBottom - P.t}"/>`;
+    svg += '</svg>';
+    involve.innerHTML = svg; // only my own labels go in here
+    chart = { x, P, W, phase: null };
+  }
+
+  function showPhase(i, clientX, clientY) {
+    if (!chart) return;
+    i = Math.max(0, Math.min(PHASES.length - 1, i));
+    chart.phase = i;
+    const p = PHASES[i];
+    const mid = (p.from + p.to) / 2;
+    const cross = $('.iv-cross', involve);
+    const cx = clientX !== undefined ? clientX - involve.getBoundingClientRect().left : chart.x(mid);
+    cross.setAttribute('x1', cx);
+    cross.setAttribute('x2', cx);
+    cross.setAttribute('visibility', 'visible');
+    const box = involve.getBoundingClientRect();
+    showTip([p.name, `Team effort: ${p.team}`, `Customer: ${p.customer}`],
+      clientX !== undefined ? clientX : box.left + chart.x(mid),
+      clientY !== undefined ? clientY : box.top + 30);
+  }
+  function hidePhase() {
+    hideTip();
+    if (!chart) return;
+    chart.phase = null;
+    const cross = $('.iv-cross', involve);
+    if (cross) cross.setAttribute('visibility', 'hidden');
+  }
+  involve.addEventListener('pointermove', e => {
+    if (!chart) return;
+    const box = involve.getBoundingClientRect();
+    const v = (e.clientX - box.left - chart.P.l) / (chart.W - chart.P.l - chart.P.r) * 100;
+    if (v < 0 || v > 100) return hidePhase();
+    showPhase(PHASES.findIndex(p => v >= p.from && v <= p.to), e.clientX, e.clientY);
+  });
+  involve.addEventListener('pointerleave', hidePhase);
+  involve.addEventListener('focus', () => showPhase(0));
+  involve.addEventListener('blur', hidePhase);
+  involve.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    showPhase((chart && chart.phase !== null ? chart.phase : 0) + (e.key === 'ArrowRight' ? 1 : -1));
+  });
+  let resizeFrame = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(drawInvolvement);
+  });
+
+  /* =========================================================
+     4. FEEDBACK QR CODE (last slide)
+     ========================================================= */
+  const qrBox = $('#qrBox');
+  const qrForm = $('#qrForm');
+  const qrInput = $('#qrInput');
+  const formUrl = () => FORM_URL || store.get('plc-form-url') || '';
+
+  function showQr() {
+    const url = formUrl();
+    const link = $('#qrLink');
+    qrForm.hidden = Boolean(url);
+    $('#qrChange').hidden = !url;
+    link.textContent = url;
+    if (!url) {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'Add the link to your Microsoft Form to make the QR code';
+      return;
+    }
+    if (typeof qrcode !== 'function') {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'The QR code needs an internet connection. The link is next to this box.';
+      return;
+    }
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    const n = qr.getModuleCount();
+    const size = n + 8; // 4 empty modules around it so phones can read it
+    let d = '';
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        if (qr.isDark(r, c)) d += `M${c + 4},${r + 4}h1v1h-1z`;
+      }
+    }
+    qrBox.className = 'qr';
+    qrBox.innerHTML = `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for my feedback form"><rect class="qr-bg" width="${size}" height="${size}"/><path class="qr-ink" d="${d}"/></svg>`;
+  }
+
+  qrForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const url = qrInput.value.trim();
+    const ok = /^https?:\/\/\S+\.\S+/.test(url);
+    $('#qrError').hidden = ok;
+    if (!ok) return;
+    store.set('plc-form-url', url);
+    showQr();
+  });
+  $('#qrChange').addEventListener('click', () => {
+    qrForm.hidden = false;
+    $('#qrChange').hidden = true;
+    qrInput.value = formUrl();
+    qrInput.focus();
+  });
+
+  /* =========================================================
+     START
+     ========================================================= */
+  updateThemeButton();
+  selectStage(0);
+  showQr();
+  const startSlide = slideFromHash();
+  goTo(startSlide !== null ? startSlide : 0, true);
+})();
+</script>
+</body>
+</html>
