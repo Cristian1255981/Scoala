@@ -53,6 +53,9 @@
   --tape: rgba(255, 255, 255, 0.6);
   --hl: rgba(255, 204, 0, 0.45);
   --shadow: 0 1px 2px rgba(20, 26, 36, 0.06), 0 12px 28px -14px rgba(20, 26, 36, 0.22);
+  /* the QR code stays black on white in both themes so phones can scan it */
+  --qr-bg: #ffffff;
+  --qr-ink: #000000;
   /* icons in the theme button */
   --moon: inline;
   --sun: none;
@@ -365,19 +368,19 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   align-items: center;
 }
 .agenda__axis { font: 500 0.62rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; padding-bottom: 0.3rem; }
-.agenda__ticks { display: grid; grid-template-columns: repeat(14, 1fr); text-align: center; letter-spacing: 0; }
+.agenda__ticks { display: grid; grid-template-columns: repeat(15, 1fr); text-align: center; letter-spacing: 0; }
 .agenda__row { border-top: 1px solid var(--line); }
 .agenda__name { font-weight: 700; font-size: 0.86rem; line-height: 1.2; }
 .agenda__lane {
   position: relative;
   height: 2.35rem;
-  background: repeating-linear-gradient(to right, transparent 0 calc(100% / 14 - 1px), var(--line) calc(100% / 14 - 1px) calc(100% / 14));
+  background: repeating-linear-gradient(to right, transparent 0 calc(100% / 15 - 1px), var(--line) calc(100% / 15 - 1px) calc(100% / 15));
 }
 .agenda__bar {
   position: absolute;
   top: 50%;
-  left: calc((var(--from) - 1) / 14 * 100%);
-  width: calc((var(--to) - var(--from) + 1) / 14 * 100%);
+  left: calc((var(--from) - 1) / 15 * 100%);
+  width: calc((var(--to) - var(--from) + 1) / 15 * 100%);
   height: 0.95rem;
   margin-top: -0.475rem;
   padding: 0;
@@ -962,6 +965,25 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 .quiz__actions { display: flex; gap: 0.6rem; }
 .thanks { font: 800 3.4rem/0.92 var(--display); }
 .thanks span { display: block; color: var(--accent); }
+
+/* ---------- slide 15: feedback ---------- */
+.whoami { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.fb-hand { justify-self: start; margin-top: 0.4rem; }
+.fb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.3rem; align-items: center; }
+.qr { width: 13rem; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; padding: 0.5rem; border-radius: 8px; background: var(--qr-bg); border: 1px solid var(--line); }
+.qr svg { width: 100%; height: 100%; display: block; }
+.qr .qr-bg { fill: var(--qr-bg); }
+.qr .qr-ink { fill: var(--qr-ink); }
+.qr--empty { border: 2px dashed var(--line-strong); background: var(--board); color: var(--muted); font-size: 0.82rem; text-align: center; padding: 1rem; }
+.fb__text { display: grid; gap: 0.6rem; align-content: start; }
+.fb__text h3 { font: 800 1.9rem/1 var(--display); }
+.fb__link { font: 0.74rem var(--mono); color: var(--ink-2); word-break: break-all; }
+.qr-form { display: grid; gap: 0.4rem; }
+.qr-form label { font-size: 0.82rem; font-weight: 700; }
+.qr-form div { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.qr-form input { flex: 1 1 13rem; min-width: 0; padding: 0.5rem 0.7rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--card); font-size: 0.86rem; }
+.qr-form .error { color: var(--crit-ink); font-size: 0.8rem; }
+.text-btn { padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.78rem; text-decoration: underline; text-underline-offset: 0.18em; justify-self: start; }
 .sources h3 { margin-bottom: 0.3rem; }
 .sources ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.2rem 1rem; font-size: 0.74rem; }
 .sources a { color: var(--ink-2); text-decoration-color: var(--line-strong); }
@@ -1025,7 +1047,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 .track__seg:hover::before { background: var(--line-strong); }
 .track__seg.is-done::before { background: var(--accent-done); }
 .track__seg.is-current::before { height: 0.62rem; background: var(--accent); }
-.track__label { font: 500 0.56rem/1.1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track__label { font: 500 0.54rem/1.1 var(--mono); text-transform: uppercase; letter-spacing: 0.03em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- all-slides overview ---------- */
 .overview {
@@ -1090,7 +1112,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   h2 { font-size: 2.35rem; }
   .lead { font-size: 1.02rem; }
   .cols, .cols--wide-left, .cols--wide-right, .cols--gantt, .cols--pbs, .cols--roi, .cols--risk, .cols--end,
-  .title-grid, .panel-grid, .impact { grid-template-columns: minmax(0, 1fr); }
+  .title-grid, .panel-grid, .impact, .fb { grid-template-columns: minmax(0, 1fr); }
   .agenda__note { margin: 0.4rem 0 0 0.6rem; }
   .pbs__branches { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1rem; }
   .pbs__root::after, .pbs__branch::before, .pbs__branch::after { display: none; }
@@ -1130,7 +1152,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   html, body { height: auto; overflow: visible; background: #ffffff; }
   .deck { height: auto; }
   .slide { position: relative; inset: auto; visibility: visible; opacity: 1; transform: none; overflow: visible; padding: 10mm 0; break-after: page; }
-  .controls, .overview, .tip { display: none !important; }
+  .controls, .overview, .tip, .qr-form, .text-btn { display: none !important; }
 }
 </style>
 </head>
@@ -1159,7 +1181,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
             <div class="agenda__axis">
               <span>Slide</span>
               <div class="agenda__ticks" aria-hidden="true">
-                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+                <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
               </div>
             </div>
             <div class="agenda__row"><span class="agenda__name">The basics</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="2" style="--from: 2; --to: 3; --i: 0" aria-label="The basics, slides 2 to 3"></button></div></div>
@@ -1167,7 +1189,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
             <div class="agenda__row"><span class="agenda__name">Quality</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="7" style="--from: 7; --to: 9; --i: 2" aria-label="Quality, slides 7 to 9"></button></div></div>
             <div class="agenda__row"><span class="agenda__name">Issues &amp; benefits</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="10" style="--from: 10; --to: 11; --i: 3" aria-label="Issues and benefits, slides 10 to 11"></button></div></div>
             <div class="agenda__row"><span class="agenda__name">Risks</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="12" style="--from: 12; --to: 13; --i: 4" aria-label="Risks, slides 12 to 13"></button></div></div>
-            <div class="agenda__row"><span class="agenda__name">Quiz &amp; questions</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="14" style="--from: 14; --to: 14; --i: 5" aria-label="Quiz and questions, slide 14"></button></div></div>
+            <div class="agenda__row"><span class="agenda__name">Quiz &amp; feedback</span><div class="agenda__lane"><button class="agenda__bar" type="button" data-go="14" style="--from: 14; --to: 15; --i: 5" aria-label="Quiz and feedback, slides 14 to 15"></button></div></div>
           </div>
           <p class="note agenda__note">My example project: a click &amp; collect website for Northgate Bakery. 8 weeks, £9,900.</p>
         </figure>
@@ -1908,12 +1930,12 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   </section>
 
   <!-- ===================== 14. QUIZ & END ===================== -->
-  <section class="slide" data-title="Quiz & questions" data-section="Wrap-up">
+  <section class="slide" data-title="Quiz & what I learned" data-section="Wrap-up">
     <div class="slide__inner">
       <div class="slide__body">
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">14</span>Wrap-up</p>
-          <h2>Quick quiz, then your questions</h2>
+          <h2>Quick quiz &amp; what I learned</h2>
         </header>
         <div class="cols cols--end">
           <div class="card quiz" id="quiz">
@@ -1924,7 +1946,6 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
             <div class="quiz__actions"><button type="button" class="btn" id="quizNext" hidden>Next question →</button></div>
           </div>
           <div class="stack">
-            <p class="thanks">Thanks for listening!<span>Any questions?</span></p>
             <div>
               <h3>What I learned making this</h3>
               <ul class="bullets">
@@ -1955,6 +1976,41 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
     </div>
   </section>
 
+  <!-- ===================== 15. THANK YOU + FEEDBACK ===================== -->
+  <section class="slide" data-title="Thank you + feedback" data-section="Wrap-up">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">15</span>Wrap-up</p>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <p class="thanks">Thanks for listening!<span>Any questions?</span></p>
+            <p class="whoami">Alexandru Ioan · Student ID 25002954</p>
+            <p class="hand fb-hand">please scan the code, it really helps me!</p>
+          </div>
+          <div class="card fb">
+            <div class="qr qr--empty" id="qrBox">Add the link to your Microsoft Form to make the QR code</div>
+            <div class="fb__text">
+              <h3>How was my presentation?</h3>
+              <p>Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms. It only takes a minute.</p>
+              <p class="fb__link" id="qrLink"></p>
+              <form class="qr-form" id="qrForm" novalidate>
+                <label for="qrInput">Link to my Microsoft Form</label>
+                <div>
+                  <input type="url" id="qrInput" placeholder="https://forms.office.com/r/..." autocomplete="off">
+                  <button type="submit" class="btn btn--small">Make QR code</button>
+                </div>
+                <p class="error" id="qrError" hidden>That doesn't look like a link. It should start with https://</p>
+              </form>
+              <button type="button" class="text-btn" id="qrChange" hidden>change link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <!-- ===================== CONTROLS ===================== -->
@@ -1967,7 +2023,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   <button class="icon-btn" id="nextBtn" type="button" aria-label="Next slide">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
-  <p class="controls__count" id="slideCount" aria-live="polite">01 / 14</p>
+  <p class="controls__count" id="slideCount" aria-live="polite">01 / 15</p>
   <div class="controls__tools">
     <button class="icon-btn" id="ovBtn" type="button" aria-label="Show all slides (O)">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.3"/></svg>
@@ -1994,6 +2050,8 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
 
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
+<!-- QR code library (qrcode-generator by Kazuhiko Arase, MIT licence) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 /* =========================================================
    Project Management presentation · script
@@ -2001,6 +2059,9 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
    ========================================================= */
 (() => {
   'use strict';
+
+  // ↓ paste the link to my Microsoft Forms feedback form here
+  const FORM_URL = '';
 
   /* ---------- little helpers ---------- */
   const $ = (sel, root = document) => root.querySelector(sel);
@@ -2953,6 +3014,60 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   });
 
   /* =========================================================
+     12. FEEDBACK QR CODE (slide 15)
+     ========================================================= */
+  const qrBox = $('#qrBox');
+  const qrForm = $('#qrForm');
+  const qrInput = $('#qrInput');
+  const formUrl = () => FORM_URL || store.get('pm-form-url') || '';
+
+  function showQr() {
+    const url = formUrl();
+    qrForm.hidden = Boolean(url);
+    $('#qrChange').hidden = !url;
+    $('#qrLink').textContent = url;
+    if (!url) {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'Add the link to your Microsoft Form to make the QR code';
+      return;
+    }
+    if (typeof qrcode !== 'function') {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'The QR code needs an internet connection. The link is next to this box.';
+      return;
+    }
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    const n = qr.getModuleCount();
+    const size = n + 8; // 4 empty modules around it so phones can read it
+    let d = '';
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        if (qr.isDark(r, c)) d += `M${c + 4},${r + 4}h1v1h-1z`;
+      }
+    }
+    qrBox.className = 'qr';
+    qrBox.innerHTML = `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for my feedback form"><rect class="qr-bg" width="${size}" height="${size}"/><path class="qr-ink" d="${d}"/></svg>`;
+  }
+
+  qrForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const url = qrInput.value.trim();
+    const ok = /^https?:\/\/\S+\.\S+/.test(url);
+    $('#qrError').hidden = ok;
+    if (!ok) return;
+    store.set('pm-form-url', url);
+    showQr();
+  });
+  $('#qrChange').addEventListener('click', () => {
+    qrForm.hidden = false;
+    $('#qrChange').hidden = true;
+    qrInput.value = formUrl();
+    qrInput.focus();
+  });
+
+  /* =========================================================
      START
      ========================================================= */
   updateThemeButton();
@@ -2960,6 +3075,7 @@ h3 { font: 700 1.02rem/1.25 var(--body); margin-bottom: 0.1rem; text-wrap: balan
   updateEstimate();
   selectRisk('R1');
   renderQuestion();
+  showQr();
   updateBudget(); // also fills in the ROI numbers and chart
   const startSlide = slideFromHash();
   goTo(startSlide !== null ? startSlide : 0, true);
