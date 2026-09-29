@@ -15,7 +15,8 @@
    ========================================================= */
 
 /* layout: one full-screen slide at a time, content in a 1160px column.
-   colour always means "stage": the five stage colours are the only colours,
+   colour means "stage": the five stage colours, always in the same order.
+   the only other colours are red (critical path / bad) and green (good),
    everything else is ink on paper. the controls at the bottom are a route line. */
 :root {
   /* paper & ink */
@@ -38,6 +39,11 @@
   --good-ink: #0a6e2a;
   --bad: #d03b3b;
   --bad-ink: #b3261e;
+  --good-soft: #e3f3e5;
+  --bad-soft: #fbe8e7;
+  /* gantt & PERT charts: grey tasks, red critical path */
+  --task: #9ba6a0;
+  --crit: #d03b3b;
   /* the QR code stays black on white in both themes so phones can scan it */
   --qr-bg: #ffffff;
   --qr-ink: #000000;
@@ -70,6 +76,10 @@
     --s5: #d55181;
     --good-ink: #5fd68a;
     --bad-ink: #ff8f86;
+    --good-soft: #14301f;
+    --bad-soft: #3a1c21;
+    --task: #9aa8a1;
+    --crit: #e05252;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
     --moon: none;
     --sun: inline;
@@ -92,6 +102,10 @@
   --s5: #d55181;
   --good-ink: #5fd68a;
   --bad-ink: #ff8f86;
+  --good-soft: #14301f;
+  --bad-soft: #3a1c21;
+  --task: #9aa8a1;
+  --crit: #e05252;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
   --moon: none;
   --sun: inline;
@@ -113,9 +127,12 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
 ul, ol { padding: 0; list-style: none; }
-button, input { font: inherit; color: inherit; }
+button, input, select { font: inherit; color: inherit; }
+input[type="range"] { accent-color: var(--ink); cursor: pointer; }
+input[type="checkbox"] { flex: none; width: 1.05rem; height: 1.05rem; margin: 0; accent-color: var(--good); cursor: pointer; }
+select, input[type="number"] { padding: 0.28rem 0.45rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); }
 button { cursor: pointer; }
 a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 0.18em; }
 a:hover { text-decoration-color: currentColor; }
@@ -231,7 +248,7 @@ kbd {
   transform: none;
   transition: opacity 0.4s ease, transform 0.45s ease, visibility 0s;
 }
-.slide__inner { max-width: 1160px; min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+.slide__inner { max-width: max(1160px, 76rem); min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; }
 .slide__body { margin-block: auto; display: grid; gap: 1.1rem; min-width: 0; }
 .slide__head { display: grid; gap: 0.5rem; }
 .kicker {
@@ -278,6 +295,9 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .ring { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; }
 .ring__arc { fill: none; stroke: var(--c); stroke-width: 34; stroke-dasharray: 185; stroke-dashoffset: 0; animation: draw 0.7s ease-out both; animation-delay: calc(var(--i) * 0.14s + 0.15s); }
 @keyframes draw { from { stroke-dashoffset: 185; } to { stroke-dashoffset: 0; } }
+.ring__arc[data-go] { cursor: pointer; transition: stroke-width 0.2s; }
+.ring__arc[data-go]:hover { stroke-width: 42; }
+.ring__arc[data-go]:focus-visible { outline: none; stroke-width: 44; filter: drop-shadow(0 0 4px var(--focus)); }
 .ring__loop { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-dasharray: 5 6; }
 .ring__head { fill: var(--line-strong); }
 .ring__num { fill: var(--muted); font: 500 14px var(--mono); }
@@ -317,6 +337,8 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .stage-row li { display: flex; align-items: center; gap: 0.4rem; }
 .stage-row li + li::before { content: "→"; color: var(--muted); }
 .stage-pill { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.25rem 0.8rem 0.25rem 0.25rem; border-radius: 999px; font-weight: 700; font-size: 0.9rem; background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+button.stage-pill { border: 0; color: var(--ink); }
+button.stage-pill:hover { background: color-mix(in srgb, var(--c) 30%, var(--surface)); }
 .flow-card { padding: 0.6rem 0.8rem; }
 .flow { display: block; width: 100%; min-width: 50rem; height: auto; }
 .fc-stage rect { fill: color-mix(in srgb, var(--c) 16%, var(--surface)); stroke: var(--c); stroke-width: 2; }
@@ -332,39 +354,236 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .fc-label { fill: var(--muted); font: 500 11px var(--mono); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
 .flow-key { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1.5rem; }
 
-/* ---------- slide 4: stage explorer ---------- */
-.explorer { display: grid; gap: 0; }
-.explorer__tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: -1px; position: relative; z-index: 1; }
-.explorer__tabs [role="tab"] {
-  display: inline-flex;
+/* ---------- slides 4-9: one slide per stage ---------- */
+.stage-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.6rem 1.5rem; }
+/* "you are here": the five stages, click one to jump to it */
+.stage-strip {
+  display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.85rem 0.4rem 0.45rem;
-  border: 1px solid var(--line);
-  border-bottom-color: transparent;
-  border-radius: 12px 12px 0 0;
-  background: var(--bg);
-  color: var(--ink-2);
-  font-weight: 700;
-  font-size: 0.86rem;
+  gap: 0.85rem;
+  margin-bottom: 0.3rem;
+  background: linear-gradient(var(--line-strong), var(--line-strong)) center / 100% 2px no-repeat;
 }
-.explorer__tabs [role="tab"][aria-selected="true"] { background: var(--surface); color: var(--ink); }
-.explorer__panel { border-top-left-radius: 0; padding: 0; overflow: hidden; }
-.explorer__top { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; padding: 0.75rem 1.15rem; background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
-.explorer__top p { font-size: 1rem; }
-.explorer__top b { font-family: var(--display); font-weight: 600; font-size: 1.1rem; }
-.explorer__cols { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); gap: 1.4rem; padding: 1rem 1.15rem 1.1rem; }
-.explorer__cols h3 { font: 500 0.7rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
-.chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.chips li { padding: 0.28rem 0.65rem; border: 1px solid var(--line); border-radius: 999px; font-size: 0.84rem; background: var(--bg); }
-.docs { display: grid; gap: 0.35rem; }
-.docs li { display: flex; align-items: flex-start; gap: 0.45rem; font-size: 0.88rem; }
-.docs svg { flex: none; width: 0.95rem; height: 1.15rem; margin-top: 0.12rem; }
+.stage-strip button {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--c);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 500 0.72rem/1 var(--mono);
+}
+.stage-strip button:hover { background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); }
+.stage-strip .is-on { width: 2.3rem; height: 2.3rem; border-width: 3px; background: color-mix(in srgb, var(--c) 24%, var(--surface)); color: var(--ink); font-size: 0.86rem; font-weight: 700; }
+.stage-layout { display: grid; grid-template-columns: minmax(15rem, 0.82fr) minmax(0, 2.4fr); gap: 0.9rem; align-items: start; }
+.stage-card { padding: 0; overflow: hidden; }
+.stage-card__top { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.9rem; background: color-mix(in srgb, var(--c) 14%, var(--surface)); font-size: 0.88rem; font-weight: 600; line-height: 1.35; }
+.stage-card__body { display: grid; gap: 0.75rem; padding: 0.75rem 0.9rem 0.9rem; }
+.label { margin-bottom: 0.35rem; font: 500 0.64rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.stage-card .bullets { gap: 0.2rem; }
+.stage-card .bullets li { font-size: 0.84rem; line-height: 1.4; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chips li { padding: 0.18rem 0.55rem; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 0.78rem; }
+.docs { display: grid; gap: 0.3rem; }
+.docs li { display: flex; align-items: flex-start; gap: 0.45rem; font-size: 0.84rem; line-height: 1.4; }
+.docs svg { flex: none; width: 0.9rem; height: 1.1rem; margin-top: 0.1rem; }
 .docs .doc-page { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.4; }
 .docs .doc-fold { fill: color-mix(in srgb, var(--c) 40%, var(--surface)); stroke: var(--ink-2); stroke-width: 1.4; }
-.explorer__foot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 0.8rem; }
+.stage-main { min-width: 0; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+.grid-2--wide-left { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.span-2 { grid-column: 1 / -1; }
+.block { display: grid; gap: 0.55rem; align-content: start; min-width: 0; padding: 0.85rem 1rem 0.95rem; font-size: 0.9rem; }
+.block h3 { font: 600 0.98rem/1.25 var(--display); }
+.mine { padding-left: 0.65rem; border-left: 3px solid var(--c, var(--line-strong)); color: var(--ink-2); font-size: 0.86rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 0.28rem; }
+.tags li { padding: 0.18rem 0.55rem; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 0.78rem; }
+.tags--action li { border-color: var(--ink); background: var(--surface); font-weight: 700; }
+.tags--action li::before { content: "→ "; }
 
-/* ---------- slide 5: key features ---------- */
+/* stage 1: ROI + SMART */
+.roi-mini { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.45rem 0.7rem; padding: 0.6rem 0.75rem; border-radius: 10px; background: var(--bg); }
+.roi-mini label { display: grid; gap: 0.2rem; font-size: 0.74rem; font-weight: 700; color: var(--ink-2); }
+.roi-mini input { width: 100%; min-width: 0; font: 500 0.9rem var(--mono); }
+.roi-mini__out { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.6rem; }
+.roi-mini__out b { font: 600 0.8rem var(--mono); color: var(--ink-2); }
+.roi-mini__out output { font: 600 1.6rem/1.1 var(--display); }
+.roi-mini__out span { font: 0.72rem var(--mono); color: var(--muted); }
+.smart-goal { font: 1.12rem/1.3 var(--hand); }
+.smart-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.4rem; }
+.smart-row li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0 0.45rem; align-items: center; padding: 0.4rem 0.5rem; border-radius: 10px; background: var(--bg); }
+.smart-row b { grid-row: span 2; width: 1.65rem; height: 1.65rem; display: grid; place-items: center; border: 2px solid var(--c); border-radius: 50%; background: var(--surface); font: 700 0.8rem/1 var(--mono); }
+.smart-row span { font-size: 0.8rem; font-weight: 700; line-height: 1.25; }
+.smart-row small { font-size: 0.72rem; line-height: 1.25; color: var(--ink-2); }
+
+/* stage 2 (part 1): requirements sorter + PBS */
+.sorter { display: grid; gap: 0.28rem; }
+.sorter li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.3rem; align-items: center; padding: 0.28rem 0.35rem 0.28rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 0.86rem; }
+.sorter button { min-width: 2.5rem; padding: 0.2rem 0.4rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); font: 700 0.72rem/1.3 var(--mono); }
+.sorter button:hover { border-color: var(--ink); }
+.sorter button.is-right { border-color: var(--good); background: var(--good-soft); color: var(--good-ink); }
+.sorter button.is-wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad-ink); }
+.sorter li[data-result="right"] > span::after { content: " ✓"; color: var(--good-ink); font-weight: 700; }
+.sorter li[data-result="wrong"] > span::after { content: " ✗"; color: var(--bad-ink); font-weight: 700; }
+.sorter-foot { display: grid; gap: 0.15rem; }
+.sorter-foot .is-right { color: var(--good-ink); }
+.sorter-foot .is-wrong { color: var(--bad-ink); }
+.score { font: 700 0.8rem var(--mono); }
+.pbs-mini { display: grid; justify-items: start; }
+.pbs-mini__root { padding: 0.3rem 0.75rem; border: 1.5px solid var(--ink); border-radius: 8px; background: var(--surface); font-size: 0.88rem; font-weight: 700; }
+.pbs-mini__kids { display: grid; margin-left: 1.1rem; }
+.pbs-mini__kids li { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 0.45rem; padding: 0.3rem 0 0 1.35rem; font-size: 0.86rem; }
+.pbs-mini__kids li::before { content: ""; position: absolute; left: 0; top: 0; width: 1rem; height: 0.95rem; border-left: 1.5px solid var(--ink-2); border-bottom: 1.5px solid var(--ink-2); border-bottom-left-radius: 5px; }
+.pbs-mini__kids li:not(:last-child)::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1.5px solid var(--ink-2); }
+.pbs-mini__kids b { font: 500 0.72rem var(--mono); color: var(--muted); }
+.pbs-mini__kids span { font-weight: 700; }
+.pbs-mini__kids small { font-size: 0.76rem; color: var(--muted); }
+
+/* stage 2 (part 2): costs, timescales and the planning tools */
+.plan2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.85fr); gap: 0.9rem; align-items: start; }
+.time-defs { display: grid; gap: 0.3rem; }
+.time-defs div { position: relative; padding-left: 1.4rem; font-size: 0.84rem; line-height: 1.4; }
+.time-defs dt, .time-defs dd { display: inline; }
+.time-defs dt { font-weight: 700; }
+.time-defs dt::after { content: " = "; font-weight: 400; white-space: pre; }
+.time-defs .sw { position: absolute; left: 0.3rem; top: 0.2rem; margin: 0; }
+.time-defs .sw--ms { left: 0.22rem; top: 0.4rem; }
+.budget { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.budget caption { margin-bottom: 0.3rem; text-align: left; }
+.budget th, .budget td { padding: 0.22rem 0; border-bottom: 1px solid var(--line); font-weight: 400; text-align: left; }
+.budget td { text-align: right; font: 0.8rem var(--mono); }
+.budget tfoot th, .budget tfoot td { border-top: 2px solid var(--ink); border-bottom: 0; font-weight: 700; }
+.charts { display: grid; gap: 0.5rem; min-width: 0; padding: 0.75rem 0.95rem 0.85rem; }
+.charts__tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.charts__tabs [role="tab"] { padding: 0.3rem 0.8rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink-2); font-size: 0.8rem; font-weight: 700; }
+.charts__tabs [role="tab"]:hover { border-color: var(--ink); }
+.charts__tabs [role="tab"][aria-selected="true"] { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.charts__panel { display: grid; gap: 0.4rem; align-content: start; min-height: 19.5rem; }
+.charts__def { font-size: 0.84rem; color: var(--ink-2); }
+.charts__def b { color: var(--ink); }
+.charts__def--row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.2rem 1rem; }
+.charts__foot { display: grid; gap: 0.3rem; padding-top: 0.55rem; border-top: 1px solid var(--line); }
+.crit-path { color: var(--bad-ink); white-space: nowrap; }
+.gantt {
+  --row: 1.6rem;
+  --bar-h: 0.78rem;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-rows: 1.35rem 1.3rem repeat(9, var(--row));
+  column-gap: 0.8rem;
+  min-width: 36rem;
+  padding-right: 0.3rem;
+}
+.g-corner { grid-column: 1; grid-row: 1 / 3; align-self: end; padding-bottom: 0.25rem; font: 500 0.6rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.g-rowline { grid-column: 1 / -1; border-top: 1px solid var(--line); pointer-events: none; }
+.g-label { grid-column: 1; display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; white-space: nowrap; }
+.g-label b { width: 0.9rem; font: 700 0.74rem var(--mono); }
+.g-label i { margin-left: auto; padding-left: 0.5rem; font: normal 500 0.7rem var(--mono); color: var(--muted); }
+.g-label i.is-late { color: var(--bad-ink); font-weight: 700; }
+.g-overlay { grid-column: 2; grid-row: 1 / -1; position: relative; pointer-events: none; }
+.g-markers { grid-column: 2; grid-row: 1; position: relative; }
+.g-weeks { grid-column: 2; grid-row: 2; display: grid; grid-template-columns: repeat(9, 1fr); align-items: center; text-align: center; font: 500 0.64rem var(--mono); color: var(--muted); }
+.g-plot { grid-column: 2; grid-row: 3 / -1; position: relative; }
+.g-week { position: absolute; top: 1.35rem; bottom: 0; width: 1px; background: var(--line); }
+.g-late { position: absolute; top: 1.35rem; bottom: 0; right: 0; background: var(--bad-soft); opacity: 0.7; }
+.g-review { position: absolute; top: 1.1rem; bottom: 0; border-left: 1.5px dashed var(--ink-2); }
+.g-deadline { position: absolute; top: 1.1rem; bottom: 0; border-left: 2px solid var(--crit); }
+.g-mark { position: absolute; top: 0; transform: translateX(-50%); padding: 0.08rem 0.32rem; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface); font: 500 0.58rem var(--mono); white-space: nowrap; color: var(--ink-2); }
+.g-mark--deadline { border-color: var(--crit); color: var(--bad-ink); font-weight: 700; }
+.g-bar, .g-float { position: absolute; height: var(--bar-h); transition: left 0.35s ease, width 0.35s ease; }
+.g-bar { z-index: 2; border-radius: 4px; background: var(--task); }
+.g-bar.is-crit { background: var(--crit); }
+.g-bar:hover, .g-bar:focus-visible { filter: brightness(1.12); }
+.g-float { z-index: 1; border: 1px dashed var(--task); border-left: 0; border-radius: 0 4px 4px 0; background: color-mix(in srgb, var(--task) 12%, transparent); }
+.g-ms { position: absolute; z-index: 3; width: 0.7rem; height: 0.7rem; margin: -0.35rem 0 0 -0.35rem; border: 2px solid var(--surface); background: var(--ink); transform: rotate(45deg); transition: left 0.35s ease; }
+.g-ms--launch { width: 0.92rem; height: 0.92rem; margin: -0.46rem 0 0 -0.46rem; background: var(--good); }
+.g-ms--launch.is-late { background: var(--crit); }
+.g-launch-text { position: absolute; z-index: 3; margin-left: 0.75rem; transform: translateY(-50%); font: 700 0.7rem var(--mono); white-space: nowrap; transition: left 0.35s ease; }
+.g-launch-text.is-left { margin-left: -0.75rem; transform: translate(-100%, -50%); }
+.sw { display: inline-block; flex: none; vertical-align: middle; }
+.sw--bar { width: 1.3rem; height: 0.55rem; border-radius: 3px; background: var(--task); }
+.sw--crit { width: 1.3rem; height: 0.55rem; border-radius: 3px; background: var(--crit); }
+.sw--float { width: 1.3rem; height: 0.55rem; border: 1px dashed var(--task); background: color-mix(in srgb, var(--task) 12%, transparent); }
+.sw--ms { width: 0.6rem; height: 0.6rem; margin-inline: 0.2rem; background: var(--ink); transform: rotate(45deg); }
+.sw--review { width: 0; height: 0.95rem; margin-inline: 0.5rem; border-left: 1.5px dashed var(--ink-2); }
+.sw--deadline { width: 0; height: 0.95rem; margin-inline: 0.5rem; border-left: 2px solid var(--crit); }
+.pert { display: block; width: 100%; min-width: 36rem; height: auto; }
+.pert__edge { fill: none; stroke: var(--line-strong); stroke-width: 1.6; }
+.pert__edge.is-crit { stroke: var(--crit); stroke-width: 2.4; }
+.pert__head { fill: var(--line-strong); }
+.pert__head--crit { fill: var(--crit); }
+.pert__node rect { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1.5; }
+.pert__node.is-crit rect { stroke: var(--crit); stroke-width: 2.2; }
+.pert__node--launch rect { fill: var(--good-soft); stroke: var(--good); stroke-width: 2; }
+.pert__node--launch.is-late rect { fill: var(--bad-soft); stroke: var(--crit); }
+.pert__title { fill: var(--ink); font: 700 12.5px var(--body); }
+.pert__meta { fill: var(--ink-2); font: 500 10.5px var(--mono); }
+.sheet { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.8rem; }
+.sheet th { padding: 0.2rem 0.5rem 0.25rem 0; border-bottom: 1.5px solid var(--ink); font: 500 0.62rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase; text-align: left; white-space: nowrap; color: var(--muted); }
+.sheet td { padding: 0.2rem 0.5rem 0.2rem 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.sheet td:first-child { font: 700 0.76rem var(--mono); }
+.sheet td:nth-child(n+3) { font: 0.76rem var(--mono); }
+.sheet tr.is-crit td:first-child, .sheet tr.is-crit td:nth-child(2) { color: var(--bad-ink); }
+.sheet tr.is-ms td { font-weight: 700; }
+.whatif { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.55rem; font-size: 0.84rem; }
+.whatif input[type="range"] { width: 6.5rem; }
+.whatif output { min-width: 3.6rem; font: 700 0.78rem var(--mono); }
+.whatif .pill { margin-left: auto; }
+.pill { display: inline-flex; align-items: center; padding: 0.28rem 0.7rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; }
+.pill--good { background: var(--good-soft); color: var(--good-ink); }
+.pill--bad { background: var(--bad-soft); color: var(--bad-ink); }
+
+/* stage 3: quality, deliverables, testing */
+.chips-select { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip { padding: 0.25rem 0.7rem; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); font-size: 0.8rem; font-weight: 600; }
+.chip:hover { border-color: var(--ink); }
+.chip[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--surface); }
+.iso-out { min-height: calc(3 * 1.45em + 1rem); padding: 0.5rem 0.7rem; border-left: 3px solid var(--c); border-radius: 0 8px 8px 0; background: var(--bg); font-size: 0.85rem; line-height: 1.45; }
+.deliverables { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+.deliverables li { display: grid; grid-template-columns: 1.45rem minmax(0, 1fr); gap: 0 0.45rem; align-items: center; padding: 0.45rem 0.55rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.deliverables svg { grid-row: span 2; width: 1.4rem; height: 1.4rem; fill: none; stroke: var(--ink); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.deliverables b { font-size: 0.84rem; line-height: 1.25; }
+.deliverables span { display: flex; align-items: center; gap: 0.3rem; font-size: 0.7rem; line-height: 1.25; color: var(--muted); }
+.deliverables span::before { content: ""; flex: none; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--c); }
+.deliverables .is-skip { border-style: dashed; background: transparent; }
+.deliverables .is-skip b { color: var(--muted); text-decoration: line-through; }
+.deliverables .is-skip svg { stroke: var(--muted); }
+.deliverables .is-skip span::before { background: var(--line-strong); }
+.mini-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.mini-table th { padding: 0 0.6rem 0.25rem 0; font: 500 0.62rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; text-align: left; color: var(--muted); }
+.mini-table td { padding: 0.28rem 0.6rem 0.28rem 0; border-top: 1px solid var(--line); vertical-align: top; }
+.tests .pass, .tests .fail { font-weight: 700; white-space: nowrap; }
+.tests .pass { color: var(--good-ink); }
+.tests .fail { color: var(--bad-ink); }
+
+/* stage 4: issues and risks */
+.risk-eg { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2rem 0.65rem; padding: 0.5rem 0.7rem; border-radius: 10px; background: var(--bg); font-size: 0.84rem; }
+.risk-eg dt { font: 500 0.64rem/2.05 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.rcycle { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.9rem; }
+.rcycle li { position: relative; display: grid; gap: 0.1rem; align-content: start; padding: 0.4rem 0.6rem 0.5rem; border-top: 3px solid var(--c); border-radius: 8px; background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
+.rcycle li:not(:last-child)::after { content: "→"; position: absolute; top: 50%; right: -0.9rem; width: 0.9rem; transform: translateY(-50%); text-align: center; color: var(--muted); }
+.rcycle b { font-size: 0.86rem; }
+.rcycle span { font-size: 0.78rem; line-height: 1.3; color: var(--ink-2); }
+.rcycle-when { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.9rem; }
+.rcycle-when span { padding-top: 0.25rem; border-top: 2px solid var(--c); font: 500 0.62rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.rcycle-when span:first-child { grid-column: span 3; }
+.rcycle-when span:last-child { grid-column: span 2; }
+
+/* stage 5: sign-off */
+.signcard { grid-template-rows: auto auto auto auto minmax(4.5rem, 1fr); align-content: stretch; }
+.signoff { display: grid; gap: 0.3rem; }
+.signoff label { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 0.88rem; cursor: pointer; }
+.signoff label:has(input:checked) { border-color: transparent; background: var(--good-soft); }
+.signoff__status { font: 700 0.84rem var(--mono); }
+.signoff__status.is-done { color: var(--good-ink); }
+.sign-box { position: relative; padding: 0.5rem 0.7rem; border: 1.5px dashed var(--line-strong); border-radius: 10px; }
+.stamp { position: absolute; left: 50%; top: 55%; padding: 0.25rem 0.8rem; border: 3px solid var(--good-ink); border-radius: 8px; color: var(--good-ink); font: 700 1.05rem var(--mono); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; opacity: 0; transform: translate(-50%, -50%) rotate(-8deg) scale(1.5); transition: opacity 0.3s, transform 0.3s; }
+.signcard.is-signed .stamp { opacity: 0.95; transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
+
+/* ---------- slide 10: key features ---------- */
 .features { display: grid; gap: 0.7rem; }
 .features li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.6rem; align-items: start; }
 .features svg { width: 1.7rem; height: 1.7rem; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -394,13 +613,16 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .key-dashed { width: 1.4rem; border-top: 2px dashed var(--ink-2); }
 .key-band { width: 1.4rem; height: 0.4rem; border-radius: 3px; background: var(--s4); }
 
-/* ---------- slides 6 & 7: pros and cons ---------- */
-.pc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
-.pc { display: grid; gap: 0.5rem; align-content: start; padding: 0.95rem 1.1rem 1rem; }
-.pc__head { display: flex; align-items: center; gap: 0.6rem; }
-.pc__head h3 { font: 600 1.02rem/1.25 var(--display); }
-.pc p { font-size: 0.92rem; }
-.pc__me { display: grid; gap: 0.15rem; padding: 0.55rem 0.75rem; border-radius: 10px; background: var(--bg); font-size: 0.88rem; }
+/* ---------- slide 11: advantages & disadvantages ---------- */
+.pc-rows { display: grid; gap: 1rem; }
+.pc-row { display: grid; gap: 0.5rem; }
+.pc-row__title { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; font: 600 1.05rem/1.2 var(--display); }
+.pc-row__title small { font: 500 0.84rem var(--body); color: var(--muted); }
+.pc-grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+.pc { display: grid; gap: 0.45rem; align-content: start; padding: 0.85rem 1rem 0.9rem; }
+.pc h4 { font: 700 1rem/1.25 var(--body); }
+.pc p { font-size: 0.88rem; }
+.pc__me { display: grid; gap: 0.15rem; padding: 0.5rem 0.7rem; border-radius: 10px; background: var(--bg); font-size: 0.86rem; }
 .pc__me span { font: 500 0.64rem var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
 .spark { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 0.7rem; }
 .spark svg { width: 8.5rem; height: 2.6rem; }
@@ -409,7 +631,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .spark line { stroke: var(--line-strong); stroke-width: 1; }
 .spark p { font-size: 0.78rem; color: var(--muted); }
 
-/* ---------- slide 8: suitable projects ---------- */
+/* ---------- slide 12: suitable projects ---------- */
 .checks { display: grid; gap: 0.35rem; }
 .checks li { position: relative; padding-left: 1.85rem; font-size: 0.92rem; }
 .checks li::before { content: "✓"; position: absolute; left: 0; top: 0.12rem; display: grid; place-items: center; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--good); color: #ffffff; font-size: 0.72rem; font-weight: 700; }
@@ -440,7 +662,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .pm-dates span:nth-child(1) { grid-column: 5; text-align: right; }
 .pm-dates span:nth-child(2) { grid-column: 6; text-align: center; }
 
-/* ---------- slide 9: my project ---------- */
+/* ---------- slide 13: my project ---------- */
 .plan-rows { display: grid; gap: 0.45rem; }
 .plan-rows li { display: grid; grid-template-columns: 1.7rem 8.8rem minmax(0, 1fr); gap: 0.6rem; align-items: start; padding: 0.5rem 0.7rem; border-radius: 10px; background: color-mix(in srgb, var(--c) 10%, var(--surface)); }
 .plan-rows b { font-size: 0.9rem; line-height: 1.7rem; }
@@ -448,26 +670,48 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .verdict { display: grid; gap: 0.65rem; }
 .verdict__big { font: 600 1.5rem/1.15 var(--display); }
 
-/* ---------- slide 10: conclusion ---------- */
+/* ---------- slide 14: conclusion ---------- */
 .sl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
 .sl { display: grid; gap: 0.5rem; align-content: start; }
 .sl h3 { display: flex; align-items: center; gap: 0.5rem; }
 .use-when { display: grid; gap: 0.45rem; }
 
-/* ---------- slide 11: references ---------- */
-.refs { display: grid; gap: 0.7rem; }
-.refs li { padding-left: 1.8rem; text-indent: -1.8rem; font-size: 0.9rem; line-height: 1.45; }
+/* ---------- slide 15: references & feedback ---------- */
+.end-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2.6rem); align-items: start; }
+.refs { display: grid; gap: 0.45rem; }
+.refs li { padding-left: 1.6rem; text-indent: -1.6rem; font-size: 0.8rem; line-height: 1.42; }
 .refs a { word-break: break-all; }
-
-/* ---------- slide 12: feedback ---------- */
-.thanks h2 { font-size: clamp(2.2rem, 4.2vw, 3.3rem); font-weight: 700; }
-.thanks__q { font: 600 1.6rem/1.2 var(--display); color: var(--ink-2); }
-.fb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.3rem; align-items: center; }
-.qr { width: 13.5rem; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; padding: 0.55rem; border-radius: 12px; background: var(--qr-bg); border: 1px solid var(--line); }
+.end-thanks { display: grid; gap: 0.8rem; align-content: start; }
+.end-thanks h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; }
+.thanks__q { font: 600 1.35rem/1.2 var(--display); color: var(--ink-2); }
+.fb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.1rem; align-items: center; }
+.qr { width: 11rem; aspect-ratio: 1; max-width: 100%; display: grid; place-items: center; padding: 0.55rem; border-radius: 12px; background: var(--qr-bg); border: 1px solid var(--line); }
 .qr svg { width: 100%; height: 100%; display: block; }
 .qr .qr-bg { fill: var(--qr-bg); }
 .qr .qr-ink { fill: var(--qr-ink); }
 .qr--empty { border: 2px dashed var(--line-strong); background: var(--bg); color: var(--muted); font-size: 0.82rem; text-align: center; padding: 1rem; }
+.qr[role="button"] { cursor: zoom-in; }
+/* the QR code full screen, so the people at the back can scan it too */
+.qr-zoom {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1rem;
+  padding: 16px;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+.qr-zoom__box { width: min(78vmin, 34rem); aspect-ratio: 1; padding: 1rem; border-radius: 16px; background: var(--qr-bg); box-shadow: var(--shadow); }
+.qr-zoom__box svg { display: block; width: 100%; height: 100%; }
+.qr-zoom .qr-bg { fill: var(--qr-bg); }
+.qr-zoom .qr-ink { fill: var(--qr-ink); }
+.qr-zoom p { font: 500 0.8rem var(--mono); color: var(--muted); }
 .fb__text { display: grid; gap: 0.6rem; align-content: start; }
 .fb__text h3 { font: 600 1.25rem/1.25 var(--display); }
 .fb__link { font: 0.76rem var(--mono); color: var(--ink-2); word-break: break-all; }
@@ -537,8 +781,9 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 }
 .station::after { content: ""; position: absolute; inset: -0.5rem; }
 .station:hover { transform: scale(1.25); }
-.is-done .station { border-color: var(--ink); background: var(--ink); }
-.is-current .station { width: 1.15rem; height: 1.15rem; border: 3px solid var(--ink); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 15%, transparent); }
+/* stations for the stage slides wear their stage colour */
+.is-done .station { border-color: var(--c, var(--ink)); background: var(--c, var(--ink)); }
+.is-current .station { width: 1.15rem; height: 1.15rem; border: 3px solid var(--c, var(--ink)); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, var(--ink)) 18%, transparent); }
 
 /* ---------- all slides ---------- */
 .overview {
@@ -559,6 +804,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .ov-card { display: grid; gap: 0.3rem; align-content: start; padding: 0.85rem 1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); text-align: left; }
 .ov-card:hover { border-color: var(--ink); }
 .ov-card.is-current { box-shadow: 0 0 0 2px var(--ink); }
+.ov-card.has-stage { border-left: 4px solid var(--c); }
 .ov-card__no { font: 500 0.72rem var(--mono); color: var(--muted); }
 .ov-card__title { font-weight: 700; line-height: 1.25; }
 
@@ -567,22 +813,25 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 .tip b { font-weight: 700; }
 
 /* ---------- smaller screens ---------- */
-@media (max-width: 1000px) {
-  .explorer__cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .explorer__cols > :first-child { grid-column: 1 / -1; }
-}
 @media (max-width: 860px) {
   :root { --fs: 15px; }
   h2 { font-size: 1.65rem; }
-  .cols, .cols--wide-left, .cols--wide-right, .title-grid, .pc-grid, .sl-grid, .fb { grid-template-columns: minmax(0, 1fr); }
+  .cols, .cols--wide-left, .cols--wide-right, .title-grid, .sl-grid, .fb,
+  .stage-layout, .grid-2, .grid-2--wide-left, .plan2, .pc-grid3, .end-grid { grid-template-columns: minmax(0, 1fr); }
   .ring { max-width: 24rem; }
   .ring-note { position: static; display: block; margin: 0.4rem 0 0 auto; }
+  .stage-head { align-items: flex-start; }
+  .smart-row { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); }
+  .rcycle { grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); }
+  .rcycle li::after, .rcycle-when { display: none !important; }
   .controls__who, .controls__where, #fsBtn { display: none; }
   .station { width: 0.65rem; height: 0.65rem; }
   .is-current .station { width: 0.95rem; height: 0.95rem; }
 }
 @media (max-width: 560px) {
-  .explorer__cols { grid-template-columns: minmax(0, 1fr); }
+  .deliverables { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .roi-mini { grid-template-columns: minmax(0, 1fr); }
+  .tests th:nth-child(3), .tests td:nth-child(3) { display: none; }
   .plan-rows li { grid-template-columns: 1.7rem minmax(0, 1fr); }
   .plan-rows li span { grid-column: 2; }
   .controls { gap: 0.3rem; }
@@ -599,13 +848,15 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     --bg: #ffffff; --surface: #ffffff; --ink: #1b1f1d; --ink-2: #4a534e; --muted: #5f6964;
     --line: #dfe3de; --line-strong: #b7c0ba; --shadow: none;
     --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4;
+    --good-ink: #0a6e2a; --bad-ink: #b3261e; --good-soft: #e3f3e5; --bad-soft: #fbe8e7;
+    --task: #9ba6a0; --crit: #d03b3b;
     color-scheme: light;
   }
   html, body { height: auto; overflow: visible; }
   .deck { height: auto; overflow: visible; }
   .slide { position: relative; inset: auto; visibility: visible; opacity: 1; transform: none; overflow: visible; padding: 10mm 0; break-after: page; }
-  .explorer__panel[hidden] { display: block !important; margin-top: 0.6rem; }
-  .controls, .overview, .tip, .qr-form, .text-btn { display: none !important; }
+  .charts__panel[hidden] { display: grid !important; margin-top: 0.8rem; }
+  .controls, .overview, .tip, .qr-form, .text-btn, .qr-zoom { display: none !important; }
 }
 </style>
 </head>
@@ -621,7 +872,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
           <div class="title-copy">
             <p class="kicker">Level 3 IT · Project Management</p>
             <h1>The Project Life Cycle</h1>
-            <p class="lead">What it is, what happens at each stage, and when I would use it.</p>
+            <p class="lead">What it is, what happens at each stage (and the tools I'd use there), and when I would use it.</p>
             <p class="byline"><b>Alexandru Ioan</b><span>Student ID 25002954</span></p>
             <div class="title-actions">
               <button class="btn" type="button" data-go="2">Start <span aria-hidden="true">→</span></button>
@@ -629,17 +880,17 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
             </div>
           </div>
           <div class="ring-wrap">
-            <svg class="ring" viewBox="0 0 680 500" role="img" aria-labelledby="ringTitle">
-              <title id="ringTitle">The five stages of the project life cycle in a ring: initiation, planning, execution, monitoring and control, closure</title>
+            <svg class="ring" viewBox="0 0 680 500" role="group" aria-labelledby="ringTitle">
+              <title id="ringTitle">The five stages of the project life cycle in a ring: initiation, planning, execution, monitoring and control, closure. Click a stage to jump to it.</title>
               <defs>
                 <marker id="ringHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path class="ring__head" d="M0,0 L10,5 L0,10 z"/></marker>
               </defs>
               <path class="ring__loop" d="M362.5,144.4 A108,108 0 1 1 296.1,151.3" marker-end="url(#ringHead)"/>
-              <path class="ring__arc s1" style="--i: 0" d="M348.4,90.2 A160,160 0 0 1 489.4,192.7"/>
-              <path class="ring__arc s2" style="--i: 1" d="M494.5,208.6 A160,160 0 0 1 440.7,374.3"/>
-              <path class="ring__arc s3" style="--i: 2" d="M427.1,384.2 A160,160 0 0 1 252.9,384.2"/>
-              <path class="ring__arc s4" style="--i: 3" d="M239.3,374.3 A160,160 0 0 1 185.5,208.6"/>
-              <path class="ring__arc s5" style="--i: 4" d="M190.6,192.7 A160,160 0 0 1 331.6,90.2"/>
+              <path class="ring__arc s1" style="--i: 0" data-go="4" role="button" tabindex="0" aria-label="Go to stage 1: initiation" d="M348.4,90.2 A160,160 0 0 1 489.4,192.7"/>
+              <path class="ring__arc s2" style="--i: 1" data-go="5" role="button" tabindex="0" aria-label="Go to stage 2: planning" d="M494.5,208.6 A160,160 0 0 1 440.7,374.3"/>
+              <path class="ring__arc s3" style="--i: 2" data-go="7" role="button" tabindex="0" aria-label="Go to stage 3: execution" d="M427.1,384.2 A160,160 0 0 1 252.9,384.2"/>
+              <path class="ring__arc s4" style="--i: 3" data-go="8" role="button" tabindex="0" aria-label="Go to stage 4: monitoring and control" d="M239.3,374.3 A160,160 0 0 1 185.5,208.6"/>
+              <path class="ring__arc s5" style="--i: 4" data-go="9" role="button" tabindex="0" aria-label="Go to stage 5: closure" d="M190.6,192.7 A160,160 0 0 1 331.6,90.2"/>
               <text class="ring__big" x="340" y="248" text-anchor="middle">5 stages</text>
               <text class="ring__sub" x="340" y="276" text-anchor="middle">idea → handover</text>
               <text x="470" y="66"><tspan class="ring__num">1 </tspan><tspan class="ring__name">Initiation</tspan></text>
@@ -657,13 +908,13 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
             <li><button type="button" data-go="2"><b>1</b>Introduction</button></li>
             <li><button type="button" data-go="3"><b>2</b>Stages</button></li>
             <li><button type="button" data-go="4"><b>3</b>Each stage</button></li>
-            <li><button type="button" data-go="5"><b>4</b>Key features</button></li>
-            <li><button type="button" data-go="6"><b>5</b>Advantages</button></li>
-            <li><button type="button" data-go="7"><b>6</b>Disadvantages</button></li>
-            <li><button type="button" data-go="8"><b>7</b>Suitable projects</button></li>
-            <li><button type="button" data-go="9"><b>8</b>My own project</button></li>
-            <li><button type="button" data-go="10"><b>9</b>Conclusion</button></li>
-            <li><button type="button" data-go="11"><b>10</b>References</button></li>
+            <li><button type="button" data-go="10"><b>4</b>Key features</button></li>
+            <li><button type="button" data-go="11"><b>5</b>Advantages</button></li>
+            <li><button type="button" data-go="11"><b>6</b>Disadvantages</button></li>
+            <li><button type="button" data-go="12"><b>7</b>Suitable projects</button></li>
+            <li><button type="button" data-go="13"><b>8</b>My own project</button></li>
+            <li><button type="button" data-go="14"><b>9</b>Conclusion</button></li>
+            <li><button type="button" data-go="15"><b>10</b>References</button></li>
           </ul>
         </nav>
       </div>
@@ -727,13 +978,13 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
           <h2>The five stages, in order</h2>
         </header>
         <ol class="stage-row" aria-label="The stages in order">
-          <li><span class="stage-pill s1"><span class="sn">1</span>Initiation</span></li>
-          <li><span class="stage-pill s2"><span class="sn">2</span>Planning</span></li>
-          <li><span class="stage-pill s3"><span class="sn">3</span>Execution</span></li>
-          <li><span class="stage-pill s4"><span class="sn">4</span>Monitoring &amp; control</span></li>
-          <li><span class="stage-pill s5"><span class="sn">5</span>Closure</span></li>
+          <li><button type="button" class="stage-pill s1" data-go="4"><span class="sn">1</span>Initiation</button></li>
+          <li><button type="button" class="stage-pill s2" data-go="5"><span class="sn">2</span>Planning</button></li>
+          <li><button type="button" class="stage-pill s3" data-go="7"><span class="sn">3</span>Execution</button></li>
+          <li><button type="button" class="stage-pill s4" data-go="8"><span class="sn">4</span>Monitoring &amp; control</button></li>
+          <li><button type="button" class="stage-pill s5" data-go="9"><span class="sn">5</span>Closure</button></li>
         </ol>
-        <p class="lead">Stage 4 runs at the same time as stage 3, and before moving on there's a decision point, called a stage gate. Here it is as a flow chart:</p>
+        <p class="lead">Stage 4 runs at the same time as stage 3, and before moving on there's a decision point, called a stage gate. Click a stage to jump to it, or follow the flow chart:</p>
         <div class="card flow-card scroll-x">
           <svg class="flow" viewBox="0 0 1120 292" role="img" aria-labelledby="flowTitle flowDesc">
             <title id="flowTitle">Flow chart of the project life cycle</title>
@@ -797,147 +1048,502 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     </div>
   </section>
 
-  <!-- ===================== 3. EACH STAGE ===================== -->
-  <section class="slide" data-title="What happens at each stage" data-section="3 · Each stage">
+  <!-- ===================== 3. EACH STAGE · 1 INITIATION ===================== -->
+  <section class="slide slide--stage s1" data-title="Stage 1: Initiation" data-section="3 · Stage 1 · Initiation" data-stage="1">
     <div class="slide__inner">
       <div class="slide__body">
-        <header class="slide__head">
-          <p class="kicker"><span class="kicker__num">3</span>Explanation of each stage</p>
-          <h2>What happens at each stage</h2>
-        </header>
-        <div class="explorer">
-          <div class="explorer__tabs" role="tablist" aria-label="Stages">
-            <button type="button" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" class="s1"><span class="sn">1</span>Initiation</button>
-            <button type="button" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" class="s2"><span class="sn">2</span>Planning</button>
-            <button type="button" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" class="s3"><span class="sn">3</span>Execution</button>
-            <button type="button" role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false" tabindex="-1" class="s4"><span class="sn">4</span>Monitoring &amp; control</button>
-            <button type="button" role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false" tabindex="-1" class="s5"><span class="sn">5</span>Closure</button>
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 1 of 5</p>
+            <h2>Initiation: is it worth doing?</h2>
           </div>
-
-          <div class="card explorer__panel s1" role="tabpanel" id="panel-1" aria-labelledby="tab-1">
-            <div class="explorer__top"><b>1 · Initiation</b><p>Deciding if the project is worth doing at all.</p></div>
-            <div class="explorer__cols">
-              <div><h3>What happens</h3>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1 is-on" aria-current="step" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="stage-layout">
+          <div class="card stage-card">
+            <p class="stage-card__top"><span class="sn">1</span>Deciding if the project is worth doing at all.</p>
+            <div class="stage-card__body">
+              <div><h3 class="label">What happens</h3>
                 <ul class="bullets">
                   <li>Someone spots a problem or an opportunity</li>
-                  <li>A feasibility study checks if it's possible (technically, financially, legally)</li>
-                  <li>A business case compares the costs with the benefits</li>
-                  <li>The stakeholders are identified</li>
-                  <li>A go / no-go decision is made</li>
+                  <li>A feasibility study checks if it's possible</li>
+                  <li>A business case compares the costs and the benefits</li>
+                  <li>The sponsor makes a go / no-go decision</li>
                 </ul>
               </div>
-              <div><h3>Who's involved</h3>
-                <ul class="chips"><li>Sponsor or client</li><li>Project manager</li><li>Business analyst</li><li>Senior managers</li><li>Key stakeholders</li></ul>
+              <div><h3 class="label">Who's involved</h3>
+                <ul class="chips"><li>Sponsor or client</li><li>Project manager</li><li>Business analyst</li><li>Senior managers</li></ul>
               </div>
-              <div><h3>What's produced</h3>
+              <div><h3 class="label">What's produced</h3>
                 <ul class="docs">
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Business case</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Feasibility report</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project charter or brief</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project brief (with the objectives)</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Stakeholder list</li>
                 </ul>
               </div>
             </div>
           </div>
+          <div class="stage-main grid-2">
+            <div class="card block">
+              <h3>Benefits</h3>
+              <p>Benefits explain why the organisation should do the project. A software project could:</p>
+              <ul class="tags">
+                <li>Save money</li><li>Increase profits</li><li>Improve customer service</li><li>Increase productivity</li><li>Help the business grow</li><li>Attract more customers</li><li>Increase market share</li><li>Reduce manual work</li>
+              </ul>
+              <p class="mine"><b>My bakery:</b> more sales, less waste and no more lost phone orders.</p>
+            </div>
+            <div class="card block">
+              <h3>Return on investment (ROI)</h3>
+              <p>ROI compares how much the project costs with the money or benefits it could bring in. E.g. a company spends £10,000 on an online ordering system and expects an extra £20,000 in sales:</p>
+              <div class="roi-mini">
+                <label>Cost (£)<input type="number" id="roiCost" min="0" step="500" value="10000" inputmode="numeric"></label>
+                <label>Extra sales (£)<input type="number" id="roiGain" min="0" step="500" value="20000" inputmode="numeric"></label>
+                <p class="roi-mini__out"><b>ROI =</b><output id="roiPct" for="roiCost roiGain">100%</output><span id="roiSum">(£20,000 − £10,000) ÷ £10,000 × 100</span></p>
+              </div>
+              <p class="small" id="roiNote" aria-live="polite">Every £1 spent brings back £2.00, so it's worth doing.</p>
+            </div>
+            <div class="card block span-2">
+              <h3>Success criteria &amp; SMART objectives</h3>
+              <p>Success criteria explain how we'll know if the project has been successful, e.g. “The website must allow users to create an account and log in successfully.” The objectives should also be SMART, for example:</p>
+              <p class="smart-goal">“Create a working login system and test it successfully by 30 November.”</p>
+              <ul class="smart-row">
+                <li><b>S</b><span>Specific</span><small>clear: a working login system</small></li>
+                <li><b>M</b><span>Measurable</span><small>we can check it: the tests pass</small></li>
+                <li><b>A</b><span>Achievable</span><small>realistic for our team</small></li>
+                <li><b>R</b><span>Relevant</span><small>customers need an account to order</small></li>
+                <li><b>T</b><span>Time-bound</span><small>it has a deadline: 30 November</small></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="card explorer__panel s2" role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>
-            <div class="explorer__top"><b>2 · Planning</b><p>Turning the idea into a detailed plan that everyone agrees on.</p></div>
-            <div class="explorer__cols">
-              <div><h3>What happens</h3>
+  <!-- ===================== 3. EACH STAGE · 2 PLANNING (scope) ===================== -->
+  <section class="slide slide--stage s2" data-title="Stage 2: Planning (what we are making)" data-section="3 · Stage 2 · Planning" data-stage="2">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 2 of 5</p>
+            <h2>Planning: what exactly are we making?</h2>
+          </div>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2 is-on" aria-current="step" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="stage-layout">
+          <div class="card stage-card">
+            <p class="stage-card__top"><span class="sn">2</span>Turning the idea into a detailed plan that everyone agrees on.</p>
+            <div class="stage-card__body">
+              <div><h3 class="label">What happens</h3>
                 <ul class="bullets">
                   <li>Agree the scope and the requirements</li>
-                  <li>Break the work into tasks (work breakdown structure)</li>
-                  <li>Make the schedule, with milestones and the critical path</li>
-                  <li>Set the budget and the resources</li>
+                  <li>Break the product into parts (PBS), then into tasks</li>
+                  <li>Make the schedule and the budget</li>
                   <li>Plan for risks, quality and communication</li>
-                  <li>The plan is signed off and becomes the baseline</li>
+                  <li>The client signs off the plan (the baseline)</li>
                 </ul>
               </div>
-              <div><h3>Who's involved</h3>
+              <div><h3 class="label">Who's involved</h3>
                 <ul class="chips"><li>Project manager</li><li>Business analyst</li><li>Team leaders</li><li>Client (signs off)</li><li>Finance</li></ul>
               </div>
-              <div><h3>What's produced</h3>
+              <div><h3 class="label">What's produced</h3>
                 <ul class="docs">
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project plan (PID)</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Requirements specification</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Gantt chart</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Product description &amp; PBS</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Project plan &amp; Gantt chart</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Budget</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Risk register</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Communication plan</li>
                 </ul>
               </div>
             </div>
           </div>
+          <div class="stage-main grid-2 grid-2--wide-left">
+            <div class="card block">
+              <h3>Customer requirements</h3>
+              <p>What the customer wants the software to do. <b>Functional (F)</b> = what the system must do. <b>Non-functional (NF)</b> = how well it should work. Try sorting them:</p>
+              <ol class="sorter" id="sorter">
+                <li data-answer="f" data-why="Logging in is something the system does, so it's functional."><span id="rq1">Users can log in.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq1" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq1" title="Non-functional">NF</button></li>
+                <li data-answer="n" data-why="It's about how fast it works, not what it does."><span id="rq2">The website should load within three seconds.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq2" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq2" title="Non-functional">NF</button></li>
+                <li data-answer="f" data-why="It's an action a customer can do on the site."><span id="rq3">Customers can add products to a basket.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq3" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq3" title="Non-functional">NF</button></li>
+                <li data-answer="n" data-why="It's about security: how well it protects people's data."><span id="rq4">User passwords must be secure.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq4" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq4" title="Non-functional">NF</button></li>
+                <li data-answer="f" data-why="It's a job the system must do."><span id="rq5">The system calculates the total price.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq5" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq5" title="Non-functional">NF</button></li>
+                <li data-answer="n" data-why="It's about how well it works for people (usability)."><span id="rq6">The system should be easy to use.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq6" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq6" title="Non-functional">NF</button></li>
+                <li data-answer="n" data-why="It's about how well it works on different devices."><span id="rq7">The website should work on mobile phones.</span><button type="button" data-pick="f" aria-pressed="false" aria-label="Functional" aria-describedby="rq7" title="Functional">F</button><button type="button" data-pick="n" aria-pressed="false" aria-label="Non-functional" aria-describedby="rq7" title="Non-functional">NF</button></li>
+              </ol>
+              <div class="sorter-foot">
+                <p class="score" id="sorterScore">0 / 7 sorted</p>
+                <p class="small" id="sorterFb" aria-live="polite">Tip: a good requirement can be tested. “Fast” can't, “within three seconds” can.</p>
+              </div>
+            </div>
+            <div class="card block">
+              <h3>Product description &amp; PBS</h3>
+              <p>A <b>product description</b> explains what we're going to create. Mine: “A website where Northgate Bakery customers order online and collect in the shop.”</p>
+              <p>A <b>Product Breakdown Structure (PBS)</b> breaks the final product into smaller parts, so it's easier to plan and manage:</p>
+              <div class="pbs-mini">
+                <p class="pbs-mini__root">Click &amp; collect website</p>
+                <ol class="pbs-mini__kids">
+                  <li><b>1</b><span>Home page</span><small>menu, opening times</small></li>
+                  <li><b>2</b><span>Login page</span><small>create an account, log in</small></li>
+                  <li><b>3</b><span>Ordering system</span><small>basket, total, pick-up time</small></li>
+                  <li><b>4</b><span>Database</span><small>products, customers, orders</small></li>
+                  <li><b>5</b><span>Admin page</span><small>today's orders for the shop</small></li>
+                  <li><b>6</b><span>User guide</span><small>for the bakery staff</small></li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="card explorer__panel s3" role="tabpanel" id="panel-3" aria-labelledby="tab-3" hidden>
-            <div class="explorer__top"><b>3 · Execution</b><p>The team builds the product. In software projects this is where design, coding and testing happen.</p></div>
-            <div class="explorer__cols">
-              <div><h3>What happens</h3>
+  <!-- ===================== 3. EACH STAGE · 2 PLANNING (time & money) ===================== -->
+  <section class="slide slide--stage s2" data-title="Stage 2: Planning (time and money)" data-section="3 · Stage 2 · Planning" data-stage="2">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 2 of 5, part 2</p>
+            <h2>Planning: when, and how much?</h2>
+          </div>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2 is-on" aria-current="step" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="plan2">
+          <div class="card block">
+            <h3>Costs and timescales</h3>
+            <p>Planning how much the project will cost and how long it will take. For a website that means things like software licences, hosting costs and staff time.</p>
+            <dl class="time-defs">
+              <div><dt><span class="sw sw--ms" aria-hidden="true"></span>Milestones</dt><dd>important points in the project, such as finishing the design or the prototype</dd></div>
+              <div><dt><span class="sw sw--deadline" aria-hidden="true"></span>Deadlines</dt><dd>dates when tasks must be finished (my launch: day 40)</dd></div>
+              <div><dt><span class="sw sw--review" aria-hidden="true"></span>Interim reviews</dt><dd>checking progress during the project, not just at the end (weeks 3 and 6)</dd></div>
+            </dl>
+            <table class="budget">
+              <caption><b>Budget</b> = how much money is available. Mine:</caption>
+              <tbody>
+                <tr><th scope="row">Staff time (4 people)</th><td>£8,020</td></tr>
+                <tr><th scope="row">Software licences</th><td>£200</td></tr>
+                <tr><th scope="row">Hosting &amp; domain (1 year)</th><td>£180</td></tr>
+                <tr><th scope="row">Photos &amp; staff training</th><td>£600</td></tr>
+                <tr><th scope="row">Contingency (10%)</th><td>£900</td></tr>
+              </tbody>
+              <tfoot><tr><th scope="row">Total</th><td>£9,900</td></tr></tfoot>
+            </table>
+          </div>
+          <div class="card charts">
+            <div class="charts__tabs" role="tablist" aria-label="Planning tools">
+              <button type="button" role="tab" id="tab-gantt" aria-controls="panel-gantt" aria-selected="true">Gantt chart</button>
+              <button type="button" role="tab" id="tab-pert" aria-controls="panel-pert" aria-selected="false" tabindex="-1">PERT chart</button>
+              <button type="button" role="tab" id="tab-sheet" aria-controls="panel-sheet" aria-selected="false" tabindex="-1">Microsoft Project</button>
+            </div>
+            <div class="charts__panel" role="tabpanel" id="panel-gantt" aria-labelledby="tab-gantt">
+              <div class="charts__def charts__def--row">
+                <p><b>Gantt chart</b> = shows tasks, dates and how long each task should take.</p>
+                <ul class="legend" aria-label="Key">
+                  <li><span class="sw sw--bar"></span>Task</li>
+                  <li><span class="sw sw--crit"></span>Critical</li>
+                  <li><span class="sw sw--float"></span>Float</li>
+                </ul>
+              </div>
+              <div class="scroll-x">
+                <div class="gantt" id="gantt" role="group" aria-label="Gantt chart of the bakery website project">
+                  <div class="g-corner">Task · days</div>
+                  <div class="g-overlay" id="gOverlay"></div>
+                  <div class="g-markers" id="gMarkers"></div>
+                  <div class="g-weeks" aria-hidden="true"><span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span><span>W7</span><span>W8</span><span>W9</span></div>
+                  <div class="g-plot" id="gPlot"></div>
+                </div>
+              </div>
+            </div>
+            <div class="charts__panel" role="tabpanel" id="panel-pert" aria-labelledby="tab-pert" hidden>
+              <p class="charts__def"><b>PERT chart</b> = shows the order of tasks and how they are connected. The red boxes and arrows are the critical path.</p>
+              <div class="scroll-x">
+                <svg class="pert" id="pert" viewBox="0 0 852 220" role="img" aria-labelledby="pertTitle">
+                  <title id="pertTitle">PERT chart. A comes first, then B and C. D and E come after B. F needs C and D. G needs E and F, and H needs E. The launch needs G and H.</title>
+                  <defs>
+                    <marker id="pertHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path class="pert__head" d="M0,0 L10,5 L0,10 z"/></marker>
+                    <marker id="pertHeadCrit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path class="pert__head pert__head--crit" d="M0,0 L10,5 L0,10 z"/></marker>
+                  </defs>
+                    <path class="pert__edge" data-from="A" data-to="B" d="M134,118 H148" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="A" data-to="C" d="M71,95 V47 H148" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="B" data-to="D" d="M276,106 H284 V47 H290" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="B" data-to="E" d="M276,118 H290" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="C" data-to="F" d="M213,24 V8 H497 V22" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="D" data-to="F" d="M418,47 H432" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="E" data-to="G" d="M418,118 H574" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="E" data-to="H" d="M355,141 V189 H432" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="F" data-to="G" d="M560,47 H639 V93" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="G" data-to="launch" d="M702,118 H716" marker-end="url(#pertHead)"/>
+                    <path class="pert__edge" data-from="H" data-to="launch" d="M560,189 H781 V143" marker-end="url(#pertHead)"/>
+                    <g class="pert__node" data-node="A"><rect x="8" y="95" width="126" height="46" rx="8"/><text class="pert__title" x="18" y="114">A Requirements</text><text class="pert__meta" x="18" y="131">5 days</text></g>
+                    <g class="pert__node" data-node="B"><rect x="150" y="95" width="126" height="46" rx="8"/><text class="pert__title" x="160" y="114">B Design</text><text class="pert__meta" x="160" y="131">8 days</text></g>
+                    <g class="pert__node" data-node="C"><rect x="150" y="24" width="126" height="46" rx="8"/><text class="pert__title" x="160" y="43">C Photos</text><text class="pert__meta" x="160" y="60">6 days · float 13</text></g>
+                    <g class="pert__node" data-node="D"><rect x="292" y="24" width="126" height="46" rx="8"/><text class="pert__title" x="302" y="43">D Front end</text><text class="pert__meta" x="302" y="60">9 days · float 2</text></g>
+                    <g class="pert__node" data-node="E"><rect x="292" y="95" width="126" height="46" rx="8"/><text class="pert__title" x="302" y="114">E Back end</text><text class="pert__meta" x="302" y="131">14 days</text></g>
+                    <g class="pert__node" data-node="F"><rect x="434" y="24" width="126" height="46" rx="8"/><text class="pert__title" x="444" y="43">F Add products</text><text class="pert__meta" x="444" y="60">3 days · float 2</text></g>
+                    <g class="pert__node" data-node="H"><rect x="434" y="166" width="126" height="46" rx="8"/><text class="pert__title" x="444" y="185">H Training</text><text class="pert__meta" x="444" y="202">3 days · float 4</text></g>
+                    <g class="pert__node" data-node="G"><rect x="576" y="95" width="126" height="46" rx="8"/><text class="pert__title" x="586" y="114">G Testing</text><text class="pert__meta" x="586" y="131">7 days</text></g>
+                    <g class="pert__node pert__node--launch" data-node="launch"><rect x="718" y="95" width="126" height="46" rx="8"/><text class="pert__title" x="728" y="114">Launch ◆</text><text class="pert__meta" x="728" y="131">day 34</text></g>
+                </svg>
+              </div>
+            </div>
+            <div class="charts__panel" role="tabpanel" id="panel-sheet" aria-labelledby="tab-sheet" hidden>
+              <p class="charts__def"><b>Microsoft Project</b> = software used to create project plans, schedules and track progress. You fill in a task sheet like this one, and it works out the dates, the critical path and the Gantt chart for you.</p>
+              <div class="scroll-x">
+                <table class="sheet">
+                  <thead><tr><th scope="col">ID</th><th scope="col">Task name</th><th scope="col">Duration</th><th scope="col">Start</th><th scope="col">Finish</th><th scope="col">Predecessors</th><th scope="col">Float (slack)</th></tr></thead>
+                  <tbody id="sheetBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="charts__foot">
+              <div class="whatif">
+                <label for="delayTask">What if</label>
+                <select id="delayTask">
+                  <option value="A">A · Requirements</option>
+                  <option value="B">B · Design</option>
+                  <option value="C">C · Photos</option>
+                  <option value="D">D · Front end</option>
+                  <option value="E" selected>E · Back end</option>
+                  <option value="F">F · Add products</option>
+                  <option value="G">G · Testing</option>
+                  <option value="H">H · Training</option>
+                </select>
+                <label for="delayDays">is late by</label>
+                <input type="range" id="delayDays" min="0" max="10" step="1" value="0">
+                <output id="delayOut" for="delayDays">0 days</output>
+                <p class="pill pill--good" id="launchPill">✓ Launch day 34 of 40: 6 days spare</p>
+              </div>
+              <p class="small"><b>Critical path</b> = the most important tasks, which must be finished on time to avoid delaying the whole project. Mine: <b class="mono crit-path" id="critPath">A → B → E → G</b></p>
+              <p class="small" id="delayNote" aria-live="polite">Pick a task and drag the slider to see what happens to the launch.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. EACH STAGE · 3 EXECUTION ===================== -->
+  <section class="slide slide--stage s3" data-title="Stage 3: Execution" data-section="3 · Stage 3 · Execution" data-stage="3">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 3 of 5</p>
+            <h2>Execution: building it properly</h2>
+          </div>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3 is-on" aria-current="step" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="stage-layout">
+          <div class="card stage-card">
+            <p class="stage-card__top"><span class="sn">3</span>The team builds the product. In software, this is where design, coding and testing happen.</p>
+            <div class="stage-card__body">
+              <div><h3 class="label">What happens</h3>
                 <ul class="bullets">
                   <li>Design, build and test the product</li>
                   <li>Give out tasks and hold team meetings</li>
-                  <li>Buy equipment or software and work with suppliers</li>
-                  <li>Keep the stakeholders updated</li>
+                  <li>Work with suppliers and keep stakeholders updated</li>
                   <li>User acceptance testing near the end</li>
                 </ul>
               </div>
-              <div><h3>Who's involved</h3>
+              <div><h3 class="label">Who's involved</h3>
                 <ul class="chips"><li>Developers</li><li>Designers</li><li>Testers</li><li>Project manager</li><li>Suppliers</li><li>Users (for testing)</li></ul>
               </div>
-              <div><h3>What's produced</h3>
+              <div><h3 class="label">What's produced</h3>
                 <ul class="docs">
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>The product (software, website, network…)</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>The product (website, app…)</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Test reports</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Progress reports</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>User guides</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>User guide</li>
                 </ul>
               </div>
             </div>
           </div>
+          <div class="stage-main grid-2">
+            <div class="card block">
+              <h3>Quality</h3>
+              <p>Quality means making sure the final software is reliable, safe and meets the required standards.</p>
+              <p class="label">ISO/IEC 25010: software quality <span class="cite">(ISO, 2023)</span></p>
+              <div class="chips-select" id="isoChips" role="group" aria-label="Quality characteristics from ISO/IEC 25010">
+                <button type="button" class="chip" data-iso="usability" aria-pressed="true">Usability</button>
+                <button type="button" class="chip" data-iso="reliability" aria-pressed="false">Reliability</button>
+                <button type="button" class="chip" data-iso="security" aria-pressed="false">Security</button>
+                <button type="button" class="chip" data-iso="performance" aria-pressed="false">Performance</button>
+              </div>
+              <p class="iso-out" aria-live="polite"><b id="isoName">Usability:</b> <span id="isoText">can customers order without help? I'll watch 5 real customers try it. (The 2023 version calls this “interaction capability”.)</span></p>
+              <p><b>W3C standards</b> help websites work correctly and follow recognised web standards. I'll check my HTML with the W3C validator and follow WCAG 2.2 <span class="cite">(W3C, 2023)</span>.</p>
+            </div>
+            <div class="card block">
+              <h3>Deliverables</h3>
+              <p>A deliverable is something we produce during or at the end of the project. The dot shows the stage where it's made:</p>
+              <ul class="deliverables">
+                <li class="s3"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9h18M6 6.8h.01M8.5 6.8h.01"/></svg><b>Website</b><span>execution</span></li>
+                <li class="s3 is-skip"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.2"/><path d="M11 18.5h2"/></svg><b>App</b><span>not needed</span></li>
+                <li class="s2"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2" stroke-dasharray="3 2.5"/><path d="M7 9.5h6M7 13h10M7 16h4"/></svg><b>Prototype</b><span>planning</span></li>
+                <li class="s2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6.5h10M10 12h10M10 17.5h10M4 6.5l1.3 1.3 2.5-2.5M4 12l1.3 1.3 2.5-2.5M4 17.5l1.3 1.3 2.5-2.5"/></svg><b>Test plan</b><span>planning</span></li>
+                <li class="s3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"/></svg><b>User guide</b><span>execution</span></li>
+                <li class="s5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9.5 17v-3M12 17v-5.5M14.5 17v-2"/></svg><b>Project report</b><span>closure</span></li>
+              </ul>
+              <p class="small">No app for the bakery: the website works on phones, and it's much cheaper.</p>
+            </div>
+            <div class="card block span-2">
+              <h3>Testing: part of my test plan</h3>
+              <table class="mini-table tests">
+                <thead><tr><th scope="col">Test</th><th scope="col">Expected result</th><th scope="col">Requirement</th><th scope="col">Result (example)</th></tr></thead>
+                <tbody>
+                  <tr><td>Log in with the right password</td><td>Logged in, name at the top</td><td>Users can log in</td><td class="pass">✓ Pass</td></tr>
+                  <tr><td>Log in with the wrong password</td><td>Error message, not logged in</td><td>Secure passwords</td><td class="pass">✓ Pass</td></tr>
+                  <tr><td>2 loaves (£2.40 each) + a cake (£3.50)</td><td>Basket total: £8.30</td><td>Total price</td><td class="fail">✗ Showed £5.90: fix it</td></tr>
+                  <tr><td>Open the menu on a phone (4G)</td><td>Loads within three seconds</td><td>Speed, mobile</td><td class="pass">✓ Pass</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="card explorer__panel s4" role="tabpanel" id="panel-4" aria-labelledby="tab-4" hidden>
-            <div class="explorer__top"><b>4 · Monitoring &amp; control</b><p>Runs alongside execution: checking the project is going to plan and fixing problems early.</p></div>
-            <div class="explorer__cols">
-              <div><h3>What happens</h3>
+  <!-- ===================== 3. EACH STAGE · 4 MONITORING & CONTROL ===================== -->
+  <section class="slide slide--stage s4" data-title="Stage 4: Monitoring and control" data-section="3 · Stage 4 · Monitoring" data-stage="4">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 4 of 5</p>
+            <h2>Monitoring &amp; control: keeping it on track</h2>
+          </div>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4 is-on" aria-current="step" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="stage-layout">
+          <div class="card stage-card">
+            <p class="stage-card__top"><span class="sn">4</span>Runs alongside execution: checking the project is going to plan and fixing problems early.</p>
+            <div class="stage-card__body">
+              <div><h3 class="label">What happens</h3>
                 <ul class="bullets">
-                  <li>Compare progress with the baseline (time, cost, quality)</li>
+                  <li>Compare progress with the plan (time, cost, quality)</li>
                   <li>Keep track of risks and issues</li>
                   <li>Change control: approve or reject changes</li>
-                  <li>Quality checks and stage reviews</li>
                   <li>Take corrective action if we fall behind</li>
                 </ul>
               </div>
-              <div><h3>Who's involved</h3>
+              <div><h3 class="label">Who's involved</h3>
                 <ul class="chips"><li>Project manager</li><li>Sponsor / project board</li><li>Quality assurance</li><li>Team leaders</li></ul>
               </div>
-              <div><h3>What's produced</h3>
+              <div><h3 class="label">What's produced</h3>
                 <ul class="docs">
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Status reports</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Updated plan and budget</li>
-                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Change log</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Issue log</li>
+                  <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Change log</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Updated risk register</li>
                 </ul>
               </div>
             </div>
           </div>
+          <div class="stage-main grid-2">
+            <div class="card block">
+              <h3>Issues</h3>
+              <p>Issues are problems that happen during a project, for example:</p>
+              <ul class="tags">
+                <li>The customer changes their requirements</li><li>A developer is absent</li><li>Software doesn't work as expected</li><li>We're behind schedule</li><li>Poor communication in the team</li><li>New laws or regulations</li>
+              </ul>
+              <p>I monitor progress and take <b>corrective action</b> when problems happen. If development is behind schedule, I can:</p>
+              <ul class="tags tags--action"><li>Change the plan</li><li>Move resources</li><li>Cut less important features</li></ul>
+              <p class="mine"><b>My bakery:</b> if payments (task E) fall behind, the launch moves too, because E is on the critical path. So I'd move a developer onto it, or leave gift cards for later.</p>
+            </div>
+            <div class="card block">
+              <h3>Risks</h3>
+              <p>A risk is something that <i>might</i> happen and cause a problem. If it does happen, it becomes an issue. Risks in software projects:</p>
+              <ul class="tags">
+                <li>Going over budget</li><li>Missing a deadline</li><li>Losing important data</li><li>Cybersecurity problems</li><li>Key staff leaving</li><li>Software failing testing</li><li>Requirements changing</li>
+              </ul>
+              <dl class="risk-eg">
+                <dt>Risk</dt><dd>A developer may be absent.</dd>
+                <dt>Impact</dt><dd>The project could be delayed.</dd>
+                <dt>Action</dt><dd>Share the project files and documentation, so another team member can carry on with the work.</dd>
+              </dl>
+            </div>
+            <div class="card block span-2">
+              <h3>The risk management cycle</h3>
+              <ol class="rcycle">
+                <li class="s2"><b>1 Identify</b><span>What could go wrong?</span></li>
+                <li class="s2"><b>2 Assess</b><span>How likely is it, and how serious would it be?</span></li>
+                <li class="s2"><b>3 Decide</b><span>Accept it, avoid it or make a contingency plan</span></li>
+                <li class="s4"><b>4 Monitor</b><span>Keep checking it during the project</span></li>
+                <li class="s4"><b>5 Take action</b><span>If it happens, respond to the issue</span></li>
+              </ol>
+              <p class="rcycle-when" aria-hidden="true"><span class="s2">in planning: the risk register</span><span class="s4">in monitoring &amp; control, then back to 1</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-          <div class="card explorer__panel s5" role="tabpanel" id="panel-5" aria-labelledby="tab-5" hidden>
-            <div class="explorer__top"><b>5 · Closure</b><p>Handing over the finished product and officially ending the project.</p></div>
-            <div class="explorer__cols">
-              <div><h3>What happens</h3>
+  <!-- ===================== 3. EACH STAGE · 5 CLOSURE ===================== -->
+  <section class="slide slide--stage s5" data-title="Stage 5: Closure" data-section="3 · Stage 5 · Closure" data-stage="5">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="stage-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Each stage · stage 5 of 5</p>
+            <h2>Closure: handing it over</h2>
+          </div>
+          <nav class="stage-strip" aria-label="Jump to a stage">
+            <button type="button" class="s1" data-go="4" aria-label="Stage 1: Initiation">1</button>
+            <button type="button" class="s2" data-go="5" aria-label="Stage 2: Planning">2</button>
+            <button type="button" class="s3" data-go="7" aria-label="Stage 3: Execution">3</button>
+            <button type="button" class="s4" data-go="8" aria-label="Stage 4: Monitoring and control">4</button>
+            <button type="button" class="s5 is-on" aria-current="step" data-go="9" aria-label="Stage 5: Closure">5</button>
+          </nav>
+        </header>
+        <div class="stage-layout">
+          <div class="card stage-card">
+            <p class="stage-card__top"><span class="sn">5</span>Handing over the finished product and officially ending the project.</p>
+            <div class="stage-card__body">
+              <div><h3 class="label">What happens</h3>
                 <ul class="bullets">
                   <li>The client tests and accepts the product (sign-off)</li>
-                  <li>Hand over to the users and the support team, and train staff</li>
+                  <li>Hand over to the users and IT support, train the staff</li>
                   <li>Release the team and close any contracts</li>
-                  <li>Final review: did we hit time, cost and quality?</li>
-                  <li>Record the lessons learned and archive the documents</li>
+                  <li>Final review and lessons learned</li>
                 </ul>
               </div>
-              <div><h3>Who's involved</h3>
+              <div><h3 class="label">Who's involved</h3>
                 <ul class="chips"><li>Project manager</li><li>Client or sponsor</li><li>Users</li><li>IT support team</li><li>Project team</li></ul>
               </div>
-              <div><h3>What's produced</h3>
+              <div><h3 class="label">What's produced</h3>
                 <ul class="docs">
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>Signed acceptance form</li>
                   <li><svg viewBox="0 0 16 20" aria-hidden="true"><path class="doc-page" d="M1 1h9l5 5v13H1z"/><path class="doc-fold" d="M10 1v5h5"/></svg>End project report</li>
@@ -947,10 +1553,43 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
               </div>
             </div>
           </div>
-
-          <div class="explorer__foot">
-            <p class="small" id="stageCount">Stage 1 of 5</p>
-            <button type="button" class="btn btn--ghost btn--small" id="stageNext">Next stage →</button>
+          <div class="stage-main grid-2">
+            <div class="card block signcard" id="signcard">
+              <h3>Did we meet the success criteria?</h3>
+              <p>Before the client signs, we check the success criteria from initiation. Tick them off:</p>
+              <ul class="signoff" id="signoff">
+                <li><label><input type="checkbox" id="so1">Users can create an account and log in</label></li>
+                <li><label><input type="checkbox" id="so2">Every must-have requirement passed testing</label></li>
+                <li><label><input type="checkbox" id="so3">Pages load within three seconds</label></li>
+                <li><label><input type="checkbox" id="so4">Live by 30 November</label></li>
+                <li><label><input type="checkbox" id="so5">Final cost within the £9,900 budget</label></li>
+              </ul>
+              <p class="signoff__status" id="signoffStatus" aria-live="polite">0 of 5 met: not ready to sign yet</p>
+              <div class="sign-box" aria-hidden="true"><span class="label">Client sign-off</span><span class="stamp">Signed off ✓</span></div>
+            </div>
+            <div class="stack">
+              <div class="card block">
+                <h3>Benefits review</h3>
+                <p>Most benefits only show up after the handover, so they get checked later:</p>
+                <table class="mini-table">
+                  <thead><tr><th scope="col">Benefit</th><th scope="col">How I'll measure it</th></tr></thead>
+                  <tbody>
+                    <tr><td>More sales</td><td>online orders each week</td></tr>
+                    <tr><td>Less waste</td><td>bread thrown away each week</td></tr>
+                    <tr><td>No lost phone orders</td><td>complaints from customers</td></tr>
+                  </tbody>
+                </table>
+                <p class="small">Every 3 months, compared with the ROI in the business case.</p>
+              </div>
+              <div class="card block">
+                <h3>Lessons learned</h3>
+                <ul class="bullets">
+                  <li>What went well, and what went wrong?</li>
+                  <li>What would we do differently next time?</li>
+                </ul>
+                <p class="pencil">these go into the next project: that's the loop on my title slide ↺</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -996,76 +1635,62 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     </div>
   </section>
 
-  <!-- ===================== 5. ADVANTAGES ===================== -->
-  <section class="slide" data-title="Advantages" data-section="5 · Advantages">
+  <!-- ===================== 5 + 6. ADVANTAGES & DISADVANTAGES ===================== -->
+  <section class="slide" data-title="Advantages and disadvantages" data-section="5–6 · Pros &amp; cons">
     <div class="slide__inner">
       <div class="slide__body">
         <header class="slide__head">
-          <p class="kicker"><span class="kicker__num">5</span>Advantages</p>
-          <h2>Advantages</h2>
+          <p class="kicker"><span class="kicker__num">5</span><span class="kicker__num">6</span>Advantages &amp; disadvantages</p>
+          <h2>Advantages and disadvantages</h2>
         </header>
-        <div class="pc-grid">
-          <article class="card pc">
-            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Clear structure</h3></div>
-            <p>Everyone knows which stage the project is in, what comes next and who is responsible for what.</p>
-            <p class="pc__me"><span>Why it helps me</span>I can plan my work stage by stage and explain progress to the client in a simple way.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Control of time and cost</h3></div>
-            <p>There's a baseline plan to compare against, and progress is checked the whole way through.</p>
-            <p class="pc__me"><span>Why it helps me</span>I can spot early if we're behind or over budget, and fix it before it's too late.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Bad projects get stopped early</h3></div>
-            <p>At every stage gate the project can be approved, changed or stopped.</p>
-            <p class="pc__me"><span>Why it helps me</span>I won't waste the client's money on something that clearly isn't going to work.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="plus" aria-hidden="true">+</span><h3>Clear deliverables and paperwork</h3></div>
-            <p>Each stage produces documents or products that get signed off.</p>
-            <p class="pc__me"><span>Why it helps me</span>I have proof of what was agreed if there's an argument, and the handover at the end is easy.</p>
-          </article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== 6. DISADVANTAGES ===================== -->
-  <section class="slide" data-title="Disadvantages" data-section="6 · Disadvantages">
-    <div class="slide__inner">
-      <div class="slide__body">
-        <header class="slide__head">
-          <p class="kicker"><span class="kicker__num">6</span>Disadvantages</p>
-          <h2>Disadvantages</h2>
-        </header>
-        <div class="pc-grid">
-          <article class="card pc">
-            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Hard to change later</h3></div>
-            <div class="spark">
-              <svg viewBox="0 0 136 42" aria-hidden="true">
-                <line x1="2" y1="40" x2="134" y2="40"/>
-                <path class="spark-area" d="M2,38 C50,37 90,30 134,4 L134,40 L2,40 Z"/>
-                <path d="M2,38 C50,37 90,30 134,4"/>
-              </svg>
-              <p>The later a change is made, the more it costs <span class="cite">(PMI, 2017)</span>.</p>
+        <div class="pc-rows">
+          <div class="pc-row">
+            <h3 class="pc-row__title"><span class="plus" aria-hidden="true">+</span>Advantages <small>and why each one helps me as the project manager</small></h3>
+            <div class="pc-grid3">
+              <article class="card pc">
+                <h4>Clear structure</h4>
+                <p>Everyone knows which stage we're in, what comes next and who is responsible for what.</p>
+                <p class="pc__me"><span>Why it helps me</span>I can plan stage by stage and explain progress to the client in a simple way.</p>
+              </article>
+              <article class="card pc">
+                <h4>Control of time and cost</h4>
+                <p>The baseline plan (Gantt chart and budget) is checked at every interim review.</p>
+                <p class="pc__me"><span>Why it helps me</span>I can spot early if we're behind or over budget, and fix it before it's too late.</p>
+              </article>
+              <article class="card pc">
+                <h4>Bad projects get stopped early</h4>
+                <p>At every stage gate the project can be approved, changed or stopped.</p>
+                <p class="pc__me"><span>Why it helps me</span>I won't waste the client's money on something that clearly isn't going to work.</p>
+              </article>
             </div>
-            <p class="pc__me"><span>How it could affect my project</span>If the client changes their mind halfway through, it could delay the project and push the cost up.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Lots of paperwork</h3></div>
-            <p>Business case, plans, reports, logs and sign-offs all take time to write.</p>
-            <p class="pc__me"><span>How it could affect my project</span>On a small project, writing documents could take time away from actually building the product.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Users see it late</h3></div>
-            <p>Users are mostly involved at the start and at the end, not much in the middle.</p>
-            <p class="pc__me"><span>How it could affect my project</span>If I misunderstood a requirement, I might only find out at acceptance testing, when fixing it is expensive.</p>
-          </article>
-          <article class="card pc">
-            <div class="pc__head"><span class="minus" aria-hidden="true">−</span><h3>Only as good as the plan</h3></div>
-            <p>If the estimates in planning are wrong, everything after them is affected.</p>
-            <p class="pc__me"><span>How it could affect my project</span>One bad estimate could make my whole schedule and budget unrealistic from day one.</p>
-          </article>
+          </div>
+          <div class="pc-row">
+            <h3 class="pc-row__title"><span class="minus" aria-hidden="true">−</span>Disadvantages <small>and how each one could affect my project</small></h3>
+            <div class="pc-grid3">
+              <article class="card pc">
+                <h4>Hard to change later</h4>
+              <div class="spark">
+                <svg viewBox="0 0 136 42" aria-hidden="true">
+                  <line x1="2" y1="40" x2="134" y2="40"/>
+                  <path class="spark-area" d="M2,38 C50,37 90,30 134,4 L134,40 L2,40 Z"/>
+                  <path d="M2,38 C50,37 90,30 134,4"/>
+                </svg>
+                <p>The later a change is made, the more it costs <span class="cite">(PMI, 2017)</span>.</p>
+              </div>
+                <p class="pc__me"><span>How it could affect my project</span>If the owner changes their mind halfway through, it could delay the launch and push the cost up.</p>
+              </article>
+              <article class="card pc">
+                <h4>Lots of paperwork</h4>
+                <p>Business case, plans, logs, reports and sign-offs all take time to write.</p>
+                <p class="pc__me"><span>How it could affect my project</span>With a team of four, writing documents could take time away from building the website.</p>
+              </article>
+              <article class="card pc">
+                <h4>Users see it late</h4>
+                <p>Users are mostly involved at the start and at the end, not much in the middle.</p>
+                <p class="pc__me"><span>How it could affect my project</span>If I misunderstood a requirement, I might only find out at acceptance testing, when fixing it is expensive.</p>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1137,15 +1762,15 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">8</span>Link to my own project</p>
           <h2>Using it on my own project</h2>
-          <p class="lead">My project: a click &amp; collect website for Northgate Bakery, a small local bakery (made up for this unit). It has 8 weeks, a £9,900 budget and a team of four.</p>
+          <p class="lead">It's the project from the stage slides: a click &amp; collect website for Northgate Bakery, a small local bakery (made up for this unit), with 8 weeks, a £9,900 budget and a team of four.</p>
         </header>
         <div class="cols cols--wide-left">
           <ol class="plan-rows">
-            <li class="s1"><span class="sn">1</span><b>Initiation</b><span>Meet the owner, write a business case (lost phone orders, long queues, waste) and check it's possible in 8 weeks for £9,900. The owner says go.</span></li>
-            <li class="s2"><span class="sn">2</span><b>Planning</b><span>Write the requirements with the owner, make the Gantt chart, budget and risk register, then get the plan signed off.</span></li>
-            <li class="s3"><span class="sn">3</span><b>Execution</b><span>Design, build and test the website with the team, with weekly check-ins and a demo for the owner.</span></li>
-            <li class="s4"><span class="sn">4</span><b>Monitoring &amp; control</b><span>Every Friday, compare progress with the Gantt chart and the budget. New ideas, like loyalty points, go through change control.</span></li>
-            <li class="s5"><span class="sn">5</span><b>Closure</b><span>10 real test orders with the owner, staff training, hand over the logins and user guide, get it signed off and write the lessons learned.</span></li>
+            <li class="s1"><span class="sn">1</span><b>Initiation</b><span>Meet the owner, write the business case (lost phone orders, queues, waste, ROI) and set SMART objectives. The owner says go.</span></li>
+            <li class="s2"><span class="sn">2</span><b>Planning</b><span>Agree the requirements, break the site into parts (PBS), then make the Gantt chart, budget and risk register and get the plan signed off.</span></li>
+            <li class="s3"><span class="sn">3</span><b>Execution</b><span>Design, build and test the website, check the quality against ISO/IEC 25010 and WCAG, and show the owner a demo every week.</span></li>
+            <li class="s4"><span class="sn">4</span><b>Monitoring &amp; control</b><span>Reviews in weeks 3 and 6 against the Gantt chart and budget. Problems go in the issue log; new ideas, like loyalty points, go through change control.</span></li>
+            <li class="s5"><span class="sn">5</span><b>Closure</b><span>10 real test orders, check the success criteria, train the staff, hand over the user guide, get it signed off and write the lessons learned.</span></li>
           </ol>
           <div class="card verdict">
             <p class="small">Would it work well for my project?</p>
@@ -1170,7 +1795,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
         <header class="slide__head">
           <p class="kicker"><span class="kicker__num">9</span>Conclusion</p>
           <h2>Conclusion</h2>
-          <p class="lead">The project life cycle splits a project into five stages in a fixed order, initiation, planning, execution, monitoring &amp; control and closure, with a decision point between them. It keeps a project under control from the first idea to the handover.</p>
+          <p class="lead">The project life cycle splits a project into five stages in a fixed order, initiation, planning, execution, monitoring &amp; control and closure, with a decision point between them. Each stage has its own jobs and tools, from the business case to the sign-off, and together they keep a project under control from the first idea to the handover.</p>
         </header>
         <div class="sl-grid">
           <div class="card sl">
@@ -1201,55 +1826,52 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     </div>
   </section>
 
-  <!-- ===================== 10. REFERENCES ===================== -->
-  <section class="slide" data-title="References" data-section="10 · References">
+  <!-- ===================== 10. REFERENCES + FEEDBACK ===================== -->
+  <section class="slide" data-title="References + feedback" data-section="10 · References">
     <div class="slide__inner">
       <div class="slide__body">
-        <header class="slide__head">
-          <p class="kicker"><span class="kicker__num">10</span>References</p>
-          <h2>References</h2>
-        </header>
-        <ol class="refs">
-          <li>Association for Project Management (APM) (2019) <i>APM body of knowledge</i>. 7th edn. Princes Risborough: Association for Project Management.</li>
-          <li>AXELOS (2017) <i>Managing successful projects with PRINCE2</i>. 6th edn. London: TSO.</li>
-          <li>Beck, K. et al. (2001) <i>Manifesto for agile software development</i>. Available at: <a href="https://agilemanifesto.org/" target="_blank" rel="noopener">https://agilemanifesto.org/</a> (Accessed: 29 September 2026).</li>
-          <li>NASA (2016) <i>NASA systems engineering handbook</i>. Rev. 2 (NASA/SP-2016-6105). Washington, DC: National Aeronautics and Space Administration.</li>
-          <li>NASA (no date) <i>Mars 2020: Perseverance rover</i>. Available at: <a href="https://science.nasa.gov/mission/mars-2020-perseverance/" target="_blank" rel="noopener">https://science.nasa.gov/mission/mars-2020-perseverance/</a> (Accessed: 29 September 2026).</li>
-          <li>Project Management Institute (PMI) (2017) <i>A guide to the project management body of knowledge (PMBOK guide)</i>. 6th edn. Newtown Square, PA: Project Management Institute.</li>
-          <li>Schwalbe, K. (2019) <i>Information technology project management</i>. 9th edn. Boston, MA: Cengage Learning.</li>
-        </ol>
-        <p class="small">Referenced in the Harvard style. The citations on the slides, like (PMI, 2017), point to this list.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== FEEDBACK ===================== -->
-  <section class="slide" data-title="Thank you + feedback" data-section="Feedback">
-    <div class="slide__inner">
-      <div class="slide__body">
-        <div class="cols">
-          <div class="stack thanks">
+        <div class="end-grid">
+          <div class="stack">
+            <header class="slide__head">
+              <p class="kicker"><span class="kicker__num">10</span>References</p>
+              <h2>References</h2>
+            </header>
+            <ol class="refs">
+              <li>Association for Project Management (APM) (2019) <i>APM body of knowledge</i>. 7th edn. Princes Risborough: Association for Project Management.</li>
+              <li>AXELOS (2017) <i>Managing successful projects with PRINCE2</i>. 6th edn. London: TSO.</li>
+              <li>Beck, K. et al. (2001) <i>Manifesto for agile software development</i>. Available at: <a href="https://agilemanifesto.org/" target="_blank" rel="noopener">https://agilemanifesto.org/</a> (Accessed: 29 September 2026).</li>
+              <li>International Organization for Standardization (ISO) (2023) <i>Systems and software engineering: systems and software quality requirements and evaluation (SQuaRE): product quality model</i> (ISO/IEC 25010:2023). Geneva: ISO. Available at: <a href="https://www.iso.org/standard/78176.html" target="_blank" rel="noopener">https://www.iso.org/standard/78176.html</a> (Accessed: 29 September 2026).</li>
+              <li>NASA (2016) <i>NASA systems engineering handbook</i>. Rev. 2 (NASA/SP-2016-6105). Washington, DC: National Aeronautics and Space Administration.</li>
+              <li>NASA (no date) <i>Mars 2020: Perseverance rover</i>. Available at: <a href="https://science.nasa.gov/mission/mars-2020-perseverance/" target="_blank" rel="noopener">https://science.nasa.gov/mission/mars-2020-perseverance/</a> (Accessed: 29 September 2026).</li>
+              <li>Project Management Institute (PMI) (2017) <i>A guide to the project management body of knowledge (PMBOK guide)</i>. 6th edn. Newtown Square, PA: Project Management Institute.</li>
+              <li>Schwalbe, K. (2019) <i>Information technology project management</i>. 9th edn. Boston, MA: Cengage Learning.</li>
+              <li>World Wide Web Consortium (W3C) (2023) <i>Web content accessibility guidelines (WCAG) 2.2</i>. Available at: <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener">https://www.w3.org/TR/WCAG22/</a> (Accessed: 29 September 2026).</li>
+            </ol>
+            <p class="small">Harvard style. The citations on the slides, like (PMI, 2017), point to this list.</p>
+          </div>
+          <div class="end-thanks">
             <p class="kicker">That's the end</p>
             <h2>Thank you for listening!</h2>
             <p class="thanks__q">Any questions?</p>
-            <p class="whoami"><span>Alexandru Ioan</span><span>Student ID 25002954</span></p>
-          </div>
-          <div class="card fb">
-            <div class="qr qr--empty" id="qrBox">Add the link to your Microsoft Form to make the QR code</div>
-            <div class="fb__text">
-              <h3>How was my presentation?</h3>
-              <p>Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms. It only takes a minute.</p>
-              <p class="fb__link" id="qrLink"></p>
-              <form class="qr-form" id="qrForm" novalidate>
-                <label for="qrInput">Link to my Microsoft Form</label>
-                <div>
-                  <input type="url" id="qrInput" placeholder="https://forms.office.com/r/..." autocomplete="off">
-                  <button type="submit" class="btn btn--small">Make QR code</button>
-                </div>
-                <p class="error" id="qrError" hidden>That doesn't look like a link. It should start with https://</p>
-              </form>
-              <button type="button" class="text-btn" id="qrChange" hidden>change link</button>
+            <div class="card fb">
+              <div class="qr qr--empty" id="qrBox">Add the link to your Microsoft Form to make the QR code</div>
+              <div class="fb__text">
+                <h3>How was my presentation?</h3>
+                <p>Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms. It only takes a minute.</p>
+                <p class="small" id="qrHint" hidden>Click the code to show it full screen.</p>
+                <p class="fb__link" id="qrLink"></p>
+                <form class="qr-form" id="qrForm" novalidate>
+                  <label for="qrInput">Link to my Microsoft Form</label>
+                  <div>
+                    <input type="url" id="qrInput" placeholder="https://forms.office.com/r/..." autocomplete="off">
+                    <button type="submit" class="btn btn--small">Make QR code</button>
+                  </div>
+                  <p class="error" id="qrError" hidden>That doesn't look like a link. It should start with https://</p>
+                </form>
+                <button type="button" class="text-btn" id="qrChange" hidden>change link</button>
+              </div>
             </div>
+            <p class="whoami"><span>Alexandru Ioan</span><span>Student ID 25002954</span></p>
           </div>
         </div>
       </div>
@@ -1268,7 +1890,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
   <button class="icon-btn" id="nextBtn" type="button" aria-label="Next slide">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
-  <p class="controls__where" aria-live="polite"><b id="slideCount">01 / 12</b><span id="slideSection">Title</span></p>
+  <p class="controls__where" aria-live="polite"><b id="slideCount">01 / 15</b><span id="slideSection">Title</span></p>
   <div class="controls__tools">
     <button class="icon-btn" id="ovBtn" type="button" aria-label="Show all slides (O)">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.3"/></svg>
@@ -1295,6 +1917,11 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
 
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
+<div class="qr-zoom" id="qrZoom" role="dialog" aria-modal="true" aria-label="Feedback QR code, full screen" tabindex="-1" hidden>
+  <div class="qr-zoom__box" id="qrZoomBox"></div>
+  <p>Scan me! Click anywhere or press Esc to close.</p>
+</div>
+
 <!-- QR code library (qrcode-generator by Kazuhiko Arase, MIT licence) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
@@ -1311,6 +1938,8 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const pad = n => String(n).padStart(2, '0');
+  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+  const money = n => '£' + Math.round(n).toLocaleString('en-GB');
   const store = {
     get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
     set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private window etc. */ } }
@@ -1340,6 +1969,15 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     tip.style.top = Math.max(8, top) + 'px';
   }
   function hideTip() { tip.hidden = true; }
+  function attachTip(el, getLines) {
+    el.addEventListener('pointermove', e => showTip(getLines(), e.clientX, e.clientY));
+    el.addEventListener('pointerleave', hideTip);
+    el.addEventListener('focus', () => {
+      const r = el.getBoundingClientRect();
+      showTip(getLines(), r.left + r.width / 2, r.bottom);
+    });
+    el.addEventListener('blur', hideTip);
+  }
 
   /* =========================================================
      1. SLIDES & NAVIGATION
@@ -1374,6 +2012,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     });
     station.addEventListener('pointerleave', hideTip);
     li.append(station);
+    if (slide.dataset.stage) li.style.setProperty('--c', `var(--s${slide.dataset.stage})`);
     route.append(li);
     return li;
   });
@@ -1423,12 +2062,19 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
   // keyboard: arrows, space, page up/down, home/end, O, T, F
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!qrZoom.hidden) {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeZoom();
+      }
+      return;
+    }
     if (!overview.hidden) {
       if (e.key === 'Escape') closeOverview();
       return;
     }
     const el = document.activeElement;
-    if (el && el.closest('input, textarea, [role="tablist"], [data-own-keys]')) return;
+    if (el && el.closest('input, select, textarea, [role="tablist"], [data-own-keys]')) return;
     const onButton = el && el.closest('button, a');
     switch (e.key) {
       case 'ArrowRight':
@@ -1454,7 +2100,7 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
   let touchX = null;
   let touchY = null;
   deck.addEventListener('touchstart', e => {
-    if (e.touches.length !== 1 || e.target.closest('input, .scroll-x, [data-own-keys]')) {
+    if (e.touches.length !== 1 || e.target.closest('input, select, .scroll-x, [data-own-keys]')) {
       touchX = null;
       return;
     }
@@ -1483,6 +2129,10 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     title.className = 'ov-card__title';
     title.textContent = slide.dataset.title;
     card.append(no, title);
+    if (slide.dataset.stage) {
+      card.classList.add('has-stage');
+      card.style.setProperty('--c', `var(--s${slide.dataset.stage})`);
+    }
     card.addEventListener('click', () => { closeOverview(); goTo(i); });
     ovGrid.append(card);
   });
@@ -1530,36 +2180,365 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
   $('#fsBtn').addEventListener('click', toggleFullscreen);
 
   /* =========================================================
-     2. STAGE EXPLORER (section 3)
+     2. THE STAGE SLIDES (section 3)
      ========================================================= */
-  const stageTabs = $$('.explorer__tabs [role="tab"]');
-  function selectStage(i) {
-    stageTabs.forEach((tab, j) => {
-      const on = j === i;
-      tab.setAttribute('aria-selected', String(on));
-      tab.tabIndex = on ? 0 : -1;
-      document.getElementById(tab.getAttribute('aria-controls')).hidden = !on;
+
+  /* ---------- tabs (the planning tools) ---------- */
+  $$('[role="tablist"]').forEach(list => {
+    const tabs = $$('[role="tab"]', list);
+    function select(tab) {
+      tabs.forEach(other => {
+        const on = other === tab;
+        other.setAttribute('aria-selected', String(on));
+        other.tabIndex = on ? 0 : -1;
+        document.getElementById(other.getAttribute('aria-controls')).hidden = !on;
+      });
+      hideTip();
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        e.preventDefault();
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(next);
+        next.focus();
+      });
     });
-    $('#stageCount').textContent = `Stage ${i + 1} of ${stageTabs.length}`;
-    $('#stageNext').textContent = i < stageTabs.length - 1 ? 'Next stage →' : 'Back to stage 1 ↺';
-  }
-  stageTabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => selectStage(i));
-    tab.addEventListener('keydown', e => {
-      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-      e.preventDefault();
-      const next = (i + (e.key === 'ArrowRight' ? 1 : stageTabs.length - 1)) % stageTabs.length;
-      selectStage(next);
-      stageTabs[next].focus();
-    });
-  });
-  $('#stageNext').addEventListener('click', () => {
-    const now = stageTabs.findIndex(tab => tab.getAttribute('aria-selected') === 'true');
-    selectStage((now + 1) % stageTabs.length);
   });
 
+  /* ---------- stage 1: return on investment ---------- */
+  const roiCost = $('#roiCost');
+  const roiGain = $('#roiGain');
+  function updateRoi() {
+    const cost = Number(roiCost.value);
+    const gain = Number(roiGain.value);
+    if (!(cost > 0) || !(gain >= 0)) {
+      $('#roiPct').textContent = '?';
+      $('#roiSum').textContent = '';
+      $('#roiNote').textContent = 'Type in the cost (more than £0) and the extra sales.';
+      return;
+    }
+    const roi = Math.round((gain - cost) / cost * 100);
+    $('#roiPct').textContent = (roi < 0 ? '−' : '') + Math.abs(roi) + '%';
+    $('#roiSum').textContent = `(${money(gain)} − ${money(cost)}) ÷ ${money(cost)} × 100`;
+    let note = `Every £1 spent brings back £${(gain / cost).toFixed(2)}, so it's worth doing.`;
+    if (gain === cost) note = "It only just pays for itself, so it probably isn't worth the risk.";
+    else if (gain < cost) note = `It loses ${money(cost - gain)}, so it isn't worth doing unless there are other benefits.`;
+    $('#roiNote').textContent = note;
+  }
+  roiCost.addEventListener('input', updateRoi);
+  roiGain.addEventListener('input', updateRoi);
+
+  /* ---------- stage 2: sorting the requirements ---------- */
+  const sorterItems = $$('#sorter li');
+  const sorterFb = $('#sorterFb');
+  function updateSorterScore() {
+    const right = sorterItems.filter(li => li.dataset.result === 'right').length;
+    const done = sorterItems.filter(li => li.dataset.result).length;
+    $('#sorterScore').textContent = done === sorterItems.length
+      ? `${right} / ${sorterItems.length} right${right === sorterItems.length ? ', nice!' : ''}`
+      : `${done} / ${sorterItems.length} sorted`;
+  }
+  sorterItems.forEach(li => {
+    const picks = $$('[data-pick]', li);
+    picks.forEach(btn => btn.addEventListener('click', () => {
+      const right = btn.dataset.pick === li.dataset.answer;
+      picks.forEach(other => {
+        other.classList.remove('is-right', 'is-wrong');
+        other.setAttribute('aria-pressed', String(other === btn));
+      });
+      btn.classList.add(right ? 'is-right' : 'is-wrong');
+      li.dataset.result = right ? 'right' : 'wrong';
+      sorterFb.className = 'small ' + (right ? 'is-right' : 'is-wrong');
+      sorterFb.textContent = (right ? '✓ Right: ' : '✗ Not quite: ') + li.dataset.why;
+      updateSorterScore();
+    }));
+  });
+
+  /* ---------- stage 2: gantt chart, PERT chart, task sheet + critical path ---------- */
+  const TASKS = [
+    { id: 'A', name: 'Requirements & plan', days: 5, after: [] },
+    { id: 'B', name: 'Design', days: 8, after: ['A'] },
+    { id: 'C', name: 'Photos & product text', days: 6, after: ['A'] },
+    { id: 'D', name: 'Front end', days: 9, after: ['B'] },
+    { id: 'E', name: 'Back end & payments', days: 14, after: ['B'] },
+    { id: 'F', name: 'Add products to the site', days: 3, after: ['C', 'D'] },
+    { id: 'G', name: 'Testing & fixes', days: 7, after: ['E', 'F'] },
+    { id: 'H', name: 'Staff training', days: 3, after: ['E'] }
+  ];
+  const DEADLINE = 40;          // 8 weeks × 5 working days
+  const AXIS_DAYS = 45;         // the chart shows 9 weeks so you can see "late"
+  const REVIEWS = [15, 30];     // interim reviews at the end of week 3 and week 6
+  const MILESTONES = { A: 'Requirements signed off', B: 'Design approved', E: 'Payments working' };
+
+  // critical path method: forward pass (earliest times), then backward pass (latest times)
+  function schedule(delays = {}) {
+    const t = {};
+    TASKS.forEach(task => {  // TASKS is already in an order where predecessors come first
+      const dur = task.days + (delays[task.id] || 0);
+      const es = Math.max(0, ...task.after.map(id => t[id].ef));
+      t[task.id] = { dur, es, ef: es + dur };
+    });
+    const end = Math.max(...TASKS.map(task => t[task.id].ef));
+    [...TASKS].reverse().forEach(task => {
+      const next = TASKS.filter(other => other.after.includes(task.id));
+      const lf = next.length ? Math.min(...next.map(other => t[other.id].ls)) : end;
+      t[task.id].lf = lf;
+      t[task.id].ls = lf - t[task.id].dur;
+      t[task.id].float = t[task.id].ls - t[task.id].es;
+    });
+    return { t, end };
+  }
+  const baseline = schedule();
+
+  const gantt = $('#gantt');
+  const gPlot = $('#gPlot');
+  const gOverlay = $('#gOverlay');
+  const gMarkers = $('#gMarkers');
+  const at = day => (day / AXIS_DAYS * 100) + '%';
+  const rowMiddle = i => `calc(var(--row) * ${i} + var(--row) / 2)`;
+  const ganttRows = [];
+
+  // labels + row lines (8 tasks and the launch row)
+  [...TASKS, { id: '◆', name: 'Launch (go-live)', launch: true }].forEach((task, i) => {
+    const line = document.createElement('div');
+    line.className = 'g-rowline';
+    line.style.gridRow = String(i + 3);
+    const label = document.createElement('div');
+    label.className = 'g-label';
+    label.style.gridRow = String(i + 3);
+    const id = document.createElement('b');
+    id.textContent = task.id;
+    const name = document.createElement('span');
+    name.textContent = task.name;
+    label.append(id, name);
+    if (!task.launch) {
+      const days = document.createElement('i');
+      days.textContent = task.days + 'd';
+      label.append(days);
+      ganttRows.push({ task, days });
+    }
+    gantt.insertBefore(line, gOverlay);
+    gantt.insertBefore(label, gOverlay);
+  });
+
+  // week lines, the "too late" zone, the interim reviews and the deadline
+  const late = document.createElement('span');
+  late.className = 'g-late';
+  late.style.left = at(DEADLINE);
+  gOverlay.append(late);
+  for (let w = 1; w < 9; w++) {
+    const line = document.createElement('span');
+    line.className = 'g-week';
+    line.style.left = at(w * 5);
+    gOverlay.append(line);
+  }
+  REVIEWS.forEach((day, i) => {
+    const line = document.createElement('span');
+    line.className = 'g-review';
+    line.style.left = at(day);
+    gOverlay.append(line);
+    const mark = document.createElement('span');
+    mark.className = 'g-mark';
+    mark.style.left = at(day);
+    mark.textContent = 'Review ' + (i + 1);
+    gMarkers.append(mark);
+  });
+  const deadlineLine = document.createElement('span');
+  deadlineLine.className = 'g-deadline';
+  deadlineLine.style.left = at(DEADLINE);
+  gOverlay.append(deadlineLine);
+  const deadlineMark = document.createElement('span');
+  deadlineMark.className = 'g-mark g-mark--deadline';
+  deadlineMark.style.left = at(DEADLINE);
+  deadlineMark.textContent = 'Deadline';
+  gMarkers.append(deadlineMark);
+
+  // bars, float and milestones (made once, moved when something changes)
+  const bars = {};
+  TASKS.forEach((task, i) => {
+    const float = document.createElement('div');
+    float.className = 'g-float';
+    float.style.top = `calc(${rowMiddle(i)} - var(--bar-h) / 2)`;
+    const bar = document.createElement('div');
+    bar.className = 'g-bar';
+    bar.tabIndex = 0;
+    bar.setAttribute('role', 'img');
+    bar.style.top = `calc(${rowMiddle(i)} - var(--bar-h) / 2)`;
+    gPlot.append(float, bar);
+    let ms = null;
+    if (MILESTONES[task.id]) {
+      ms = document.createElement('div');
+      ms.className = 'g-ms';
+      ms.style.top = rowMiddle(i);
+      gPlot.append(ms);
+    }
+    bars[task.id] = { bar, float, ms, s: null };
+    attachTip(bar, () => {
+      const s = bars[task.id].s;
+      const lines = [`${task.id} · ${task.name}`, `Day ${s.es} → ${s.ef} (${plural(s.dur, 'day')})`];
+      lines.push(s.float === 0 ? 'Critical: no float' : `Float: ${plural(s.float, 'day')}`);
+      if (MILESTONES[task.id]) lines.push(`◆ ${MILESTONES[task.id]}`);
+      return lines;
+    });
+  });
+  const launchMs = document.createElement('div');
+  launchMs.className = 'g-ms g-ms--launch';
+  launchMs.style.top = rowMiddle(TASKS.length);
+  const launchText = document.createElement('span');
+  launchText.className = 'g-launch-text';
+  launchText.style.top = rowMiddle(TASKS.length);
+  gPlot.append(launchMs, launchText);
+
+  // the same plan as a PERT chart: boxes and arrows go red on the critical path
+  const pertNodes = $$('#pert [data-node]');
+  const pertEdges = $$('#pert [data-from]');
+  function renderPert(t, end) {
+    pertNodes.forEach(node => {
+      const meta = $('.pert__meta', node);
+      if (node.dataset.node === 'launch') {
+        node.classList.toggle('is-late', end > DEADLINE);
+        meta.textContent = 'day ' + end;
+        return;
+      }
+      const s = t[node.dataset.node];
+      node.classList.toggle('is-crit', s.float === 0);
+      meta.textContent = plural(s.dur, 'day') + (s.float > 0 ? ' · float ' + s.float : '');
+    });
+    pertEdges.forEach(edge => {
+      const from = t[edge.dataset.from];
+      const to = edge.dataset.to === 'launch' ? { float: 0, es: end } : t[edge.dataset.to];
+      const crit = from.float === 0 && to.float === 0 && to.es === from.ef;
+      edge.classList.toggle('is-crit', crit);
+      edge.setAttribute('marker-end', crit ? 'url(#pertHeadCrit)' : 'url(#pertHead)');
+    });
+  }
+
+  // ...and as the task sheet you'd type into Microsoft Project
+  const sheetRows = [...TASKS, { id: '◆', name: 'Launch', after: ['G', 'H'], launch: true }].map(task => {
+    const tr = document.createElement('tr');
+    const cells = Array.from({ length: 7 }, () => document.createElement('td'));
+    cells[0].textContent = task.id;
+    cells[1].textContent = task.name;
+    cells[5].textContent = task.after.join(', ') || '–';
+    tr.append(...cells);
+    if (task.launch) tr.className = 'is-ms';
+    $('#sheetBody').append(tr);
+    return { task, tr, cells };
+  });
+  function renderSheet(t, end) {
+    sheetRows.forEach(({ task, tr, cells }) => {
+      const s = task.launch ? { dur: 0, es: end, ef: end, float: null } : t[task.id];
+      cells[2].textContent = plural(s.dur, 'day');
+      cells[3].textContent = 'day ' + s.es;
+      cells[4].textContent = 'day ' + s.ef;
+      cells[6].textContent = s.float === null ? '–' : plural(s.float, 'day');
+      tr.classList.toggle('is-crit', s.float === 0);
+    });
+  }
+
+  const delayTask = $('#delayTask');
+  const delayDays = $('#delayDays');
+
+  // "A → B → E → G" if the critical tasks form one chain, otherwise just list them
+  function describeCritical(t) {
+    const crit = TASKS.filter(task => t[task.id].float === 0);
+    const isChain = crit.every((task, i) => i === 0 || task.after.includes(crit[i - 1].id));
+    return crit.map(task => task.id).join(isChain ? ' → ' : ', ');
+  }
+
+  function renderGantt() {
+    const id = delayTask.value;
+    const delay = Number(delayDays.value);
+    const { t, end } = schedule({ [id]: delay });
+
+    TASKS.forEach(task => {
+      const s = t[task.id];
+      const el = bars[task.id];
+      el.s = s;
+      el.bar.style.left = at(s.es);
+      el.bar.style.width = at(s.dur);
+      el.bar.classList.toggle('is-crit', s.float === 0);
+      el.bar.setAttribute('aria-label', `${task.id}, ${task.name}: day ${s.es} to ${s.ef}, ${s.float === 0 ? 'critical' : plural(s.float, 'day') + ' of float'}`);
+      el.float.hidden = s.float === 0;
+      el.float.style.left = at(s.ef);
+      el.float.style.width = at(s.float);
+      if (el.ms) el.ms.style.left = at(s.ef);
+    });
+    ganttRows.forEach(({ task, days }) => {
+      const extra = task.id === id ? delay : 0;
+      days.textContent = task.days + 'd' + (extra ? ' +' + extra : '');
+      days.classList.toggle('is-late', extra > 0);
+    });
+
+    const spare = DEADLINE - end;
+    launchMs.style.left = at(end);
+    launchMs.classList.toggle('is-late', spare < 0);
+    launchText.style.left = at(end);
+    launchText.classList.toggle('is-left', spare < 0);
+    launchText.textContent = 'day ' + end;
+
+    const pill = $('#launchPill');
+    pill.className = 'pill ' + (spare >= 0 ? 'pill--good' : 'pill--bad');
+    pill.textContent = spare >= 0
+      ? `✓ Launch day ${end} of ${DEADLINE}: ${plural(spare, 'day')} spare`
+      : `✗ Launch day ${end}: ${plural(-spare, 'day')} late!`;
+
+    $('#delayOut').textContent = plural(delay, 'day');
+    const moved = end - baseline.end;
+    const baseFloat = baseline.t[id].float;
+    let note = 'Pick a task and drag the slider to see what happens to the launch.';
+    if (delay > 0 && moved === 0) note = `${id} is ${plural(delay, 'day')} late, but the launch doesn't move, because ${id} had ${plural(baseFloat, 'day')} of float.`;
+    else if (delay > 0 && moved === delay) note = `${id} is on the critical path, so the launch moves by the full ${plural(delay, 'day')}.`;
+    else if (delay > 0) note = `${id} had ${plural(baseFloat, 'day')} of float, so the launch only moves by ${plural(moved, 'day')}.`;
+    $('#delayNote').textContent = note;
+    $('#critPath').textContent = describeCritical(t);
+    renderPert(t, end);
+    renderSheet(t, end);
+  }
+  delayTask.addEventListener('change', renderGantt);
+  delayDays.addEventListener('input', renderGantt);
+
+  /* ---------- stage 3: ISO/IEC 25010 quality ---------- */
+  const ISO = {
+    usability: ['Usability:', "can customers order without help? I'll watch 5 real customers try it. (The 2023 version calls this “interaction capability”.)"],
+    reliability: ['Reliability:', 'does it keep working? It has to cope with the Saturday morning rush without losing a single order.'],
+    security: ['Security:', 'is the data safe? Passwords are stored securely and card payments go through a trusted payment provider.'],
+    performance: ['Performance:', 'is it fast enough? Every page should load within three seconds, even on a phone.']
+  };
+  const isoChips = $$('#isoChips .chip');
+  isoChips.forEach(chip => chip.addEventListener('click', () => {
+    isoChips.forEach(other => other.setAttribute('aria-pressed', String(other === chip)));
+    const [name, text] = ISO[chip.dataset.iso];
+    $('#isoName').textContent = name;
+    $('#isoText').textContent = text;
+  }));
+
+  /* ---------- stage 5: sign-off against the success criteria ---------- */
+  const signoffBoxes = $$('#signoff input');
+  function updateSignoff() {
+    const met = signoffBoxes.filter(box => box.checked).length;
+    const all = met === signoffBoxes.length;
+    const status = $('#signoffStatus');
+    status.textContent = all
+      ? `✓ All ${met} met: the client signs the acceptance form.`
+      : `${met} of ${signoffBoxes.length} met: not ready to sign yet`;
+    status.classList.toggle('is-done', all);
+    $('#signcard').classList.toggle('is-signed', all);
+  }
+  signoffBoxes.forEach(box => box.addEventListener('change', updateSignoff));
+
+  /* ---------- title slide: the ring arcs jump to their stage ---------- */
+  $$('.ring__arc[data-go]').forEach(arc => arc.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    e.stopPropagation();
+    goTo(Number(arc.dataset.go) - 1);
+  }));
+
   /* =========================================================
-     3. "WHO IS BUSY WHEN" CHART (section 4)
+     3. "WHO IS BUSY WHEN" CHART (section 4, key features)
      ========================================================= */
   // a typical pattern, drawn by hand from what I read, not real data
   const PHASES = [
@@ -1680,6 +2659,10 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     qrForm.hidden = Boolean(url);
     $('#qrChange').hidden = !url;
     link.textContent = url;
+    qrBox.removeAttribute('role');
+    qrBox.removeAttribute('tabindex');
+    qrBox.removeAttribute('aria-label');
+    $('#qrHint').hidden = true;
     if (!url) {
       qrBox.className = 'qr qr--empty';
       qrBox.textContent = 'Add the link to your Microsoft Form to make the QR code';
@@ -1703,7 +2686,37 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
     }
     qrBox.className = 'qr';
     qrBox.innerHTML = `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for my feedback form"><rect class="qr-bg" width="${size}" height="${size}"/><path class="qr-ink" d="${d}"/></svg>`;
+    qrBox.setAttribute('role', 'button');
+    qrBox.tabIndex = 0;
+    qrBox.setAttribute('aria-label', 'QR code for my feedback form. Press to show it full screen');
+    $('#qrHint').hidden = false;
   }
+
+  // full screen, so the people at the back of the room can scan it too
+  const qrZoom = $('#qrZoom');
+  function openZoom() {
+    if (qrBox.classList.contains('qr--empty')) return;
+    $('#qrZoomBox').innerHTML = qrBox.innerHTML; // my own SVG from showQr()
+    qrZoom.hidden = false;
+    deck.inert = true;
+    controls.inert = true;
+    hideTip();
+    qrZoom.focus();
+  }
+  function closeZoom() {
+    qrZoom.hidden = true;
+    deck.inert = false;
+    controls.inert = false;
+    qrBox.focus();
+  }
+  qrBox.addEventListener('click', openZoom);
+  qrBox.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    e.stopPropagation();
+    openZoom();
+  });
+  qrZoom.addEventListener('click', closeZoom);
 
   qrForm.addEventListener('submit', e => {
     e.preventDefault();
@@ -1725,7 +2738,9 @@ h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
      START
      ========================================================= */
   updateThemeButton();
-  selectStage(0);
+  renderGantt();
+  updateRoi();
+  updateSignoff();
   showQr();
   const startSlide = slideFromHash();
   goTo(startSlide !== null ? startSlide : 0, true);
