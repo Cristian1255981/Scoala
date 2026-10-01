@@ -11,7 +11,9 @@ const sharp = require('sharp');
 const JSZip = require('jszip');
 const fs = require('fs');
 
-const OUT = process.argv[2] || 'Programming-Paradigms-Alexandru-Ioan.pptx';
+const OUT = process.argv[2] || 'Procedural-Event-Driven-OOP-Alexandru-Ioan.pptx';
+// the QR code for my feedback form (downloaded from Microsoft Forms)
+const QR_FILE = require('path').join(__dirname, 'feedback-qr.png');
 const NAME = 'Alexandru Ioan';
 const STUDENT_ID = '25002954';
 
@@ -36,7 +38,7 @@ const pres = new pptxgen();
 pres.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches
 pres.author = NAME;
 pres.company = `Student ID ${STUDENT_ID}`;
-pres.title = 'Programming Paradigms';
+pres.title = 'Procedural, Event-Driven and Object-Oriented Programming';
 pres.subject = 'Procedural, event-driven and object-oriented programming';
 pres.theme = { headFontFace: F.head, bodyFontFace: F.body };
 const S = pres.shapes;
@@ -502,12 +504,18 @@ function build() {
   {
     const s = newSlide({ dark: true });
     tx(s, 'LEVEL 3 IT · PROGRAMMING', 0.8, 1.35, 5.6, 0.3, { fontSize: 12, color: C.nightMuted, charSpacing: 3 });
-    tx(s, 'Programming\nparadigms', 0.8, 1.75, 5.9, 2.05, { fontFace: F.head, fontSize: 54, bold: true, color: C.white, lineSpacingMultiple: 0.92 });
-    tx(s, 'Procedural, event-driven and object-oriented programming: what each one is, how it works, and the same small program written all three ways.',
-      0.8, 3.9, 5.5, 1.1, { fontSize: 17, color: C.nightInk2 });
-    tx(s, NAME, 0.8, 5.2, 5, 0.38, { fontSize: 20, bold: true, color: C.white });
-    tx(s, `Student ID ${STUDENT_ID}`, 0.8, 5.6, 5, 0.3, { fontFace: F.code, fontSize: 12.5, color: C.nightMuted });
-    tx(s, '1 Introduction   ·   2 Procedural   ·   3 Event-driven   ·   4 Object-oriented   ·   5 Comparison   ·   6 Conclusion   ·   7 References',
+    tx(s, [
+      { text: 'Procedural,', options: { color: '4B91EA', breakLine: true } },
+      { text: 'Event-Driven', options: { color: 'E19B2C' } },
+      { text: ' and', options: { color: C.white, breakLine: true } },
+      { text: 'Object-Oriented', options: { color: 'D466AD', breakLine: true } },
+      { text: 'Programming', options: { color: C.white } },
+    ], 0.8, 1.72, 6.0, 2.6, { fontFace: F.head, fontSize: 42, bold: true, lineSpacingMultiple: 0.95 });
+    tx(s, 'What each one is, how it works, and the same small program written all three ways.',
+      0.8, 4.52, 5.5, 0.7, { fontSize: 17, color: C.nightInk2 });
+    tx(s, NAME, 0.8, 5.3, 5, 0.38, { fontSize: 20, bold: true, color: C.white });
+    tx(s, `Student ID ${STUDENT_ID}`, 0.8, 5.7, 5, 0.3, { fontFace: F.code, fontSize: 12.5, color: C.nightMuted });
+    tx(s, '1 Procedural   ·   2 Event-driven   ·   3 Object-oriented   ·   4 Comparison   ·   5 Conclusion   ·   6 References',
       0.8, 6.62, 11.7, 0.3, { fontSize: 11, color: C.nightMuted });
     const files = [
       { p: 1, file: 'procedural.py', code: 'def add_up(prices):\n    total = 0\n    for price in prices:\n        total = total + price\n    return total' },
@@ -520,67 +528,13 @@ function build() {
       fy = e.bottom + 0.2;
     });
     tx(s, 'the same basket, three ways', 7.45, fy - 0.02, 5.3, 0.32, { fontFace: F.head, italic: true, fontSize: 14, color: C.nightMuted, align: 'right' });
-    s.addNotes(`Hello, I'm ${NAME}. My presentation is about three programming paradigms: procedural, event-driven and object-oriented programming. For each one I'll give a definition, explain the key features, show a simple code example and go through the advantages and disadvantages. Every example does the same small job, adding up a bakery basket, so it's easy to compare them.`);
-  }
-
-  /* ---------- 2. introduction ---------- */
-  {
-    const s = newSlide();
-    header(s, { num: 1, kicker: 'Introduction', title: 'What is a programming paradigm?' });
-    dict(s, { x: MX, y: 1.7, w: 6.4, h: 1.55, word: 'programming paradigm', def: 'A style, or approach, to programming. It is based on a set of ideas about how a program should be organised and how it runs', cite: 'Van Roy, 2009', size: 15 });
-    tx(s, 'A paradigm isn\'t a programming language. It\'s a way of thinking about a problem: how to split it up, where the data is kept and what decides the order the code runs in. Many languages support more than one paradigm. Python, for example, can be written in all three styles in this presentation.',
-      MX, 3.42, 6.4, 1.5, { fontSize: 14.5, lineSpacingMultiple: 1.05 });
-
-    // the receipt
-    const rx = MX, ry0 = 4.8, rw = 2.85;
-    card(s, rx, ry0, rw, 1.96, { r: 0.04 });
-    tx(s, 'THE BAKERY', rx, ry0 + 0.12, rw, 0.24, { align: 'center', fontFace: F.code, fontSize: 11, bold: true, charSpacing: 2, valign: 'middle' });
-    line(s, rx + 0.16, ry0 + 0.44, rx + rw - 0.16, ry0 + 0.44, { color: C.line2, w: 0.75, dash: 'dash' });
-    let ry = ry0 + 0.5;
-    const row = (l, r, o = {}) => {
-      tx(s, l, rx + 0.18, ry, rw - 1.2, 0.2, { fontFace: F.code, fontSize: o.size || 10.5, bold: o.bold, valign: 'middle' });
-      tx(s, r, rx + rw - 1.1, ry, 0.92, 0.2, { fontFace: F.code, fontSize: o.size || 10.5, bold: o.bold, align: 'right', valign: 'middle' });
-      ry += 0.205;
-    };
-    row('Croissant', '£1.25');
-    row('Sourdough loaf', '£3.50');
-    row('Cookie', '£0.75');
-    ry += 0.04;
-    line(s, rx + 0.16, ry, rx + rw - 0.16, ry, { color: C.line2, w: 0.75, dash: 'dash' });
-    ry += 0.05;
-    row('Subtotal', '£5.50');
-    row('£1 off £5+', '−£1.00');
-    ry += 0.04;
-    line(s, rx + 0.16, ry, rx + rw - 0.16, ry, { color: C.ink, w: 1.25 });
-    ry += 0.05;
-    row('To pay', '£4.50', { bold: true, size: 11.5 });
-
-    label(s, 'My example all the way through', 3.75, 5.08, 3.3);
-    tx(s, 'To compare the three fairly, every code example does the same small job: it adds up a bakery basket and takes £1 off orders of £5 or more.',
-      3.75, 5.4, 3.25, 1.2, { fontSize: 13.5, color: C.ink2 });
-
-    label(s, 'The three paradigms in this presentation', 7.35, 1.7, 5.4);
-    const items = {
-      1: ['A list of steps that run in order, grouped into procedures (functions).', 'like following a recipe'],
-      2: ['The program waits for events, like a click, and reacts to each one when it happens.', 'like a shop assistant waiting for customers'],
-      3: ['The program is built from objects that keep their own data and actions together.', 'like the till, oven and products in a bakery'],
-    };
-    [1, 2, 3].forEach((p, i) => {
-      const cy = 2.05 + i * 1.57;
-      card(s, 7.35, cy, 5.38, 1.42);
-      badge(s, p, 7.6, cy + 0.24, 0.66);
-      tx(s, PNAME[p], 8.5, cy + 0.16, 4.0, 0.36, { fontFace: F.head, fontSize: 18, bold: true, valign: 'middle' });
-      tx(s, items[p][0], 8.5, cy + 0.54, 4.05, 0.46, { fontSize: 13, color: C.ink2 });
-      tx(s, items[p][1], 8.5, cy + 1.03, 4.05, 0.28, { fontFace: F.head, italic: true, fontSize: 12.5, color: C.ink2 });
-    });
-    footer(s);
-    s.addNotes('A programming paradigm is a style or approach to programming. It isn\'t a language: it\'s a way of organising a program and deciding how it runs. Some languages support more than one paradigm. Python can be written in all three styles, which is why I use it for most of my examples. My example adds up a basket: a croissant, a sourdough loaf and a cookie come to £5.50, and orders of £5 or more get £1 off, so the customer pays £4.50.');
+    s.addNotes(`Hello, I'm ${NAME}. My presentation is about procedural programming, event-driven programming and object-oriented programming. For each one I'll give a definition, explain the key features, show a simple code example and go through the advantages and disadvantages. Every example does the same small job, adding up a bakery basket, so it's easy to compare them.`);
   }
 
   /* ---------- 3. procedural: what it is ---------- */
   {
     const s = newSlide();
-    header(s, { num: 2, kicker: 'Procedural · what it is', title: 'Procedural programming', p: 1 });
+    header(s, { num: 1, kicker: 'Procedural · what it is', title: 'Procedural programming', p: 1 });
     dict(s, {
       x: MX, y: 1.7, w: 6.25, h: 2.42, p: 1, word: 'procedural programming',
       def: 'A style of programming where a program is a list of instructions that the computer carries out in order, from top to bottom. The instructions are grouped into procedures (also called functions or subroutines) that can be called whenever they\'re needed',
@@ -634,7 +588,7 @@ function build() {
   /* ---------- 4. procedural: code + trace table ---------- */
   {
     const s = newSlide();
-    header(s, { num: 2, kicker: 'Procedural · code example', title: 'Example: adding up the basket', p: 1 });
+    header(s, { num: 1, kicker: 'Procedural · code example', title: 'Example: adding up the basket', p: 1 });
     editor(s, { x: MX, y: 1.7, w: 6.5, p: 1, code: CODE.proc, lang: 'python', file: 'basket_procedural.py', tag: 'Python 3', out: ['To pay: £4.50'] });
     label(s, 'Trace table: the values as the program runs', 7.4, 1.7, 5.33);
     const hd = t => ({ text: t, options: { bold: true, fill: { color: T25[1] }, fontFace: F.body, fontSize: 12 } });
@@ -668,7 +622,7 @@ function build() {
   /* ---------- 5. procedural: pros & cons ---------- */
   {
     const s = newSlide();
-    header(s, { num: 2, kicker: 'Procedural · pros & cons', title: 'Procedural: pros and cons', p: 1 });
+    header(s, { num: 1, kicker: 'Procedural · pros & cons', title: 'Procedural: pros and cons', p: 1 });
     const e = editor(s, { x: MX, y: 1.7, w: 6.0, p: 1, code: CODE.c, lang: 'c', file: 'basket.c', tag: 'C', out: ['Total: 5.50'] });
     tx(s, [...md('The same `add_up()` in C, a classic procedural language. A C program is just functions and data, with no classes or objects ', { fontSize: 12, color: C.ink2 }), { text: '(Kernighan and Ritchie, 1988).', options: { fontSize: 10.5, color: C.muted } }],
       MX, e.bottom + 0.14, 6.0, 0.6);
@@ -691,7 +645,7 @@ function build() {
   /* ---------- 6. event-driven: what it is ---------- */
   {
     const s = newSlide();
-    header(s, { num: 3, kicker: 'Event-driven · what it is', title: 'Event-driven programming', p: 2 });
+    header(s, { num: 2, kicker: 'Event-driven · what it is', title: 'Event-driven programming', p: 2 });
     dict(s, {
       x: MX, y: 1.7, w: 6.0, h: 2.45, p: 2, word: 'event-driven programming',
       def: 'A style of programming where the flow of the program is decided by events: things that happen, like a click, a key press, a sensor reading or a timer running out. The program waits for events, and when one happens it runs the code linked to it, called an event handler',
@@ -754,7 +708,7 @@ function build() {
   /* ---------- 7. event-driven: code ---------- */
   {
     const s = newSlide();
-    header(s, { num: 3, kicker: 'Event-driven · code example', title: 'Example: a bakery till with a button', p: 2 });
+    header(s, { num: 2, kicker: 'Event-driven · code example', title: 'Example: a bakery till with a button', p: 2 });
     editor(s, { x: MX, y: 1.7, w: 6.75, p: 2, code: CODE.till, lang: 'python', file: 'till_events.py', tag: 'Python 3 · tkinter', size: 10.5, lineH: 13.5,
       hot: [5, 6, 7, 8, 10, 11, 12, 13, 19, 20, 22], cur: 24 });
     label(s, 'The window the code makes', 7.7, 1.7, 5.0);
@@ -792,7 +746,7 @@ function build() {
   /* ---------- 8. event-driven: pros & cons ---------- */
   {
     const s = newSlide();
-    header(s, { num: 3, kicker: 'Event-driven · pros & cons', title: 'Event-driven: pros and cons', p: 2 });
+    header(s, { num: 2, kicker: 'Event-driven · pros & cons', title: 'Event-driven: pros and cons', p: 2 });
     const e = editor(s, { x: MX, y: 1.7, w: 6.6, p: 2, code: CODE.js, lang: 'js', file: 'till.js', tag: 'JavaScript', size: 10.5, lineH: 14.5 });
     tx(s, [...md('The same idea on a web page. Browsers are event-driven: `addEventListener()` links an event to its handler ', { fontSize: 12, color: C.ink2 }), { text: '(MDN Web Docs, no date b).', options: { fontSize: 10.5, color: C.muted } }],
       MX, e.bottom + 0.12, 6.6, 0.5);
@@ -826,7 +780,7 @@ function build() {
   /* ---------- 9. OOP: what it is ---------- */
   {
     const s = newSlide();
-    header(s, { num: 4, kicker: 'Object-oriented · what it is', title: 'Object-oriented programming (OOP)', p: 3 });
+    header(s, { num: 3, kicker: 'Object-oriented · what it is', title: 'Object-oriented programming (OOP)', p: 3 });
     dict(s, {
       x: MX, y: 1.7, w: 6.1, h: 2.25, p: 3, word: 'object-oriented programming', pos: 'noun · OOP for short',
       def: 'A style of programming where the program is built from objects. Each object keeps its own data (attributes) together with the actions that use that data (methods). Objects are made from classes, which work like blueprints',
@@ -895,7 +849,7 @@ function build() {
   /* ---------- 10. OOP: code ---------- */
   {
     const s = newSlide();
-    header(s, { num: 4, kicker: 'Object-oriented · code example', title: 'Example: products and a basket', p: 3 });
+    header(s, { num: 3, kicker: 'Object-oriented · code example', title: 'Example: products and a basket', p: 3 });
     editor(s, { x: MX, y: 1.7, w: 6.3, p: 3, code: CODE.oop, lang: 'python', file: 'basket_oop.py', tag: 'Python 3', size: 10.5, lineH: 13.5, hot: [18, 19, 20] });
     label(s, 'The objects after line 22', 7.25, 1.7, 5.48);
     const objCard = (x, y, w, head, attrs, o = {}) => {
@@ -929,7 +883,7 @@ function build() {
   /* ---------- 11. OOP: inheritance, pros & cons ---------- */
   {
     const s = newSlide();
-    header(s, { num: 4, kicker: 'Object-oriented · pros & cons', title: 'OOP: inheritance, pros and cons', p: 3 });
+    header(s, { num: 3, kicker: 'Object-oriented · pros & cons', title: 'OOP: inheritance, pros and cons', p: 3 });
     editor(s, { x: MX, y: 1.7, w: 6.75, p: 3, code: CODE.poly, lang: 'python', file: 'products.py', tag: 'Python 3', size: 10.5, lineH: 13.5, hot: [4, 6, 7, 12, 14, 17, 18, 22] });
     const ty = terminal(s, 7.7, 1.7, 5.03, 'Output', [['out', 'Croissant: £1.25'], ['out', 'Lemon cake, 8 slices'], ['out', '12']], { size: 11, lineH: 14.5 });
     prosCons(s, { x: 7.7, y: ty + 0.1, w: 5.03, h: 1.4, good: true, size: 12, items: [
@@ -951,7 +905,7 @@ function build() {
   /* ---------- 12. comparison ---------- */
   {
     const s = newSlide();
-    header(s, { num: 5, kicker: 'Comparison', title: 'Comparing the three paradigms' });
+    header(s, { num: 4, kicker: 'Comparison', title: 'Procedural vs event-driven vs OOP' });
     const colW = [2.05, 3.36, 3.36, 3.36];
     const rowsData = [
       ['Main idea', 'A list of steps that run in order', 'Wait for events, then react to them', 'Objects that hold their own data and methods'],
@@ -983,16 +937,16 @@ function build() {
       badge(s, p, hx + 0.13, 1.7 + (0.56 - 0.4) / 2, 0.4, { soft: true });
       hx += colW[i + 1];
     });
-    tx(s, 'Python appears in all three examples because it\'s multi-paradigm: it supports all three styles.', MX, 6.45, CW, 0.3, { fontSize: 12, color: C.ink2 });
+    tx(s, 'Python appears in all three examples because it supports procedural, event-driven and object-oriented programming.', MX, 6.45, CW, 0.3, { fontSize: 12, color: C.ink2 });
     footer(s);
-    s.addNotes('This table compares the three side by side. The biggest difference is who decides the order the code runs in: in procedural code it\'s the programmer, in event-driven code it\'s the user or the system, and in OOP it\'s objects calling each other\'s methods. Python appears in all three examples because it\'s multi-paradigm.');
+    s.addNotes('This table compares the three side by side. The biggest difference is who decides the order the code runs in: in procedural code it\'s the programmer, in event-driven code it\'s the user or the system, and in OOP it\'s objects calling each other\'s methods. Python appears in all three examples because it supports all three.');
   }
 
   /* ---------- 13. how they fit together ---------- */
   {
     const s = newSlide();
-    header(s, { num: 5, kicker: 'Comparison', title: 'How they fit together' });
-    tx(s, 'The three paradigms aren\'t rivals. Most real programs use all three at the same time, like this version of my till. The coloured bars show which paradigm each line belongs to.',
+    header(s, { num: 4, kicker: 'Comparison', title: 'How they fit together' });
+    tx(s, 'Procedural, event-driven and object-oriented programming aren\'t rivals. Most real programs use all three at the same time, like this version of my till. The coloured bars show which one each line belongs to.',
       MX, 1.5, CW, 0.55, { fontSize: 14, color: C.ink2 });
     editor(s, { x: MX, y: 2.15, w: 7.0, code: CODE.together, lang: 'python', file: 'till_app.py', tag: 'Python 3 · tkinter', size: 10, lineH: 13,
       rails: [
@@ -1013,17 +967,17 @@ function build() {
       tx(s, md(d, { fontSize: 11.5, color: C.ink2 }), 8.82, ly + 0.43, 3.8, 0.45);
       tx(s, ln, 8.82, ly + 0.86, 3.8, 0.2, { fontFace: F.code, fontSize: 9.5, color: C.muted, valign: 'middle' });
     });
-    tx(s, 'Python, C#, Java and JavaScript are multi-paradigm, so the question isn\'t which paradigm is best, but which one fits each part of a program.',
+    tx(s, 'Python, C#, Java and JavaScript let you use all three, so the question isn\'t which one is best, but which one fits each part of a program.',
       7.95, 6.0, 4.78, 0.65, { fontSize: 11.5, color: C.ink2 });
     footer(s);
-    s.addNotes('In real programs the paradigms work together. Here the till is a class, so the outside is object-oriented. The add method is linked to the button, so it\'s an event handler. And inside add, the code is plain procedural steps with an if. Python, C#, Java and JavaScript all let you mix the three, so the real question is which one fits each part of a program.');
+    s.addNotes('In real programs the three work together. Here the till is a class, so the outside is object-oriented. The add method is linked to the button, so it\'s an event handler. And inside add, the code is plain procedural steps with an if. Python, C#, Java and JavaScript all let you mix the three, so the real question is which one fits each part of a program.');
   }
 
   /* ---------- 14. conclusion ---------- */
   {
     const s = newSlide({ dark: true });
-    header(s, { num: 6, kicker: 'Conclusion', title: 'Conclusion', dark: true });
-    tx(s, 'A paradigm is a way of organising a program. Procedural programming is about the steps, event-driven programming is about when the code runs, and object-oriented programming is about how the code and data are grouped together.',
+    header(s, { num: 5, kicker: 'Conclusion', title: 'Conclusion', dark: true });
+    tx(s, 'Procedural programming is about the steps, event-driven programming is about when the code runs, and object-oriented programming is about how the code and data are grouped together.',
       MX, 1.55, 11.6, 0.8, { fontSize: 15, color: C.nightInk2 });
     const rows = {
       1: ['Steps in order, grouped into functions.', 'A recipe.', 'Small programs, scripts and calculations.'],
@@ -1052,7 +1006,7 @@ function build() {
   /* ---------- 15. references + thank you ---------- */
   {
     const s = newSlide();
-    header(s, { num: 7, kicker: 'References', title: 'References' });
+    header(s, { num: 6, kicker: 'References', title: 'References' });
     const refs = [
       ['Booch, G., Maksimchuk, R.A., Engle, M.W., Young, B.J., Conallen, J. and Houston, K.A. (2007) ', 'Object-oriented analysis and design with applications', '. 3rd edn. Upper Saddle River, NJ: Addison-Wesley.'],
       ['Kernighan, B.W. and Ritchie, D.M. (1988) ', 'The C programming language', '. 2nd edn. Englewood Cliffs, NJ: Prentice Hall.'],
@@ -1062,7 +1016,6 @@ function build() {
       ['Python Software Foundation (no date a) ', 'The Python tutorial: 9. Classes', '. Available at: ', 'https://docs.python.org/3/tutorial/classes.html', ' (Accessed: 1 October 2026).'],
       ['Python Software Foundation (no date b) ', 'tkinter: Python interface to Tcl/Tk', '. Available at: ', 'https://docs.python.org/3/library/tkinter.html', ' (Accessed: 1 October 2026).'],
       ['Sebesta, R.W. (2016) ', 'Concepts of programming languages', '. 11th edn. Boston, MA: Pearson.'],
-      ['Van Roy, P. (2009) \'Programming paradigms for dummies: what every programmer should know\', in Assayag, G. and Gerzso, A. (eds) ', 'New computational paradigms for computer music', '. Paris: IRCAM/Delatour France. Available at: ', 'https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf', ' (Accessed: 1 October 2026).'],
     ];
     const runs = [];
     refs.forEach((r, i) => {
@@ -1078,15 +1031,19 @@ function build() {
       if (i < refs.length - 1) runs[runs.length - 1].options.breakLine = true;
     });
     tx(s, runs, MX, 1.62, 7.25, 4.6, { paraSpaceAfter: 5 });
-    tx(s, 'Harvard style. The citations on the slides, like (Oracle, no date), point to this list.', MX, 5.55, 7.25, 0.3, { fontSize: 10.5, color: C.muted });
+    tx(s, 'Harvard style. The citations on the slides, like (Oracle, no date), point to this list. The tkinter and Python class examples follow the Python documentation (Python Software Foundation, no date a; no date b).', MX, 5.3, 7.25, 0.5, { fontSize: 10.5, color: C.muted });
 
     // thank you + feedback
     rect(s, 8.3, 0.55, 4.43, 6.28, { r: 0.16, fill: C.night });
     label(s, 'That\'s the end', 8.62, 1.0, 3.8, { dark: true });
     tx(s, 'Thank you for listening!', 8.62, 1.32, 3.85, 1.1, { fontFace: F.head, fontSize: 28, bold: true, color: C.white });
     tx(s, 'Any questions?', 8.62, 2.52, 3.85, 0.42, { fontFace: F.head, fontSize: 19, color: C.nightInk2, valign: 'middle' });
-    rect(s, 8.62, 3.4, 1.65, 1.65, { r: 0.1, fill: C.white, line: C.line2, lw: 1.25, dash: 'dash' });
-    tx(s, 'Paste the QR code for your feedback form here', 8.72, 3.4, 1.45, 1.65, { fontSize: 10, color: C.muted, align: 'center', valign: 'middle' });
+    if (fs.existsSync(QR_FILE)) {
+      s.addImage({ path: QR_FILE, x: 8.62, y: 3.4, w: 1.65, h: 1.65, altText: 'QR code for my feedback form on Microsoft Forms' });
+    } else {
+      rect(s, 8.62, 3.4, 1.65, 1.65, { r: 0.1, fill: C.white, line: C.line2, lw: 1.25, dash: 'dash' });
+      tx(s, 'Paste the QR code for your feedback form here', 8.72, 3.4, 1.45, 1.65, { fontSize: 10, color: C.muted, align: 'center', valign: 'middle' });
+    }
     tx(s, 'How was my presentation?', 10.45, 3.4, 2.05, 0.6, { fontFace: F.head, fontSize: 14, bold: true, color: C.white });
     tx(s, 'Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms.', 10.45, 4.03, 2.05, 1.05, { fontSize: 11.5, color: C.nightInk2 });
     tx(s, `${NAME.toUpperCase()}  ·  STUDENT ID ${STUDENT_ID}`, 8.62, 6.3, 3.9, 0.3, { fontFace: F.code, fontSize: 10, color: C.nightMuted, valign: 'middle' });
