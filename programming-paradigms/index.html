@@ -1,0 +1,2911 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Programming Paradigms</title>
+<meta name="description" content="Presentation about procedural, event-driven and object-oriented programming by Alexandru Ioan, student ID 25002954.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Kalam:wght@400;700&family=Unbounded:wght@500;600;700&display=swap">
+<style>
+/* =========================================================
+   Programming Paradigms
+   Alexandru Ioan · Student ID 25002954
+   ========================================================= */
+
+/* layout: one full-screen slide at a time, content in a 1160px column.
+   colour means "paradigm": blue = procedural, amber = event-driven,
+   magenta = object-oriented, always in that order. code sits in editor
+   windows and the comments in it are written in pencil, like my notes.
+   everything else is ink on paper, the same as my other presentations. */
+:root {
+  /* paper & ink */
+  --bg: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #1b1f1d;
+  --ink-2: #4a534e;
+  --muted: #5f6964;
+  --line: #dfe3de;
+  --line-strong: #b7c0ba;
+  --focus: #2a78d6;
+  /* the three paradigms, always in this order */
+  --p1: #2a78d6;  /* procedural */
+  --p2: #df8700;  /* event-driven */
+  --p3: #c2449a;  /* object-oriented */
+  /* good / bad (only for pros and cons) */
+  --good: #0ca30c;
+  --bad: #d03b3b;
+  --good-ink: #0a6e2a;
+  --bad-ink: #b3261e;
+  --good-soft: #e3f3e5;
+  --bad-soft: #fbe8e7;
+  /* code: editor, syntax colours and the terminal (dark in both themes) */
+  --code-bg: #fbfcfa;
+  --syn-key: #b8323a;
+  --syn-str: #1d7a4e;
+  --syn-num: #a35a00;
+  --syn-fn: #3456c0;
+  --term-bg: #1d2320;
+  --term-ink: #e6ece8;
+  --term-muted: #9aa7a0;
+  --term-out: #a6e3bf;
+  /* the QR code stays black on white in both themes so phones can scan it */
+  --qr-bg: #ffffff;
+  --qr-ink: #000000;
+  --shadow: 0 1px 2px rgba(20, 28, 24, 0.05), 0 10px 26px -14px rgba(20, 28, 24, 0.22);
+  --moon: inline;
+  --sun: none;
+  /* type */
+  --display: "Unbounded", "Arial Black", "Segoe UI", sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --hand: "Kalam", "Segoe Print", "Bradley Hand", cursive;
+  --fs: clamp(13.5px, min(calc(6px + 0.72vw), calc(4px + 1.7vh)), 22px);
+  --controls-h: 3.3rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111513;
+    --surface: #181e1b;
+    --ink: #e8eeea;
+    --ink-2: #bac5bf;
+    --muted: #93a09a;
+    --line: #2a3430;
+    --line-strong: #47534d;
+    --focus: #6ba3ff;
+    --p1: #4b91ea;
+    --p2: #e19b2c;
+    --p3: #d466ad;
+    --good-ink: #5fd68a;
+    --bad-ink: #ff8f86;
+    --good-soft: #14301f;
+    --bad-soft: #3a1c21;
+    --code-bg: #141a17;
+    --syn-key: #ff8a80;
+    --syn-str: #7ed6a6;
+    --syn-num: #f2b866;
+    --syn-fn: #9db6ff;
+    --term-bg: #0b0f0d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
+    --moon: none;
+    --sun: inline;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111513;
+  --surface: #181e1b;
+  --ink: #e8eeea;
+  --ink-2: #bac5bf;
+  --muted: #93a09a;
+  --line: #2a3430;
+  --line-strong: #47534d;
+  --focus: #6ba3ff;
+  --p1: #4b91ea;
+  --p2: #e19b2c;
+  --p3: #d466ad;
+  --good-ink: #5fd68a;
+  --bad-ink: #ff8f86;
+  --good-soft: #14301f;
+  --bad-soft: #3a1c21;
+  --code-bg: #141a17;
+  --syn-key: #ff8a80;
+  --syn-str: #7ed6a6;
+  --syn-num: #f2b866;
+  --syn-fn: #9db6ff;
+  --term-bg: #0b0f0d;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -14px rgba(0, 0, 0, 0.7);
+  --moon: none;
+  --sun: inline;
+  color-scheme: dark;
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { height: 100%; font-size: var(--fs); }
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, pre { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+button, input, select { font: inherit; color: inherit; }
+input[type="text"], input[type="number"], input[type="url"] {
+  min-width: 0;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--surface);
+}
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+a { color: inherit; text-decoration-color: var(--line-strong); text-underline-offset: 0.18em; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+kbd {
+  display: inline-block;
+  min-width: 1.5em;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 0.68rem/1 var(--mono);
+  text-align: center;
+}
+code {
+  padding: 0.05em 0.3em;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.small { font-size: 0.82rem; color: var(--muted); }
+.cite { font-size: 0.78em; color: var(--muted); white-space: nowrap; }
+/* pencil notes in the margin */
+.pencil {
+  display: inline-block;
+  font-family: var(--hand);
+  font-size: 1.12rem;
+  line-height: 1.25;
+  color: var(--ink-2);
+  transform: rotate(-2deg);
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.15rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 700;
+  font-size: 0.92rem;
+  line-height: 1;
+}
+.btn:hover:not(:disabled) { opacity: 0.88; }
+.btn:disabled { opacity: 0.35; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--small { padding: 0.48rem 0.85rem; font-size: 0.82rem; }
+.text-btn { padding: 0; border: 0; background: none; color: var(--muted); font-size: 0.78rem; text-decoration: underline; text-underline-offset: 0.18em; justify-self: start; }
+.label { font: 500 0.64rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; }
+.bullets { display: grid; gap: 0.28rem; }
+.bullets li { position: relative; padding-left: 1rem; font-size: 0.92rem; }
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0.1rem;
+  top: 0.6em;
+  width: 0.36rem;
+  height: 0.36rem;
+  border-radius: 50%;
+  background: var(--dot, var(--c, var(--ink-2)));
+}
+.notes li { font-size: 0.84rem; color: var(--ink-2); }
+.p1 { --c: var(--p1); }
+.p2 { --c: var(--p2); }
+.p3 { --c: var(--p3); }
+/* the paradigm icons: a list of steps, a lightning bolt, a cube */
+.glyph { flex: none; width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.pbadge {
+  flex: none;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: inline-grid;
+  place-items: center;
+  border: 2.5px solid var(--c);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 14%, var(--surface));
+  color: var(--ink);
+}
+.plus, .minus {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 700 0.95rem/1 var(--mono);
+  color: #ffffff;
+}
+.plus { background: var(--good); }
+.minus { background: var(--bad); }
+
+/* ---------- slides ---------- */
+.deck { position: relative; height: 100%; overflow: hidden; overflow: clip; }
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-block: clamp(16px, 4.2vh, 52px) calc(var(--controls-h) + 1.3rem + env(safe-area-inset-bottom, 0px));
+  padding-inline: max(16px, 3.5vw);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 0.4s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+}
+.slide.is-past { transform: translateY(-1.2rem); }
+.slide.is-active {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s ease, transform 0.45s ease, visibility 0s;
+}
+.slide__inner { max-width: max(1160px, 76rem); min-height: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+.slide__body { margin-block: auto; display: grid; gap: 1.1rem; min-width: 0; }
+.slide__head { display: grid; gap: 0.5rem; }
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font: 500 0.72rem/1 var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.kicker__num {
+  width: 1.55rem;
+  height: 1.55rem;
+  display: inline-grid;
+  place-items: center;
+  border: 1.5px solid var(--c, var(--ink));
+  border-radius: 50%;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+.slide[data-p] .kicker__num { border-width: 2.5px; background: color-mix(in srgb, var(--c) 14%, var(--surface)); }
+h1, h2 { font-family: var(--display); letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-weight: 700; line-height: 1.04; }
+h2 { font-weight: 600; font-size: 2.05rem; line-height: 1.12; }
+h3 { font: 700 1rem/1.3 var(--body); text-wrap: balance; }
+.lead { font-size: 1.08rem; color: var(--ink-2); max-width: 72ch; text-wrap: pretty; }
+.stack { display: grid; gap: 0.85rem; align-content: start; min-width: 0; }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 2.6vw, 2.4rem); align-items: start; }
+.cols--wide-left { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+.cols--wide-right { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); }
+.scroll-x { overflow-x: auto; min-width: 0; }
+
+/* paradigm slides: title on the left, the three paradigm icons on the right */
+.p-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.6rem 1.5rem; }
+.pstrip {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.2rem;
+  background: linear-gradient(var(--line-strong), var(--line-strong)) center / 100% 2px no-repeat;
+}
+.pstrip button {
+  width: 2.1rem;
+  height: 2.1rem;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--c);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-2);
+}
+.pstrip button:hover { background: color-mix(in srgb, var(--c) 18%, var(--surface)); color: var(--ink); }
+.pstrip .glyph { width: 0.95rem; height: 0.95rem; }
+.pstrip .is-on { width: 2.75rem; height: 2.75rem; border-width: 3px; background: color-mix(in srgb, var(--c) 24%, var(--surface)); color: var(--ink); }
+.pstrip .is-on .glyph { width: 1.25rem; height: 1.25rem; }
+
+/* ---------- code in an editor window ---------- */
+.editor {
+  display: grid;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--code-bg);
+  box-shadow: var(--shadow);
+}
+.editor > * { min-width: 0; }
+.editor__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.42rem 0.8rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--c, var(--ink)) 10%, var(--surface));
+  font: 500 0.72rem/1.2 var(--mono);
+}
+.editor__dot { flex: none; width: 0.62rem; height: 0.62rem; border-radius: 50%; background: var(--c, var(--ink)); }
+.editor__lang { margin-left: auto; color: var(--muted); white-space: nowrap; }
+.editor__out {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.8rem;
+  padding: 0.45rem 0.8rem;
+  background: var(--term-bg);
+  color: var(--term-out);
+  font: 0.78rem/1.4 var(--mono);
+}
+.editor__out span { color: var(--term-muted); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.code {
+  padding-block: 0.5rem 0.6rem;
+  overflow-x: auto;
+  font: 400 0.76rem/1 var(--mono);
+  tab-size: 4;
+}
+.code__inner { display: inline-block; min-width: 100%; }
+.ln {
+  position: relative;
+  display: flex;
+  height: 1.62em;
+  line-height: 1.62em;
+  padding-right: 1rem;
+  white-space: pre;
+  transition: background-color 0.25s, opacity 0.25s;
+}
+.ln__no { flex: none; width: 2.7em; padding-right: 0.95em; text-align: right; color: var(--muted); user-select: none; }
+.ln__code { flex: none; }
+.ln.is-hot { background: color-mix(in srgb, var(--c, var(--ink)) 17%, transparent); }
+.ln.is-current { background: color-mix(in srgb, var(--c, var(--ink)) 30%, transparent); }
+.ln.is-current::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 4px; border-radius: 0 3px 3px 0; background: var(--c, var(--ink)); }
+.ln.is-current .ln__no { color: var(--ink); font-weight: 500; }
+.code.is-marking .ln:not(.is-mark) { opacity: 0.3; }
+.code.is-marking .ln.is-mark { background: color-mix(in srgb, var(--mark, var(--c)) 13%, transparent); }
+/* syntax colours */
+.t-k { color: var(--syn-key); font-weight: 500; }
+.t-s { color: var(--syn-str); }
+.t-n { color: var(--syn-num); }
+.t-f { color: var(--syn-fn); font-weight: 500; }
+.t-b { color: var(--syn-fn); }
+.t-self { color: var(--ink-2); }
+/* comments are pencil notes */
+.t-c { font-family: var(--hand); font-size: 1.1em; color: var(--ink-2); }
+
+/* a terminal for output */
+.console {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.5rem 0.8rem 0.6rem;
+  border-radius: 10px;
+  background: var(--term-bg);
+  color: var(--term-ink);
+}
+.console__label { display: flex; justify-content: space-between; align-items: center; gap: 1rem; font: 500 0.62rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--term-muted); }
+.console__label .text-btn { color: var(--term-muted); font: 0.72rem var(--body); letter-spacing: 0; text-transform: none; }
+.console__out { min-height: 1.5em; font: 0.8rem/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--term-out); }
+.console__out:empty::before { content: "(nothing printed yet)"; color: var(--term-muted); }
+.sh-in { color: var(--term-ink); }
+.sh-cmd { color: var(--term-muted); }
+
+/* step-by-step runners */
+.runner__controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.runner__count { margin-left: auto; font: 0.72rem var(--mono); color: var(--muted); white-space: nowrap; }
+.runner__note {
+  min-height: 4.6em;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+.code-layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: clamp(1rem, 2.2vw, 2rem); align-items: start; }
+
+/* ---------- slide 1: title ---------- */
+.title-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; }
+.title-copy { display: grid; gap: 1.1rem; justify-items: start; }
+.slide--title h1 { font-size: clamp(1.9rem, 3.4vw, 2.95rem); }
+.slide--title .lead { font-size: 1.15rem; max-width: 32ch; }
+.byline { display: grid; gap: 0.15rem; }
+.byline b { font-size: 1.15rem; }
+.byline span { font: 500 0.78rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.title-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.1rem; }
+.keys { font: 0.72rem/1.9 var(--mono); color: var(--muted); }
+/* three files, one per paradigm, stepped like windows on a desktop */
+.files { position: relative; display: grid; gap: 0.75rem; padding-top: 1.6rem; }
+.file {
+  display: grid;
+  width: 86%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--code-bg);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, border-color 0.2s;
+}
+.file:nth-of-type(2) { margin-left: 7%; }
+.file:nth-of-type(3) { margin-left: 14%; }
+.file:hover { transform: translateY(-3px); border-color: var(--c); }
+.file__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--c) 15%, var(--surface));
+  font: 500 0.72rem/1.2 var(--mono);
+}
+.file__bar .glyph { width: 0.95rem; height: 0.95rem; }
+.file__tag { margin-left: auto; font: 700 0.72rem/1.2 var(--body); color: var(--ink-2); }
+.file__code { display: block; padding: 0.55rem 0.85rem 0.65rem; overflow-x: auto; font: 0.72rem/1.6 var(--mono); white-space: pre; }
+.files__note { position: absolute; top: 0; right: 2%; }
+.agenda { display: grid; gap: 0.5rem; }
+.agenda__list { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.agenda__list button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.7rem 0.28rem 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+}
+.agenda__list button:hover { border-color: var(--ink); }
+.agenda__list b { width: 1.35rem; height: 1.35rem; display: inline-grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--c, var(--ink)) 16%, var(--bg)); font: 500 0.68rem var(--mono); }
+
+/* ---------- a definition, set like a dictionary entry ---------- */
+.dict {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.95rem 1.15rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--c, var(--ink)) 30%, var(--line));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--c, var(--ink)) 8%, var(--surface));
+}
+.dict__word { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; font: 600 1.15rem/1.25 var(--display); }
+.dict__word i { font: italic 400 0.9rem var(--body); letter-spacing: 0; color: var(--muted); }
+.dict__def { font-size: 1.04rem; line-height: 1.5; text-wrap: pretty; }
+.dict__also { font: 0.72rem/1.5 var(--mono); color: var(--ink-2); }
+
+/* key features */
+.feat { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem 1.2rem; }
+.feat li { display: grid; gap: 0.12rem; align-content: start; padding-top: 0.45rem; border-top: 1px solid var(--line); }
+.feat b { font-size: 0.9rem; line-height: 1.3; }
+.feat span { font-size: 0.82rem; line-height: 1.4; color: var(--ink-2); }
+
+/* ---------- slide 2: introduction ---------- */
+.trio { display: grid; gap: 0.6rem; }
+.trio__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: var(--shadow);
+}
+.trio__item:hover { border-color: var(--c); }
+.trio__text { display: grid; gap: 0.2rem; justify-items: start; }
+.trio__text b { font: 600 1.02rem/1.25 var(--display); }
+.trio__text > span:not(.pencil) { font-size: 0.9rem; color: var(--ink-2); }
+.trio .pencil { font-size: 1.05rem; }
+.example { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.1rem; align-items: center; }
+.example__why { display: grid; gap: 0.35rem; font-size: 0.92rem; }
+.receipt {
+  width: 15.5rem;
+  max-width: 100%;
+  padding: 0.75rem 0.9rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font: 0.76rem/1.55 var(--mono);
+  transform: rotate(-1.2deg);
+}
+.receipt__head { margin-bottom: 0.35rem; padding-bottom: 0.35rem; border-bottom: 1px dashed var(--line-strong); font-weight: 500; letter-spacing: 0.14em; text-align: center; }
+.receipt li { display: flex; justify-content: space-between; gap: 1rem; font-variant-numeric: tabular-nums; }
+.receipt .sub { margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px dashed var(--line-strong); }
+.receipt .total { margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1.5px solid var(--ink); font-weight: 500; font-size: 0.86rem; }
+
+/* ---------- slide 3: structure chart ---------- */
+.chart-card { display: grid; gap: 0.6rem; }
+.schart, .uml { display: block; width: 100%; min-width: 24rem; height: auto; }
+.sc-box rect { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.5; }
+.sc-main rect { fill: color-mix(in srgb, var(--c) 16%, var(--surface)); stroke: var(--c); stroke-width: 2; }
+.sc-line { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.sc-title { fill: var(--ink); font: 700 13.5px var(--body); }
+.sc-code { fill: var(--ink); font: 500 12.5px var(--mono); }
+.sc-code--sm { font-size: 11.5px; }
+.sc-sub { fill: var(--ink-2); font: 500 11px var(--body); }
+.sc-flow { fill: var(--muted); font: 500 11px var(--mono); }
+.sc-mark { fill: var(--ink); font: 700 14px var(--mono); }
+
+/* ---------- slide 4: the procedural runner ---------- */
+.vars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+.vars__box { display: grid; align-content: start; gap: 0.3rem; min-width: 0; min-height: 7.6rem; padding: 0.55rem 0.7rem 0.6rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.vars table { width: 100%; border-collapse: collapse; font: 0.78rem/1.35 var(--mono); }
+.vars th { padding: 0.22rem 0.4rem 0.22rem 0; text-align: left; font-weight: 500; color: var(--ink-2); white-space: nowrap; vertical-align: top; }
+.vars td { padding: 0.22rem 0.25rem; text-align: right; overflow-wrap: anywhere; }
+.vars tr + tr th, .vars tr + tr td { border-top: 1px dashed var(--line); }
+.vars .is-new td { background: color-mix(in srgb, var(--c) 22%, transparent); }
+.vars .ret th, .vars .ret td { font-weight: 500; color: var(--ink); }
+.vars .empty td { padding-left: 0; text-align: left; color: var(--muted); font: italic 0.8rem var(--body); }
+
+/* ---------- slide 6: the event loop ---------- */
+.eloop-card { display: grid; gap: 0.75rem; }
+.eloop__send { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.src-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.75rem 0.38rem 0.55rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.src-btn:hover { border-color: var(--ink); background: color-mix(in srgb, var(--c) 12%, var(--surface)); }
+.eloop { display: grid; grid-template-columns: minmax(5.5rem, 0.8fr) auto auto auto minmax(8.5rem, 1.25fr); align-items: start; gap: 0.5rem; }
+.eloop__arrow { align-self: center; color: var(--muted); font: 500 1.1rem var(--mono); }
+.eloop__col { display: grid; gap: 0.3rem; align-content: start; min-width: 0; }
+.queue { display: grid; gap: 0.25rem; align-content: start; min-height: 11.9rem; padding: 0.35rem; border: 1.5px dashed var(--line-strong); border-radius: 10px; }
+.queue:empty::before { content: "empty"; padding-top: 4.6rem; color: var(--muted); font: 0.74rem var(--mono); text-align: center; }
+.ev-tok { display: flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.45rem; border-radius: 6px; background: color-mix(in srgb, var(--c) 22%, var(--surface)); font: 500 0.72rem/1.3 var(--mono); animation: pop 0.25s ease-out; }
+.ev-tok .glyph { width: 0.85rem; height: 0.85rem; }
+@keyframes pop { from { transform: scale(0.6); opacity: 0; } }
+.loop {
+  position: relative;
+  align-self: center;
+  width: 7.2rem;
+  max-width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.15rem;
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  text-align: center;
+}
+.loop__spin { position: absolute; inset: -5px; border: 3px solid transparent; border-top-color: var(--c); border-right-color: var(--c); border-radius: 50%; animation: spin 3s linear infinite; }
+.loop.is-busy .loop__spin { animation-duration: 0.8s; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loop__cap { font: 500 0.6rem/1.2 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.loop__state { max-width: 5.8rem; font: 600 0.78rem/1.25 var(--mono); overflow-wrap: anywhere; }
+.handlers { display: grid; gap: 0.3rem; }
+.handlers li { display: grid; padding: 0.28rem 0.55rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); transition: background-color 0.2s, border-color 0.2s; }
+.handlers code { padding: 0; background: none; font-size: 0.76rem; font-weight: 500; }
+.handlers span { font-size: 0.74rem; line-height: 1.3; color: var(--ink-2); }
+.handlers li.is-on { border-color: var(--c); background: color-mix(in srgb, var(--c) 22%, var(--surface)); }
+/* event logs */
+.evlog { display: grid; gap: 0.3rem; font: 0.74rem/1.35 var(--mono); }
+.evlog li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.45rem; padding: 0.3rem 0.55rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.evlog li:first-child { border-color: color-mix(in srgb, var(--c, var(--ink)) 55%, var(--line)); background: color-mix(in srgb, var(--c, var(--ink)) 8%, var(--surface)); }
+.evlog time { color: var(--muted); }
+.evlog b { font-weight: 500; }
+.evlog .arrow { color: var(--muted); }
+.evlog code { padding: 0; background: none; font-size: 1em; font-weight: 500; }
+.evlog:empty::before { content: attr(data-empty); display: block; padding: 0.3rem 0.55rem; border: 1px dashed var(--line-strong); border-radius: 8px; color: var(--muted); font: 0.8rem/1.4 var(--body); }
+
+/* ---------- slide 7: the till window ---------- */
+.till { width: min(100%, 19rem); overflow: hidden; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
+.till__bar { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.32rem 0.45rem 0.32rem 0.7rem; border-bottom: 1px solid var(--line); background: var(--bg); font: 600 0.78rem/1.2 var(--body); }
+.till__ctl { display: flex; gap: 0.25rem; }
+.till__ctl i { width: 0.85rem; height: 0.85rem; border: 1px solid var(--line-strong); border-radius: 3px; }
+.till__body { display: grid; justify-items: center; gap: 0.65rem; padding: 1rem 1rem 1.15rem; }
+.till__total { font: 600 1.4rem/1.2 var(--display); font-variant-numeric: tabular-nums; }
+.till__btn { padding: 0.45rem 1.1rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); box-shadow: 0 1px 0 var(--line-strong); font-size: 0.9rem; font-weight: 600; }
+.till__btn:hover { border-color: var(--ink); }
+.till__btn:active { transform: translateY(1px); box-shadow: none; }
+.till.is-pulse { animation: pulse 0.6s ease-out; }
+@keyframes pulse { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 50%, transparent), var(--shadow); } to { box-shadow: 0 0 0 14px transparent, var(--shadow); } }
+.status { display: flex; align-items: center; gap: 0.5rem; font: 0.76rem/1.4 var(--mono); color: var(--ink-2); }
+.status code { background: none; padding: 0; }
+.status__dot { flex: none; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--c); animation: breathe 1.6s ease-in-out infinite; }
+.status.is-busy .status__dot { background: var(--ink); animation: none; }
+@keyframes breathe { 50% { opacity: 0.25; } }
+
+/* ---------- slide 8: this deck's own events ---------- */
+.spy { display: grid; gap: 0.55rem; padding: 0.8rem 0.95rem 0.9rem; }
+.spy p { font-size: 0.88rem; }
+
+/* ---------- pros & cons ---------- */
+.pc { display: grid; gap: 0.5rem; padding: 0.8rem 1rem 0.9rem; border-radius: 14px; }
+.pc--good { background: var(--good-soft); }
+.pc--bad { background: var(--bad-soft); }
+.pc h3 { display: flex; align-items: center; gap: 0.5rem; font: 600 0.98rem/1.25 var(--display); }
+.pc ul { display: grid; gap: 0.35rem; }
+.pc li { font-size: 0.86rem; line-height: 1.42; }
+.uses { display: grid; gap: 0.45rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chips li { padding: 0.2rem 0.6rem; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 0.8rem; }
+
+/* ---------- slide 9: classes and objects ---------- */
+.terms { display: grid; }
+.terms div { display: grid; grid-template-columns: 6.6rem minmax(0, 1fr); gap: 0.7rem; padding-block: 0.38rem; border-top: 1px solid var(--line); font-size: 0.86rem; }
+.terms dt { font-weight: 700; }
+.terms dd { color: var(--ink-2); }
+.uml-box rect { fill: var(--surface); stroke: var(--ink-2); stroke-width: 1.5; }
+.uml-box .uml-head { fill: color-mix(in srgb, var(--c) 18%, var(--surface)); stroke: var(--c); stroke-width: 2; }
+.uml-name { fill: var(--ink); font: 700 14px var(--body); }
+.uml-obj { fill: var(--ink); font: 500 12px var(--mono); text-decoration: underline; }
+.uml-txt { fill: var(--ink); font: 400 12px var(--mono); }
+.uml-side { fill: var(--muted); font: 500 10.5px var(--mono); }
+.uml-arrow { fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-dasharray: 5 4; }
+.uml-head-mark { fill: none; stroke: var(--ink-2); stroke-width: 1.4; }
+.uml-note { fill: var(--ink-2); font: 400 15px var(--hand); }
+.pillars { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
+.pillars li { display: grid; gap: 0.25rem; align-content: start; padding-top: 0.5rem; border-top: 2.5px solid var(--c); }
+.pillars b { font: 600 0.92rem/1.25 var(--display); }
+.pillars span { font-size: 0.82rem; line-height: 1.4; color: var(--ink-2); }
+
+/* ---------- slide 10: objects you can make ---------- */
+.make { display: grid; gap: 0.4rem; }
+.make__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; font: 0.8rem var(--mono); }
+.make__row code { padding: 0; background: none; font-size: 0.8rem; }
+.make__row input { font: 0.8rem var(--mono); }
+.make__row input[type="text"] { width: 8rem; }
+.make__row input[type="number"] { width: 4.8rem; }
+.error { color: var(--bad-ink); font-size: 0.8rem; }
+.objs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+.obj { display: grid; gap: 0.3rem; align-content: start; min-width: 0; padding: 0.5rem 0.65rem 0.6rem; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.obj.is-fresh { border-color: var(--c); animation: pop 0.3s ease-out; }
+.obj__head { font: 500 0.8rem/1.3 var(--mono); overflow-wrap: anywhere; }
+.obj__head u { text-underline-offset: 0.15em; }
+.obj__attrs { display: grid; gap: 0.1rem; font: 0.74rem/1.35 var(--mono); }
+.obj__attrs div { display: flex; justify-content: space-between; gap: 0.5rem; }
+.obj__attrs dt { color: var(--ink-2); }
+.obj__attrs dd { min-width: 0; text-align: right; overflow-wrap: anywhere; }
+.obj__btns { display: flex; flex-wrap: wrap; gap: 0.3rem; padding-top: 0.15rem; }
+.mbtn { padding: 0.2rem 0.5rem; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--bg); font: 500 0.72rem/1.3 var(--mono); }
+.mbtn:hover { border-color: var(--ink); }
+.obj--basket { border-color: color-mix(in srgb, var(--c) 40%, var(--line)); background: color-mix(in srgb, var(--c) 8%, var(--surface)); }
+#shell { max-height: 8.6rem; overflow-y: auto; }
+
+/* ---------- slide 11: which idea is which line ---------- */
+.concepts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.concept { padding: 0.28rem 0.75rem; border: 1.5px solid var(--c); border-radius: 999px; background: var(--surface); font-size: 0.8rem; font-weight: 700; }
+.concept:hover, .concept[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 22%, var(--surface)); }
+
+/* ---------- slide 12: comparison table ---------- */
+.ctable { width: 100%; min-width: 46rem; border-collapse: separate; border-spacing: 0.5rem 0; font-size: 0.85rem; line-height: 1.4; }
+.ctable th[scope="col"] { padding: 0.55rem 0.75rem; border-radius: 12px 12px 0 0; background: color-mix(in srgb, var(--c) 22%, var(--surface)); text-align: left; vertical-align: middle; }
+.ctable th[scope="col"] span { display: flex; align-items: center; gap: 0.5rem; font: 600 0.92rem/1.2 var(--display); }
+.ctable th[scope="row"] { width: 8.6rem; padding: 0.5rem 0.4rem 0.5rem 0; text-align: left; vertical-align: top; font: 500 0.64rem/1.45 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ctable td { padding: 0.5rem 0.75rem; vertical-align: top; border-top: 1px solid color-mix(in srgb, var(--c) 22%, var(--line)); background: color-mix(in srgb, var(--c) 7%, var(--surface)); }
+.ctable tr:last-child td { border-radius: 0 0 12px 12px; }
+.ctable td code { background: none; padding: 0; font-size: 0.8rem; }
+
+/* ---------- slide 13: three paradigms in one program ---------- */
+.rails { flex: none; display: flex; gap: 3px; height: 100%; padding: 0 0.3rem 0 0.5rem; }
+.rail { width: 4px; height: 100%; }
+.rail.is-in { background: var(--rc); }
+.rail--p1 { --rc: var(--p1); }
+.rail--p2 { --rc: var(--p2); }
+.rail--p3 { --rc: var(--p3); }
+.legend3 { display: grid; gap: 0.5rem; }
+.leg {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.15rem 0.75rem;
+  align-items: start;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+}
+.leg:hover, .leg[aria-pressed="true"] { border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, var(--surface)); }
+.leg .pbadge { grid-row: span 3; }
+.leg b { font: 600 0.95rem/1.25 var(--display); }
+.leg__what { font-size: 0.85rem; color: var(--ink-2); }
+.leg__lines { font: 0.7rem var(--mono); color: var(--muted); }
+
+/* ---------- slide 14: conclusion ---------- */
+.concl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
+.concl > li { display: grid; gap: 0.55rem; align-content: start; padding: 0.9rem 1rem 1rem; border: 1px solid color-mix(in srgb, var(--c) 30%, var(--line)); border-radius: 14px; background: color-mix(in srgb, var(--c) 8%, var(--surface)); }
+.concl h3 { display: flex; align-items: center; gap: 0.6rem; font: 600 1.02rem/1.2 var(--display); }
+.concl .pbadge { width: 2rem; height: 2rem; }
+.concl dl { display: grid; gap: 0.4rem; }
+.concl dt { font: 500 0.62rem/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.concl dd { font-size: 0.88rem; }
+.opinion { display: grid; gap: 0.45rem; }
+
+/* ---------- slide 15: references & feedback ---------- */
+.end-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(1rem, 3vw, 2.6rem); align-items: start; }
+.refs { display: grid; gap: 0.42rem; }
+.refs li { padding-left: 1.6rem; text-indent: -1.6rem; font-size: 0.78rem; line-height: 1.42; }
+.refs a { word-break: break-all; }
+.end-thanks { display: grid; gap: 0.8rem; align-content: start; }
+.end-thanks h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; }
+.thanks__q { font: 600 1.35rem/1.2 var(--display); color: var(--ink-2); }
+.fb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.1rem; align-items: center; }
+.qr { width: 11rem; max-width: 100%; aspect-ratio: 1; display: grid; place-items: center; padding: 0.55rem; border: 1px solid var(--line); border-radius: 12px; background: var(--qr-bg); }
+.qr svg { display: block; width: 100%; height: 100%; }
+.qr .qr-bg { fill: var(--qr-bg); }
+.qr .qr-ink { fill: var(--qr-ink); }
+.qr--empty { padding: 1rem; border: 2px dashed var(--line-strong); background: var(--bg); color: var(--muted); font-size: 0.82rem; text-align: center; }
+.qr[role="button"] { cursor: zoom-in; }
+/* the QR code full screen, so the people at the back can scan it too */
+.qr-zoom {
+  position: fixed;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1rem;
+  padding: 16px;
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  cursor: zoom-out;
+}
+.qr-zoom__box { width: min(78vmin, 34rem); max-width: 100%; aspect-ratio: 1; padding: 1rem; border-radius: 16px; background: var(--qr-bg); box-shadow: var(--shadow); }
+.qr-zoom__box svg { display: block; width: 100%; height: 100%; }
+.qr-zoom .qr-bg { fill: var(--qr-bg); }
+.qr-zoom .qr-ink { fill: var(--qr-ink); }
+.qr-zoom p { font: 500 0.8rem var(--mono); color: var(--muted); }
+.fb__text { display: grid; gap: 0.6rem; align-content: start; }
+.fb__text h3 { font: 600 1.25rem/1.25 var(--display); }
+.fb__link { font: 0.76rem var(--mono); color: var(--ink-2); word-break: break-all; }
+.qr-form { display: grid; gap: 0.4rem; }
+.qr-form label { font-size: 0.82rem; font-weight: 700; }
+.qr-form div { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.qr-form input { flex: 1 1 14rem; padding: 0.5rem 0.7rem; border-radius: 8px; font-size: 0.86rem; }
+.whoami { display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem; font: 500 0.78rem var(--mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ---------- controls: a route line at the bottom ---------- */
+.controls {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.4rem, 1vw, 0.9rem);
+  padding-block: 0.45rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+  padding-inline: max(16px, 2vw);
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+}
+.controls__who { font: 500 0.7rem var(--mono); color: var(--ink-2); white-space: nowrap; }
+.controls__who b { color: var(--ink); font-weight: 500; }
+.controls__where { display: grid; min-width: 7.5rem; font: 500 0.72rem/1.25 var(--mono); }
+.controls__where span { max-width: 11rem; overflow: hidden; color: var(--muted); white-space: nowrap; text-overflow: ellipsis; }
+.controls__tools { display: flex; gap: 0.35rem; }
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.3rem;
+  height: 2.3rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+}
+.icon-btn:hover:not(:disabled) { border-color: var(--ink); }
+.icon-btn:disabled { opacity: 0.35; }
+.icon-btn svg { width: 1.05rem; height: 1.05rem; }
+.i-moon { display: var(--moon); }
+.i-sun { display: var(--sun); }
+.route { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; }
+.route li { position: relative; flex: 1; display: grid; place-items: center; height: 2rem; }
+.route li::before { content: ""; position: absolute; left: -50%; right: 50%; top: 50%; border-top: 2px solid var(--line); }
+.route li:first-child::before { display: none; }
+.route li.is-done::before, .route li.is-current::before { border-color: var(--ink); }
+.station {
+  position: relative;
+  z-index: 1;
+  width: 0.8rem;
+  height: 0.8rem;
+  padding: 0;
+  border: 2px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  transition: transform 0.2s;
+}
+.station::after { content: ""; position: absolute; inset: -0.5rem; }
+.station:hover { transform: scale(1.25); }
+/* stations for the paradigm slides wear the paradigm colour */
+.is-done .station { border-color: var(--c, var(--ink)); background: var(--c, var(--ink)); }
+.is-current .station { width: 1.15rem; height: 1.15rem; border: 3px solid var(--c, var(--ink)); background: var(--surface); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c, var(--ink)) 18%, transparent); }
+
+/* ---------- all slides ---------- */
+.overview {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  overflow-y: auto;
+  padding-block: 2rem;
+  padding-inline: max(16px, 4vw);
+  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 95%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.overview__inner { max-width: 1160px; margin: 0 auto; display: grid; gap: 1.2rem; }
+.overview__head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.overview__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); gap: 0.75rem; }
+.ov-card { display: grid; gap: 0.3rem; align-content: start; padding: 0.85rem 1rem; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--ink); text-align: left; }
+.ov-card:hover { border-color: var(--ink); }
+.ov-card.is-current { box-shadow: 0 0 0 2px var(--ink); }
+.ov-card.has-p { border-top: 4px solid var(--c); }
+.ov-card__no { font: 500 0.72rem var(--mono); color: var(--muted); }
+.ov-card__title { font-weight: 700; line-height: 1.25; }
+
+/* ---------- tooltip ---------- */
+.tip { position: fixed; z-index: 40; max-width: 17rem; padding: 0.45rem 0.65rem; border-radius: 8px; background: var(--ink); color: var(--surface); font-size: 0.78rem; line-height: 1.35; pointer-events: none; box-shadow: var(--shadow); }
+.tip b { font-weight: 700; }
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 860px) {
+  :root { --fs: 15px; }
+  h2 { font-size: 1.6rem; }
+  .cols, .cols--wide-left, .cols--wide-right, .title-grid, .code-layout, .end-grid, .fb, .concl { grid-template-columns: minmax(0, 1fr); }
+  .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .p-head { align-items: flex-start; }
+  .files__note { position: static; justify-self: end; }
+  .files { padding-top: 0; }
+  .controls__who, .controls__where, #fsBtn { display: none; }
+  .station { width: 0.65rem; height: 0.65rem; }
+  .is-current .station { width: 0.95rem; height: 0.95rem; }
+}
+@media (max-width: 560px) {
+  .feat, .vars, .objs, .pillars { grid-template-columns: minmax(0, 1fr); }
+  .example { grid-template-columns: minmax(0, 1fr); }
+  .file, .file:nth-of-type(2), .file:nth-of-type(3) { width: 100%; margin-left: 0; }
+  .eloop { grid-template-columns: minmax(0, 1fr); justify-items: stretch; }
+  .eloop .loop { justify-self: center; }
+  .eloop__arrow { justify-self: center; transform: rotate(90deg); }
+  .queue { min-height: 3rem; }
+  .queue:empty::before { padding-top: 0.4rem; }
+  .terms div { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; }
+  .controls { gap: 0.3rem; }
+  .controls__tools { gap: 0.2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide, .slide.is-active { transition: none; transform: none; }
+  .loop__spin, .status__dot, .ev-tok, .obj.is-fresh, .till.is-pulse { animation: none; }
+  .file, .ln { transition: none; }
+}
+
+/* ---------- printing (Ctrl + P): one slide per page ---------- */
+@media print {
+  :root:root {
+    --bg: #ffffff; --surface: #ffffff; --ink: #1b1f1d; --ink-2: #4a534e; --muted: #5f6964;
+    --line: #dfe3de; --line-strong: #b7c0ba; --shadow: none;
+    --p1: #2a78d6; --p2: #df8700; --p3: #c2449a;
+    --good-ink: #0a6e2a; --bad-ink: #b3261e; --good-soft: #e3f3e5; --bad-soft: #fbe8e7;
+    --code-bg: #fbfcfa; --syn-key: #b8323a; --syn-str: #1d7a4e; --syn-num: #a35a00; --syn-fn: #3456c0;
+    color-scheme: light;
+  }
+  html, body { height: auto; overflow: visible; }
+  .deck { height: auto; overflow: visible; }
+  .slide { position: relative; inset: auto; visibility: visible; opacity: 1; transform: none; overflow: visible; padding: 10mm 0; break-after: page; }
+  .controls, .overview, .tip, .qr-form, .text-btn, .qr-zoom, .runner__controls, .eloop__send, .make { display: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- icons: the three paradigms, then the four kinds of event -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="g-proc" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="4.5" rx="1.6"/><rect x="4" y="9.75" width="16" height="4.5" rx="1.6"/><rect x="4" y="16.5" width="16" height="4.5" rx="1.6"/></symbol>
+  <symbol id="g-event" viewBox="0 0 24 24"><path d="M13.6 2.5 5 13.6h6.3l-1.3 7.9 8.9-11.3h-6.4l1.1-7.7z"/></symbol>
+  <symbol id="g-oop" viewBox="0 0 24 24"><path d="M12 2.6 3.7 7.1v9.8l8.3 4.5 8.3-4.5V7.1L12 2.6z"/><path d="M3.7 7.1 12 11.6l8.3-4.5M12 11.6v9.8"/></symbol>
+  <symbol id="i-click" viewBox="0 0 24 24"><path d="M6 3.5 18.5 10l-5.6 1.7-2.4 5.6L6 3.5z"/><path d="m13 12 5 5"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.2"/><path d="M6.5 10h1M10.5 10h1M14.5 10h1M7 14h10"/></symbol>
+  <symbol id="i-timer" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.6 1.8M9.5 2.8h5M12 2.8V6"/></symbol>
+  <symbol id="i-door" viewBox="0 0 24 24"><path d="M5 21V4.5A1.5 1.5 0 0 1 6.5 3H14v18"/><path d="M3 21h13"/><path d="M11 12.5h.01"/><path d="M17.5 8.5a4.5 4.5 0 0 1 0 7M19.8 6.2a7.8 7.8 0 0 1 0 11.6"/></symbol>
+</svg>
+
+<main class="deck" id="deck">
+
+  <!-- ===================== TITLE ===================== -->
+  <section class="slide slide--title is-active" data-title="Programming paradigms" data-section="Title">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <div class="title-grid">
+          <div class="title-copy">
+            <p class="kicker">Level 3 IT · Programming</p>
+            <h1>Programming paradigms</h1>
+            <p class="lead">Procedural, event-driven and object-oriented programming: what each one is, how it works, and the same small program written all three ways.</p>
+            <p class="byline"><b>Alexandru Ioan</b><span>Student ID 25002954</span></p>
+            <div class="title-actions">
+              <button class="btn" type="button" data-go="2">Start <span aria-hidden="true">→</span></button>
+              <p class="keys"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>O</kbd> all slides · <kbd>T</kbd> dark mode</p>
+            </div>
+          </div>
+          <div class="files">
+            <p class="pencil files__note">the same basket, three ways ↓</p>
+            <button type="button" class="file p1" data-go="3" aria-label="Go to procedural programming">
+              <span class="file__bar"><svg class="glyph" aria-hidden="true"><use href="#g-proc"/></svg><span>procedural.py</span><span class="file__tag">Procedural</span></span>
+              <span class="file__code" data-lang="python">def add_up(prices):
+    total = 0
+    for price in prices:
+        total = total + price
+    return total</span>
+            </button>
+            <button type="button" class="file p2" data-go="6" aria-label="Go to event-driven programming">
+              <span class="file__bar"><svg class="glyph" aria-hidden="true"><use href="#g-event"/></svg><span>event_driven.py</span><span class="file__tag">Event-driven</span></span>
+              <span class="file__code" data-lang="python">button = tk.Button(window, text="Add croissant",
+                   command=add_croissant)
+window.bind("c", clear)
+window.mainloop()        # wait for events</span>
+            </button>
+            <button type="button" class="file p3" data-go="9" aria-label="Go to object-oriented programming">
+              <span class="file__bar"><svg class="glyph" aria-hidden="true"><use href="#g-oop"/></svg><span>oop.py</span><span class="file__tag">Object-oriented</span></span>
+              <span class="file__code" data-lang="python">class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.price = price</span>
+            </button>
+          </div>
+        </div>
+        <nav class="agenda" aria-label="Sections">
+          <p class="small">In this presentation</p>
+          <ul class="agenda__list">
+            <li><button type="button" data-go="2"><b>1</b>Introduction</button></li>
+            <li><button type="button" class="p1" data-go="3"><b>2</b>Procedural</button></li>
+            <li><button type="button" class="p2" data-go="6"><b>3</b>Event-driven</button></li>
+            <li><button type="button" class="p3" data-go="9"><b>4</b>Object-oriented</button></li>
+            <li><button type="button" data-go="12"><b>5</b>Comparison</button></li>
+            <li><button type="button" data-go="14"><b>6</b>Conclusion</button></li>
+            <li><button type="button" data-go="15"><b>7</b>References</button></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1. INTRODUCTION ===================== -->
+  <section class="slide" data-title="What is a programming paradigm?" data-section="1 · Introduction">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">1</span>Introduction</p>
+          <h2>What is a programming paradigm?</h2>
+        </header>
+        <div class="cols cols--wide-left">
+          <div class="stack">
+            <div class="dict">
+              <p class="dict__word">programming paradigm <i>noun</i></p>
+              <p class="dict__def">A style, or approach, to programming. It is based on a set of ideas about how a program should be organised and how it runs <span class="cite">(Van Roy, 2009)</span>.</p>
+            </div>
+            <p>A paradigm isn't a programming language. It's a way of thinking about a problem: how to split it up, where the data is kept and what decides the order the code runs in. Many languages support more than one paradigm. Python, for example, can be written in all three styles in this presentation.</p>
+            <div class="example">
+              <div class="receipt" role="img" aria-label="Example receipt: croissant £1.25, sourdough loaf £3.50, cookie £0.75. Subtotal £5.50, £1 off orders of £5 or more, to pay £4.50.">
+                <p class="receipt__head">THE BAKERY</p>
+                <ul>
+                  <li><span>Croissant</span><span>£1.25</span></li>
+                  <li><span>Sourdough loaf</span><span>£3.50</span></li>
+                  <li><span>Cookie</span><span>£0.75</span></li>
+                  <li class="sub"><span>Subtotal</span><span>£5.50</span></li>
+                  <li><span>£1 off £5+</span><span>−£1.00</span></li>
+                  <li class="total"><span>To pay</span><span>£4.50</span></li>
+                </ul>
+              </div>
+              <div class="example__why">
+                <p class="label">My example all the way through</p>
+                <p>To compare the three fairly, every code example does the same small job: it adds up a bakery basket and takes £1 off orders of £5 or more.</p>
+              </div>
+            </div>
+          </div>
+          <div class="stack">
+            <p class="label">The three paradigms in this presentation</p>
+            <ul class="trio">
+              <li>
+                <button type="button" class="trio__item p1" data-go="3">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-proc"/></svg></span>
+                  <span class="trio__text"><b>Procedural</b><span>A list of steps that run in order, grouped into procedures (functions).</span><span class="pencil">like following a recipe</span></span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="trio__item p2" data-go="6">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-event"/></svg></span>
+                  <span class="trio__text"><b>Event-driven</b><span>The program waits for events, like a click, and reacts to each one when it happens.</span><span class="pencil">like a shop assistant waiting for customers</span></span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="trio__item p3" data-go="9">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-oop"/></svg></span>
+                  <span class="trio__text"><b>Object-oriented</b><span>The program is built from objects that keep their own data and actions together.</span><span class="pencil">like the bakery's real things: the till, the oven, each product</span></span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. PROCEDURAL: WHAT IT IS ===================== -->
+  <section class="slide p1" data-title="Procedural programming" data-section="2 · Procedural" data-p="1">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">2</span>Procedural · what it is</p>
+            <h2>Procedural programming</h2>
+          </div>
+          <nav class="pstrip" data-on="1" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols cols--wide-left">
+          <div class="stack">
+            <div class="dict">
+              <p class="dict__word">procedural programming <i>noun</i></p>
+              <p class="dict__def">A style of programming where a program is a list of instructions that the computer carries out in order, from top to bottom. The instructions are grouped into procedures (also called functions or subroutines) that can be called whenever they're needed <span class="cite">(Sebesta, 2016)</span>.</p>
+              <p class="dict__also">a type of imperative programming · e.g. C, Pascal, BASIC, Fortran, COBOL, or Python written this way</p>
+            </div>
+            <p class="label">Key features</p>
+            <ul class="feat">
+              <li><b>Sequence, selection, iteration</b><span>Steps in order, decisions with <code>if</code>, and loops with <code>for</code> and <code>while</code>.</span></li>
+              <li><b>Procedures (functions)</b><span>Named blocks of code that each do one job and can be called again and again.</span></li>
+              <li><b>Parameters and return values</b><span>Data goes into a procedure as parameters, and the answer comes back with <code>return</code>.</span></li>
+              <li><b>Local and global variables</b><span>Local variables only exist inside their procedure. Global ones can be used anywhere.</span></li>
+              <li><b>Top-down design</b><span>A big problem is broken down into smaller procedures (decomposition).</span></li>
+              <li><b>Data is kept separate</b><span>Data is passed from procedure to procedure. It doesn't belong to any of them.</span></li>
+            </ul>
+          </div>
+          <figure class="card chart-card">
+            <p class="label">Top-down design: a structure chart of my example</p>
+            <div class="scroll-x">
+              <svg class="schart" viewBox="0 0 560 282" role="img" aria-labelledby="scTitle scDesc">
+                <title id="scTitle">Structure chart of the procedural basket program</title>
+                <desc id="scDesc">The main program, work out what to pay, calls three procedures from left to right. add_up gets the basket and gives back the subtotal; it contains a loop that adds each price. apply_offer gets the subtotal and gives back the amount to pay; it contains a decision, if the total is 5 pounds or more take 1 pound off. print gets the amount to pay and shows the answer.</desc>
+                <path class="sc-line" d="M280,60 V84 M90,84 H470 M90,84 V134 M280,84 V134 M470,84 V134 M90,180 V218 M280,180 V218"/>
+                <g class="sc-box sc-main"><rect x="170" y="8" width="220" height="52" rx="8"/></g>
+                <text class="sc-title" x="280" y="31" text-anchor="middle">Work out what to pay</text>
+                <text class="sc-sub" x="280" y="48" text-anchor="middle">the main program</text>
+                <g class="sc-box"><rect x="5" y="134" width="170" height="46" rx="6"/><rect x="195" y="134" width="170" height="46" rx="6"/><rect x="385" y="134" width="170" height="46" rx="6"/></g>
+                <text class="sc-code" x="90" y="155" text-anchor="middle">add_up(prices)</text>
+                <text class="sc-sub" x="90" y="171" text-anchor="middle">add up the basket</text>
+                <text class="sc-code" x="280" y="155" text-anchor="middle">apply_offer(total)</text>
+                <text class="sc-sub" x="280" y="171" text-anchor="middle">take £1 off?</text>
+                <text class="sc-code" x="470" y="155" text-anchor="middle">print(...)</text>
+                <text class="sc-sub" x="470" y="171" text-anchor="middle">show the answer</text>
+                <text class="sc-flow" x="97" y="104">↓ basket</text>
+                <text class="sc-flow" x="97" y="123">↑ subtotal</text>
+                <text class="sc-flow" x="287" y="104">↓ subtotal</text>
+                <text class="sc-flow" x="287" y="123">↑ to_pay</text>
+                <text class="sc-flow" x="477" y="113">↓ to_pay</text>
+                <g class="sc-box"><rect x="5" y="218" width="170" height="56" rx="6"/><rect x="195" y="218" width="170" height="56" rx="6"/></g>
+                <text class="sc-mark" x="163" y="234" text-anchor="middle">*</text>
+                <text class="sc-mark" x="353" y="234" text-anchor="middle">o</text>
+                <text class="sc-code sc-code--sm" x="90" y="242" text-anchor="middle">for price in prices:</text>
+                <text class="sc-sub" x="90" y="260" text-anchor="middle">loop: add each price</text>
+                <text class="sc-code sc-code--sm" x="280" y="242" text-anchor="middle">if total &gt;= 5:</text>
+                <text class="sc-sub" x="280" y="260" text-anchor="middle">yes: take £1 off</text>
+              </svg>
+            </div>
+            <figcaption class="small">Read it left to right: the main program calls each procedure in turn. ↓ is data going in (a parameter), ↑ is data coming back (a return value), * is a loop and o is a decision.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. PROCEDURAL: CODE ===================== -->
+  <section class="slide p1" data-title="Procedural example: adding up the basket" data-section="2 · Procedural" data-p="1">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">2</span>Procedural · code example</p>
+            <h2>Example: adding up the basket</h2>
+          </div>
+          <nav class="pstrip" data-on="1" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="code-layout">
+          <div class="editor">
+            <p class="editor__bar"><span class="editor__dot"></span><span>basket_procedural.py</span><span class="editor__lang">Python 3</span></p>
+            <pre class="code" id="procCode" data-lang="python"># Procedural: a list of steps, split into functions
+
+def add_up(prices):              # a procedure (function)
+    total = 0                    # a local variable
+    for price in prices:         # iteration (a loop)
+        total = total + price
+    return total                 # send the answer back
+
+def apply_offer(total):
+    if total >= 5:               # selection (a decision)
+        total = total - 1        # £1 off orders of £5+
+    return total
+
+basket = [1.25, 3.50, 0.75]      # croissant, sourdough, cookie
+subtotal = add_up(basket)        # call the function
+to_pay = apply_offer(subtotal)
+print(f"To pay: £{to_pay:.2f}")</pre>
+          </div>
+          <div class="stack">
+            <div class="runner__controls">
+              <button type="button" class="btn btn--small" id="procStep" data-spy="step()">Step <span aria-hidden="true">▶</span></button>
+              <button type="button" class="btn btn--ghost btn--small" id="procPlay" aria-pressed="false" data-spy="play()">Run all</button>
+              <button type="button" class="btn btn--ghost btn--small" id="procBack" data-spy="back()">Back</button>
+              <button type="button" class="text-btn" id="procReset" data-spy="reset()">start again</button>
+              <span class="runner__count" id="procCount">step 0 of 20</span>
+            </div>
+            <p class="runner__note" id="procNote" aria-live="polite">Press Step to run the program one line at a time.</p>
+            <div class="vars">
+              <div class="vars__box">
+                <p class="label">Main program · global</p>
+                <table><tbody id="procGlobals"></tbody></table>
+              </div>
+              <div class="vars__box">
+                <p class="label" id="procLocalTitle">Inside a function · local</p>
+                <table><tbody id="procLocals"></tbody></table>
+              </div>
+            </div>
+            <div class="console">
+              <p class="console__label">Output</p>
+              <pre class="console__out" id="procOut"></pre>
+            </div>
+            <ul class="bullets notes">
+              <li>The two <code>def</code> blocks only run when they're called.</li>
+              <li>The main program (lines 14–17) runs from top to bottom.</li>
+              <li><code>add_up()</code> uses a loop and <code>apply_offer()</code> uses an <code>if</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 2. PROCEDURAL: PROS & CONS ===================== -->
+  <section class="slide p1" data-title="Procedural: pros, cons and where it's used" data-section="2 · Procedural" data-p="1">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">2</span>Procedural · pros &amp; cons</p>
+            <h2>Procedural: pros, cons and where it's used</h2>
+          </div>
+          <nav class="pstrip" data-on="1" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <div class="editor">
+              <p class="editor__bar"><span class="editor__dot"></span><span>basket.c</span><span class="editor__lang">C</span></p>
+              <pre class="code" id="cCode" data-lang="c">#include &lt;stdio.h&gt;
+
+float add_up(float prices[], int count) {
+    float total = 0;
+    for (int i = 0; i &lt; count; i++) {
+        total = total + prices[i];
+    }
+    return total;
+}
+
+int main(void) {
+    float basket[] = {1.25, 3.50, 0.75};
+    printf("Total: %.2f\n", add_up(basket, 3));
+    return 0;
+}</pre>
+              <p class="editor__out"><span>Output</span>Total: 5.50</p>
+            </div>
+            <p class="small">The same <code>add_up()</code> in C, a classic procedural language. A C program is just functions and data, with no classes or objects <span class="cite">(Kernighan and Ritchie, 1988)</span>.</p>
+          </div>
+          <div class="stack">
+            <div class="pc pc--good">
+              <h3><span class="plus" aria-hidden="true">+</span>Advantages</h3>
+              <ul class="bullets" style="--dot: var(--good)">
+                <li><b>Easy to follow.</b> The code runs in the order you read it, so it's a good way to learn.</li>
+                <li><b>Fast and light.</b> There's little extra code, so it suits scripts and small devices.</li>
+                <li><b>Reusable functions.</b> A function can be called many times and tested on its own.</li>
+              </ul>
+            </div>
+            <div class="pc pc--bad">
+              <h3><span class="minus" aria-hidden="true">−</span>Disadvantages</h3>
+              <ul class="bullets" style="--dot: var(--bad)">
+                <li><b>Hard to manage when it grows.</b> Hundreds of functions and global variables get messy.</li>
+                <li><b>Data isn't protected.</b> Any function can change a global variable by mistake.</li>
+                <li><b>Not a natural fit for real things.</b> A customer or a product is just loose data.</li>
+              </ul>
+            </div>
+            <div class="uses">
+              <p class="label">Where it's used</p>
+              <ul class="chips">
+                <li>scripts &amp; automation</li>
+                <li>calculations &amp; data processing</li>
+                <li>embedded systems (Arduino)</li>
+                <li>operating systems (Linux is mostly C)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. EVENT-DRIVEN: WHAT IT IS ===================== -->
+  <section class="slide p2" data-title="Event-driven programming" data-section="3 · Event-driven" data-p="2">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Event-driven · what it is</p>
+            <h2>Event-driven programming</h2>
+          </div>
+          <nav class="pstrip" data-on="2" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols cols--wide-right">
+          <div class="stack">
+            <div class="dict">
+              <p class="dict__word">event-driven programming <i>noun</i></p>
+              <p class="dict__def">A style of programming where the flow of the program is decided by events: things that happen, like a click, a key press, a sensor reading or a timer running out. The program waits for events, and when one happens it runs the code linked to it, called an event handler <span class="cite">(MDN Web Docs, no date a)</span>.</p>
+              <p class="dict__also">e.g. Visual Basic, C# with Windows Forms, JavaScript, Python with tkinter</p>
+            </div>
+            <p class="label">Key features</p>
+            <ul class="feat">
+              <li><b>Events</b><span>User actions (click, key press), sensors, timers or messages from other programs.</span></li>
+              <li><b>Event handlers</b><span>Functions that run when a certain event happens (also called callbacks).</span></li>
+              <li><b>Listeners (triggers)</b><span>Code that links an event on an object, like a button, to its handler.</span></li>
+              <li><b>The event loop</b><span>Runs all the time, waiting for the next event and sending it to the right handler.</span></li>
+              <li><b>An event queue</b><span>Events that arrive together wait in a queue and are handled one at a time.</span></li>
+              <li><b>The user is in control</b><span>Usually there's a GUI with buttons and menus. The user decides what happens next.</span></li>
+            </ul>
+          </div>
+          <figure class="card eloop-card">
+            <p class="label">The event loop: send it some events</p>
+            <div class="eloop__send" role="group" aria-label="Send an event">
+              <button type="button" class="src-btn" data-send="click" data-spy="sendEvent('click')"><svg class="glyph" aria-hidden="true"><use href="#i-click"/></svg>Mouse click</button>
+              <button type="button" class="src-btn" data-send="key" data-spy="sendEvent('key')"><svg class="glyph" aria-hidden="true"><use href="#i-key"/></svg>Key press</button>
+              <button type="button" class="src-btn" data-send="timer" data-spy="sendEvent('timer')"><svg class="glyph" aria-hidden="true"><use href="#i-timer"/></svg>Timer</button>
+              <button type="button" class="src-btn" data-send="sensor" data-spy="sendEvent('sensor')"><svg class="glyph" aria-hidden="true"><use href="#i-door"/></svg>Door sensor</button>
+            </div>
+            <div class="eloop">
+              <div class="eloop__col">
+                <p class="label">Event queue</p>
+                <ol class="queue" id="evQueue" aria-label="Event queue, next event first"></ol>
+              </div>
+              <span class="eloop__arrow" aria-hidden="true">→</span>
+              <div class="loop" id="evLoop">
+                <span class="loop__spin" aria-hidden="true"></span>
+                <span class="loop__cap">event loop</span>
+                <b class="loop__state" id="evState">waiting…</b>
+              </div>
+              <span class="eloop__arrow" aria-hidden="true">→</span>
+              <div class="eloop__col">
+                <p class="label">Event handlers</p>
+                <ul class="handlers">
+                  <li data-handler="click"><code>on_click()</code><span>add a croissant</span></li>
+                  <li data-handler="key"><code>on_key()</code><span>clear the basket</span></li>
+                  <li data-handler="timer"><code>on_timer()</code><span>update the clock</span></li>
+                  <li data-handler="sensor"><code>on_sensor()</code><span>ring the shop bell</span></li>
+                </ul>
+              </div>
+            </div>
+            <ol class="evlog" id="evLog" aria-live="polite" data-empty="Nothing has happened yet, so the loop is just waiting."></ol>
+            <figcaption class="small">Click quickly to fill the queue: the loop still handles one event at a time, in the order they arrived.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. EVENT-DRIVEN: CODE ===================== -->
+  <section class="slide p2" id="tillSlide" data-title="Event-driven example: a bakery till" data-section="3 · Event-driven" data-p="2">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Event-driven · code example</p>
+            <h2>Example: a bakery till with a button</h2>
+          </div>
+          <nav class="pstrip" data-on="2" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="code-layout">
+          <div class="editor">
+            <p class="editor__bar"><span class="editor__dot"></span><span>till_events.py</span><span class="editor__lang">Python 3 · tkinter</span></p>
+            <pre class="code" id="tillCode" data-lang="python">import tkinter as tk
+
+total = 0                            # a global variable
+
+def add_croissant():                 # event handler
+    global total
+    total = total + 1.25
+    label.config(text=f"Total: £{total:.2f}")
+
+def clear(event):                    # event handler
+    global total
+    total = 0
+    label.config(text="Total: £0.00")
+
+window = tk.Tk()                     # set up the window
+window.title("Bakery till")
+label = tk.Label(window, text="Total: £0.00")
+label.pack()
+button = tk.Button(window, text="Add croissant",
+                   command=add_croissant)  # click → handler
+button.pack()
+window.bind("c", clear)              # key press C → handler
+
+window.mainloop()                    # event loop: wait for events</pre>
+          </div>
+          <div class="stack">
+            <p class="label">Try it: this is the window the code makes</p>
+            <div class="till" id="tillApp">
+              <p class="till__bar"><span>Bakery till</span><span class="till__ctl" aria-hidden="true"><i></i><i></i><i></i></span></p>
+              <div class="till__body">
+                <p class="till__total" id="tillTotal" aria-live="polite">Total: £0.00</p>
+                <button type="button" class="till__btn" id="tillAdd">Add croissant</button>
+              </div>
+            </div>
+            <p class="status" id="tillStatus"><span class="status__dot" aria-hidden="true"></span><span id="tillStatusText">waiting in <code>mainloop()</code> for an event…</span></p>
+            <div class="row">
+              <button type="button" class="btn btn--ghost btn--small" id="tillKey">Press <kbd>C</kbd></button>
+              <span class="small">or press C on the keyboard to clear the total</span>
+            </div>
+            <ol class="evlog" id="tillLog" aria-live="polite" data-empty="No events yet. Click the button or press C."></ol>
+            <ul class="bullets notes">
+              <li>Lines 15–22 run once. They build the window and link each event to its handler.</li>
+              <li>Then <code>mainloop()</code> waits. Nothing else runs until an event happens.</li>
+              <li>The user decides the order things happen in. The programmer only decides what each event does.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. EVENT-DRIVEN: PROS & CONS ===================== -->
+  <section class="slide p2" data-title="Event-driven: pros, cons and where it's used" data-section="3 · Event-driven" data-p="2">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">3</span>Event-driven · pros &amp; cons</p>
+            <h2>Event-driven: pros, cons and where it's used</h2>
+          </div>
+          <nav class="pstrip" data-on="2" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <div class="editor">
+              <p class="editor__bar"><span class="editor__dot"></span><span>till.js</span><span class="editor__lang">JavaScript</span></p>
+              <pre class="code" id="jsCode" data-lang="js">// the web page has &lt;p id="total"&gt; and &lt;button id="add"&gt;
+let total = 0;
+const button = document.querySelector("#add");
+const label = document.querySelector("#total");
+
+function addCroissant() {                        // event handler
+  total = total + 1.25;
+  label.textContent = `Total: £${total.toFixed(2)}`;
+}
+
+button.addEventListener("click", addCroissant);  // event listener</pre>
+            </div>
+            <p class="small">The same idea on a web page. Web browsers are event-driven: <code>addEventListener()</code> links an event to its handler <span class="cite">(MDN Web Docs, no date b)</span>.</p>
+            <div class="card spy">
+              <p><b>This presentation is event-driven too.</b> These are the last events it handled:</p>
+              <ol class="evlog" id="spyLog" data-empty="No events yet. Press → or click something."></ol>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="pc pc--good">
+              <h3><span class="plus" aria-hidden="true">+</span>Advantages</h3>
+              <ul class="bullets" style="--dot: var(--good)">
+                <li><b>Made for interaction.</b> The user is in control, and the program reacts straight away.</li>
+                <li><b>Easy to add to.</b> A new button only needs a new handler. The rest stays the same.</li>
+                <li><b>No wasted work.</b> Nothing runs until an event actually happens.</li>
+              </ul>
+            </div>
+            <div class="pc pc--bad">
+              <h3><span class="minus" aria-hidden="true">−</span>Disadvantages</h3>
+              <ul class="bullets" style="--dot: var(--bad)">
+                <li><b>Harder to test.</b> Events can come in any order, so there are many paths to check.</li>
+                <li><b>Harder to follow.</b> The code jumps between handlers instead of reading top to bottom.</li>
+                <li><b>One slow handler freezes everything.</b> While it runs, the loop can't handle other events.</li>
+              </ul>
+            </div>
+            <div class="uses">
+              <p class="label">Where it's used</p>
+              <ul class="chips">
+                <li>desktop apps (buttons &amp; menus)</li>
+                <li>websites (JavaScript)</li>
+                <li>games (key presses)</li>
+                <li>mobile apps (taps &amp; swipes)</li>
+                <li>sensors &amp; alarms</li>
+                <li>web servers (each request is an event)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. OOP: WHAT IT IS ===================== -->
+  <section class="slide p3" data-title="Object-oriented programming" data-section="4 · Object-oriented" data-p="3">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">4</span>Object-oriented · what it is</p>
+            <h2>Object-oriented programming (OOP)</h2>
+          </div>
+          <nav class="pstrip" data-on="3" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <div class="dict">
+              <p class="dict__word">object-oriented programming <i>noun · OOP for short</i></p>
+              <p class="dict__def">A style of programming where the program is built from objects. Each object keeps its own data (attributes) together with the actions that use that data (methods). Objects are made from classes, which work like blueprints <span class="cite">(Oracle, no date)</span>.</p>
+              <p class="dict__also">e.g. Java, C#, C++, Python, Ruby, Kotlin</p>
+            </div>
+            <dl class="terms">
+              <div><dt>Class</dt><dd>The blueprint for making objects, e.g. <code>Product</code>.</dd></div>
+              <div><dt>Object</dt><dd>One thing made from a class, also called an instance, e.g. <code>croissant</code>.</dd></div>
+              <div><dt>Attribute</dt><dd>A piece of data an object keeps, e.g. its <code>name</code> and <code>price</code>.</dd></div>
+              <div><dt>Method</dt><dd>A function that belongs to an object, e.g. <code>describe()</code>.</dd></div>
+              <div><dt>Constructor</dt><dd>The method that sets up a new object: <code>__init__()</code> in Python.</dd></div>
+            </dl>
+          </div>
+          <figure class="card chart-card">
+            <p class="label">One class, many objects</p>
+            <div class="scroll-x">
+              <svg class="uml" viewBox="0 0 550 240" role="img" aria-labelledby="umlTitle umlDesc">
+                <title id="umlTitle">UML diagram of the Product class and two objects made from it</title>
+                <desc id="umlDesc">The class Product has two attributes, name and price, and two methods, the constructor and describe. Two objects are instances of it: croissant, with name Croissant and price 1.25, and sourdough, with name Sourdough and price 3.5.</desc>
+                <defs>
+                  <marker id="umlHead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto"><path class="uml-head-mark" d="M1,1 L9,5 L1,9"/></marker>
+                </defs>
+                <text class="uml-side" x="70" y="43" text-anchor="end">class</text>
+                <text class="uml-side" x="70" y="87" text-anchor="end">attributes</text>
+                <text class="uml-side" x="70" y="141" text-anchor="end">methods</text>
+                <g class="uml-box">
+                  <rect class="uml-head" x="78" y="22" width="200" height="34"/>
+                  <rect x="78" y="56" width="200" height="54"/>
+                  <rect x="78" y="110" width="200" height="54"/>
+                  <rect x="362" y="10" width="178" height="30"/>
+                  <rect x="362" y="40" width="178" height="52"/>
+                  <rect x="362" y="126" width="178" height="30"/>
+                  <rect x="362" y="156" width="178" height="52"/>
+                </g>
+                <text class="uml-name" x="178" y="44" text-anchor="middle">Product</text>
+                <text class="uml-txt" x="90" y="79">+ name: str</text>
+                <text class="uml-txt" x="90" y="99">+ price: float</text>
+                <text class="uml-txt" x="90" y="133">+ __init__(name, price)</text>
+                <text class="uml-txt" x="90" y="153">+ describe(): str</text>
+                <text class="uml-obj" x="451" y="30" text-anchor="middle">croissant : Product</text>
+                <text class="uml-txt" x="374" y="62">name = 'Croissant'</text>
+                <text class="uml-txt" x="374" y="82">price = 1.25</text>
+                <text class="uml-obj" x="451" y="146" text-anchor="middle">sourdough : Product</text>
+                <text class="uml-txt" x="374" y="178">name = 'Sourdough'</text>
+                <text class="uml-txt" x="374" y="198">price = 3.5</text>
+                <path class="uml-arrow" d="M362,51 L282,84" marker-end="url(#umlHead)"/>
+                <path class="uml-arrow" d="M362,167 L282,134" marker-end="url(#umlHead)"/>
+                <text class="uml-side" x="322" y="113" text-anchor="middle">«instance of»</text>
+                <text class="uml-note" x="178" y="194" text-anchor="middle">the class = a blueprint</text>
+                <text class="uml-note" x="451" y="232" text-anchor="middle">objects made from it</text>
+              </svg>
+            </div>
+            <figcaption class="small">A UML class diagram (left) and two objects (right). Both objects have the same attributes, but each one has its own values.</figcaption>
+          </figure>
+        </div>
+        <div class="stack">
+          <p class="label">The four main ideas of OOP <span class="cite">(Booch et al., 2007)</span></p>
+          <ul class="pillars">
+            <li><b>Encapsulation</b><span>Data and methods are kept together in an object. Data can be private, so only the object's own methods can change it.</span></li>
+            <li><b>Inheritance</b><span>A child class gets the attributes and methods of a parent class and can add its own, e.g. a <code>Cake</code> is a <code>Product</code>.</span></li>
+            <li><b>Polymorphism</b><span>The same method name does different things in different classes, e.g. <code>describe()</code>.</span></li>
+            <li><b>Abstraction</b><span>Only show what's needed to use an object and hide the details, e.g. you call <code>basket.add()</code> without seeing how it works.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. OOP: CODE ===================== -->
+  <section class="slide p3" data-title="OOP example: products and a basket" data-section="4 · Object-oriented" data-p="3">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">4</span>Object-oriented · code example</p>
+            <h2>Example: products and a basket as objects</h2>
+          </div>
+          <nav class="pstrip" data-on="3" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="code-layout">
+          <div class="editor">
+            <p class="editor__bar"><span class="editor__dot"></span><span>basket_oop.py</span><span class="editor__lang">Python 3</span></p>
+            <pre class="code" id="oopCode" data-lang="python">class Product:
+    def __init__(self, name, price):   # constructor
+        self.name = name               # attributes
+        self.price = price
+
+    def describe(self):                # a method
+        return f"{self.name} costs £{self.price:.2f}"
+
+class Basket:
+    def __init__(self):
+        self.items = []
+        self.total = 0
+
+    def add(self, product):            # a method
+        self.items.append(product)
+        self.total = self.total + product.price
+
+croissant = Product("Croissant", 1.25) # objects
+sourdough = Product("Sourdough", 3.50)
+basket = Basket()
+basket.add(croissant)
+basket.add(sourdough)
+print(croissant.describe())            # Croissant costs £1.25
+print(basket.total)                    # 4.75</pre>
+          </div>
+          <div class="stack">
+            <form class="make" id="makeForm" novalidate>
+              <p class="label">Try it: make a new object from the class</p>
+              <div class="make__row">
+                <code><span id="makeVar">cookie</span> = Product(</code>
+                <label class="sr" for="makeName">Product name</label>
+                <input type="text" id="makeName" value="Cookie" maxlength="18" autocomplete="off" spellcheck="false">
+                <code>,</code>
+                <label class="sr" for="makePrice">Price in pounds</label>
+                <input type="number" id="makePrice" value="0.75" min="0.01" max="99.99" step="0.01">
+                <code>)</code>
+                <button type="submit" class="btn btn--small" id="makeBtn" data-spy="Product(...)">Create object</button>
+              </div>
+              <p class="error" id="makeError" role="alert" hidden></p>
+            </form>
+            <ul class="objs" id="objs" aria-label="Product objects"></ul>
+            <div class="obj obj--basket" id="basketObj" aria-live="polite"></div>
+            <div class="console">
+              <p class="console__label">Python shell <button type="button" class="text-btn" id="oopReset" data-spy="reset()">start again</button></p>
+              <pre class="console__out" id="shell"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. OOP: PROS & CONS ===================== -->
+  <section class="slide p3" data-title="Inheritance, polymorphism, pros and cons" data-section="4 · Object-oriented" data-p="3">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="p-head">
+          <div class="slide__head">
+            <p class="kicker"><span class="kicker__num">4</span>Object-oriented · pros &amp; cons</p>
+            <h2>Inheritance, polymorphism, pros and cons</h2>
+          </div>
+          <nav class="pstrip" data-on="3" aria-label="Jump to a paradigm"></nav>
+        </header>
+        <div class="cols">
+          <div class="stack">
+            <div class="concepts" role="group" aria-label="Show the lines for each idea">
+              <span class="small">Show me:</span>
+              <button type="button" class="concept" data-concept="enc" aria-pressed="false">Encapsulation</button>
+              <button type="button" class="concept" data-concept="inh" aria-pressed="false">Inheritance</button>
+              <button type="button" class="concept" data-concept="poly" aria-pressed="false">Polymorphism</button>
+            </div>
+            <div class="editor">
+              <p class="editor__bar"><span class="editor__dot"></span><span>products.py</span><span class="editor__lang">Python 3</span></p>
+              <pre class="code" id="polyCode" data-lang="python">class Product:
+    def __init__(self, name, price):
+        self.name = name
+        self.__price = price             # private (encapsulation)
+
+    def get_price(self):                 # the way to read it
+        return self.__price
+
+    def describe(self):
+        return f"{self.name}: £{self.__price:.2f}"
+
+class Cake(Product):                     # inherits from Product
+    def __init__(self, name, price, slices):
+        super().__init__(name, price)    # Product's constructor
+        self.slices = slices             # an extra attribute
+
+    def describe(self):                  # overrides describe()
+        return f"{self.name} cake, {self.slices} slices"
+
+items = [Product("Croissant", 1.25), Cake("Lemon", 12, 8)]
+for item in items:
+    print(item.describe())               # polymorphism
+print(items[1].get_price())              # inherited from Product</pre>
+            </div>
+          </div>
+          <div class="stack">
+            <div class="runner__controls">
+              <button type="button" class="btn btn--small" id="polyStep" data-spy="step()">Step <span aria-hidden="true">▶</span></button>
+              <button type="button" class="btn btn--ghost btn--small" id="polyPlay" aria-pressed="false" data-spy="play()">Run all</button>
+              <button type="button" class="btn btn--ghost btn--small" id="polyBack" data-spy="back()">Back</button>
+              <button type="button" class="text-btn" id="polyReset" data-spy="reset()">start again</button>
+              <span class="runner__count" id="polyCount">step 0 of 4</span>
+            </div>
+            <p class="runner__note" id="polyNote" aria-live="polite">Press Step to see which describe() each object uses.</p>
+            <div class="console">
+              <p class="console__label">Output</p>
+              <pre class="console__out" id="polyOut"></pre>
+            </div>
+            <div class="pc pc--good">
+              <h3><span class="plus" aria-hidden="true">+</span>Advantages</h3>
+              <ul class="bullets" style="--dot: var(--good)">
+                <li><b>Organised.</b> Each class looks after its own data and job, which suits big programs and teams.</li>
+                <li><b>Reusable.</b> Inheritance builds new classes on old ones instead of copying code.</li>
+                <li><b>Safer data.</b> Encapsulation stops other code changing an object's data by accident.</li>
+              </ul>
+            </div>
+            <div class="pc pc--bad">
+              <h3><span class="minus" aria-hidden="true">−</span>Disadvantages</h3>
+              <ul class="bullets" style="--dot: var(--bad)">
+                <li><b>More to learn.</b> Classes, inheritance and polymorphism take time to understand.</li>
+                <li><b>Too much for small jobs.</b> A short script doesn't need classes.</li>
+                <li><b>Can be slower.</b> Objects use more memory than simple procedural code.</li>
+              </ul>
+            </div>
+            <div class="uses">
+              <p class="label">Where it's used</p>
+              <ul class="chips">
+                <li>games (Unity uses C#)</li>
+                <li>Android apps (Java, Kotlin)</li>
+                <li>large business systems</li>
+                <li>GUI toolkits (<code>tk.Button</code> is a class)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. COMPARISON ===================== -->
+  <section class="slide" data-title="Comparing the three paradigms" data-section="5 · Comparison">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">5</span>Comparison</p>
+          <h2>Comparing the three paradigms</h2>
+        </header>
+        <div class="scroll-x">
+          <table class="ctable">
+            <thead>
+              <tr>
+                <td></td>
+                <th scope="col" class="p1"><span><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-proc"/></svg></span>Procedural</span></th>
+                <th scope="col" class="p2"><span><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-event"/></svg></span>Event-driven</span></th>
+                <th scope="col" class="p3"><span><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-oop"/></svg></span>Object-oriented</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Main idea</th>
+                <td class="p1">A list of steps that run in order</td>
+                <td class="p2">Wait for events, then react to them</td>
+                <td class="p3">Objects that hold their own data and methods</td>
+              </tr>
+              <tr>
+                <th scope="row">Built from</th>
+                <td class="p1">Procedures (functions)</td>
+                <td class="p2">Events, listeners and handlers</td>
+                <td class="p3">Classes and objects</td>
+              </tr>
+              <tr>
+                <th scope="row">Who decides the order</th>
+                <td class="p1">The programmer: top to bottom</td>
+                <td class="p2">The user or the system: whatever happens next</td>
+                <td class="p3">Objects calling each other's methods</td>
+              </tr>
+              <tr>
+                <th scope="row">Where the data lives</th>
+                <td class="p1">Separate from the code, passed around or global</td>
+                <td class="p2">In variables that the handlers share</td>
+                <td class="p3">Inside the objects, protected by encapsulation</td>
+              </tr>
+              <tr>
+                <th scope="row">Best for</th>
+                <td class="p1">Small programs, scripts and calculations</td>
+                <td class="p2">GUIs, websites, games and sensors</td>
+                <td class="p3">Big programs, team projects, modelling real things</td>
+              </tr>
+              <tr>
+                <th scope="row">Example languages</th>
+                <td class="p1">C, Pascal, BASIC</td>
+                <td class="p2">JavaScript, Visual Basic, C#</td>
+                <td class="p3">Java, C#, C++, Python</td>
+              </tr>
+              <tr>
+                <th scope="row">In my example</th>
+                <td class="p1"><code>subtotal = add_up(basket)</code></td>
+                <td class="p2"><code>click → add_croissant()</code></td>
+                <td class="p3"><code>basket.add(croissant)</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small">Python appears in all three examples because it's multi-paradigm: it supports all three styles.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. HOW THEY FIT TOGETHER ===================== -->
+  <section class="slide" data-title="How they fit together" data-section="5 · Comparison">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">5</span>Comparison</p>
+          <h2>How they fit together</h2>
+          <p class="lead">The three paradigms aren't rivals. Most real programs use all three at the same time, like this version of my till. The coloured lines show which paradigm each part of the code belongs to.</p>
+        </header>
+        <div class="cols cols--wide-left">
+          <div class="editor">
+            <p class="editor__bar"><span class="editor__dot"></span><span>till_app.py</span><span class="editor__lang">Python 3 · tkinter</span></p>
+            <pre class="code" id="togetherCode" data-lang="python">import tkinter as tk
+
+class TillApp:                                # a class
+    def __init__(self, window):
+        self.total = 0                        # an attribute
+        self.label = tk.Label(window, text="Total: £0.00")
+        self.label.pack()
+        button = tk.Button(window, text="Add croissant",
+                           command=self.add)  # click → handler
+        button.pack()
+
+    def add(self):                            # a method + event handler
+        self.total = self.total + 1.25        # step 1
+        if self.total >= 5:                   # step 2: a decision
+            self.label.config(fg="green")
+        self.label.config(text=f"Total: £{self.total:.2f}")
+
+window = tk.Tk()
+app = TillApp(window)                         # an object
+window.mainloop()                             # the event loop</pre>
+          </div>
+          <div class="stack">
+            <ul class="legend3">
+              <li>
+                <button type="button" class="leg p3" data-mark="3" aria-pressed="false">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-oop"/></svg></span>
+                  <b>Object-oriented: the outside</b>
+                  <span class="leg__what">The program is a class, <code>TillApp</code>, and <code>app</code> is an object made from it. The total is an attribute.</span>
+                  <span class="leg__lines">lines 3–16 and 19</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="leg p2" data-mark="2" aria-pressed="false">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-event"/></svg></span>
+                  <b>Event-driven: when code runs</b>
+                  <span class="leg__what">The button is linked to the method <code>add()</code>, which runs on every click, and <code>mainloop()</code> waits for the clicks.</span>
+                  <span class="leg__lines">lines 8–9, 12–16 and 20</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="leg p1" data-mark="1" aria-pressed="false">
+                  <span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-proc"/></svg></span>
+                  <b>Procedural: the inside</b>
+                  <span class="leg__what">Inside <code>add()</code>, the code is plain steps in order, with an <code>if</code> to make a decision.</span>
+                  <span class="leg__lines">lines 13–16</span>
+                </button>
+              </li>
+            </ul>
+            <p class="small">Click a paradigm to show only its lines. Languages like Python, C#, Java and JavaScript are multi-paradigm, so the question isn't which paradigm is best, but which one fits each part of a program.</p>
+            <p class="pencil">even <code>tk.Button</code> is an object made from a class!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 6. CONCLUSION ===================== -->
+  <section class="slide" data-title="Conclusion" data-section="6 · Conclusion">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <header class="slide__head">
+          <p class="kicker"><span class="kicker__num">6</span>Conclusion</p>
+          <h2>Conclusion</h2>
+          <p class="lead">A paradigm is a way of organising a program. Procedural programming is about the steps, event-driven programming is about when the code runs, and object-oriented programming is about how the code and data are grouped together.</p>
+        </header>
+        <ul class="concl">
+          <li class="p1">
+            <h3><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-proc"/></svg></span>Procedural</h3>
+            <dl>
+              <div><dt>In one line</dt><dd>Steps in order, grouped into functions.</dd></div>
+              <div><dt>Think of it as</dt><dd>A recipe.</dd></div>
+              <div><dt>Best for</dt><dd>Small programs, scripts and calculations.</dd></div>
+            </dl>
+          </li>
+          <li class="p2">
+            <h3><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-event"/></svg></span>Event-driven</h3>
+            <dl>
+              <div><dt>In one line</dt><dd>Waits for events and runs a handler for each one.</dd></div>
+              <div><dt>Think of it as</dt><dd>A shop assistant waiting for customers.</dd></div>
+              <div><dt>Best for</dt><dd>Anything with buttons, keys or sensors.</dd></div>
+            </dl>
+          </li>
+          <li class="p3">
+            <h3><span class="pbadge"><svg class="glyph" aria-hidden="true"><use href="#g-oop"/></svg></span>Object-oriented</h3>
+            <dl>
+              <div><dt>In one line</dt><dd>Objects made from classes, each with its own data and methods.</dd></div>
+              <div><dt>Think of it as</dt><dd>The bakery's real things, each with its own job.</dd></div>
+              <div><dt>Best for</dt><dd>Big programs that need to stay organised.</dd></div>
+            </dl>
+          </li>
+        </ul>
+        <div class="opinion">
+          <h3>Which one I would use</h3>
+          <p>For a quick calculation I'd write procedural code. As soon as there's a window with buttons, I need event-driven code. Once a program grows, I'd organise it into classes. In Python I can do all three in the same program, like the till on the last slide.</p>
+          <p class="pencil">my opinion: learn procedural first, because the other two are built on top of it</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 7. REFERENCES + FEEDBACK ===================== -->
+  <section class="slide" data-title="References + feedback" data-section="7 · References">
+    <div class="slide__inner">
+      <div class="slide__body">
+        <div class="end-grid">
+          <div class="stack">
+            <header class="slide__head">
+              <p class="kicker"><span class="kicker__num">7</span>References</p>
+              <h2>References</h2>
+            </header>
+            <ol class="refs">
+              <li>Booch, G., Maksimchuk, R.A., Engle, M.W., Young, B.J., Conallen, J. and Houston, K.A. (2007) <i>Object-oriented analysis and design with applications</i>. 3rd edn. Upper Saddle River, NJ: Addison-Wesley.</li>
+              <li>Kernighan, B.W. and Ritchie, D.M. (1988) <i>The C programming language</i>. 2nd edn. Englewood Cliffs, NJ: Prentice Hall.</li>
+              <li>MDN Web Docs (no date a) <i>Introduction to events</i>. Available at: <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events</a> (Accessed: 1 October 2026).</li>
+              <li>MDN Web Docs (no date b) <i>EventTarget: addEventListener() method</i>. Available at: <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener" target="_blank" rel="noopener">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener</a> (Accessed: 1 October 2026).</li>
+              <li>Oracle (no date) <i>The Java tutorials: object-oriented programming concepts</i>. Available at: <a href="https://docs.oracle.com/javase/tutorial/java/concepts/" target="_blank" rel="noopener">https://docs.oracle.com/javase/tutorial/java/concepts/</a> (Accessed: 1 October 2026).</li>
+              <li>Python Software Foundation (no date a) <i>The Python tutorial: 9. Classes</i>. Available at: <a href="https://docs.python.org/3/tutorial/classes.html" target="_blank" rel="noopener">https://docs.python.org/3/tutorial/classes.html</a> (Accessed: 1 October 2026).</li>
+              <li>Python Software Foundation (no date b) <i>tkinter: Python interface to Tcl/Tk</i>. Available at: <a href="https://docs.python.org/3/library/tkinter.html" target="_blank" rel="noopener">https://docs.python.org/3/library/tkinter.html</a> (Accessed: 1 October 2026).</li>
+              <li>Sebesta, R.W. (2016) <i>Concepts of programming languages</i>. 11th edn. Boston, MA: Pearson.</li>
+              <li>Van Roy, P. (2009) 'Programming paradigms for dummies: what every programmer should know', in Assayag, G. and Gerzso, A. (eds) <i>New computational paradigms for computer music</i>. Paris: IRCAM/Delatour France. Available at: <a href="https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf" target="_blank" rel="noopener">https://www.info.ucl.ac.be/~pvr/VanRoyChapter.pdf</a> (Accessed: 1 October 2026).</li>
+            </ol>
+            <p class="small">Harvard style. The citations on the slides, like (Oracle, no date), point to this list. The tkinter and Python class examples follow the Python documentation (Python Software Foundation, no date a; no date b).</p>
+          </div>
+          <div class="end-thanks">
+            <p class="kicker">That's the end</p>
+            <h2>Thank you for listening!</h2>
+            <p class="thanks__q">Any questions?</p>
+            <div class="card fb">
+              <div class="qr qr--empty" id="qrBox">Add the link to your Microsoft Form to make the QR code</div>
+              <div class="fb__text">
+                <h3>How was my presentation?</h3>
+                <p>Scan the QR code with your phone camera to fill in my short feedback form on Microsoft Forms. It only takes a minute.</p>
+                <p class="small" id="qrHint" hidden>Click the code to show it full screen.</p>
+                <p class="fb__link" id="qrLink"></p>
+                <form class="qr-form" id="qrForm" novalidate>
+                  <label for="qrInput">Link to my Microsoft Form</label>
+                  <div>
+                    <input type="url" id="qrInput" placeholder="https://forms.office.com/r/..." autocomplete="off">
+                    <button type="submit" class="btn btn--small" data-spy="showQr()">Make QR code</button>
+                  </div>
+                  <p class="error" id="qrError" hidden>That doesn't look like a link. It should start with https://</p>
+                </form>
+                <button type="button" class="text-btn" id="qrChange" hidden>change link</button>
+              </div>
+            </div>
+            <p class="whoami"><span>Alexandru Ioan</span><span>Student ID 25002954</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== CONTROLS ===================== -->
+<nav class="controls" id="controls" aria-label="Presentation controls">
+  <p class="controls__who"><b>Alexandru Ioan</b> · 25002954</p>
+  <button class="icon-btn" id="prevBtn" type="button" aria-label="Previous slide">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <ol class="route" id="route"></ol>
+  <button class="icon-btn" id="nextBtn" type="button" aria-label="Next slide">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <p class="controls__where" aria-live="polite"><b id="slideCount">01 / 15</b><span id="slideSection">Title</span></p>
+  <div class="controls__tools">
+    <button class="icon-btn" id="ovBtn" type="button" aria-label="Show all slides (O)">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.3"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.3"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.3"/></svg>
+    </button>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark mode (T)">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+    </button>
+    <button class="icon-btn" id="fsBtn" type="button" aria-label="Full screen (F)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="overview" id="overview" hidden>
+  <div class="overview__inner" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+    <div class="overview__head">
+      <h2 id="ovTitle">All slides</h2>
+      <button class="btn btn--ghost btn--small" id="ovClose" type="button">Close <kbd>Esc</kbd></button>
+    </div>
+    <div class="overview__grid" id="ovGrid"></div>
+  </div>
+</div>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<div class="qr-zoom" id="qrZoom" role="dialog" aria-modal="true" aria-label="Feedback QR code, full screen" tabindex="-1" hidden>
+  <div class="qr-zoom__box" id="qrZoomBox"></div>
+  <p>Scan me! Click anywhere or press Esc to close.</p>
+</div>
+
+<!-- QR code library (qrcode-generator by Kazuhiko Arase, MIT licence) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+/* =========================================================
+   Programming Paradigms · script
+   ========================================================= */
+(() => {
+  'use strict';
+
+  // ↓ paste the link to my Microsoft Forms feedback form here
+  const FORM_URL = '';
+
+  /* ---------- little helpers ---------- */
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+  const pad = n => String(n).padStart(2, '0');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const clock = () => new Date().toLocaleTimeString('en-GB');
+  // numbers the way Python prints them: 5.0, 4.75
+  const pyNum = x => (Number.isInteger(x) ? x.toFixed(1) : String(x));
+  const store = {
+    get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+    set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private window etc. */ } }
+  };
+
+  /* ---------- tooltip ---------- */
+  const tip = $('#tip');
+  function showTip(lines, x, y) {
+    tip.replaceChildren(...lines.map((text, i) => {
+      const row = document.createElement('div');
+      if (i === 0) {
+        const b = document.createElement('b');
+        b.textContent = text;
+        row.append(b);
+      } else {
+        row.textContent = text;
+      }
+      return row;
+    }));
+    tip.hidden = false;
+    const box = tip.getBoundingClientRect();
+    let left = x + 14;
+    let top = y + 14;
+    if (left + box.width > innerWidth - 8) left = x - box.width - 14;
+    if (top + box.height > innerHeight - 8) top = y - box.height - 14;
+    tip.style.left = Math.max(8, left) + 'px';
+    tip.style.top = Math.max(8, top) + 'px';
+  }
+  function hideTip() { tip.hidden = true; }
+  function attachTip(el, getLines) {
+    el.addEventListener('pointermove', e => showTip(getLines(), e.clientX, e.clientY));
+    el.addEventListener('pointerleave', hideTip);
+    el.addEventListener('focus', () => {
+      const r = el.getBoundingClientRect();
+      showTip(getLines(), r.left + r.width / 2, r.bottom);
+    });
+    el.addEventListener('blur', hideTip);
+  }
+
+  /* =========================================================
+     1. CODE: syntax colours and line numbers
+     ========================================================= */
+  const SYNTAX = {
+    python: {
+      re: /(#.*$)|([rRfFbB]?(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'))|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|(\s+)|([\s\S])/g,
+      keywords: 'def class return if elif else for while in import from as global nonlocal and or not is None True False pass try except with lambda',
+      builtins: 'print len range str int float super sum input',
+      defs: 'def class'
+    },
+    js: {
+      re: /(\/\/.*$)|(`(?:[^`\\]|\\.)*`|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|(\s+)|([\s\S])/g,
+      keywords: 'let const var function return if else for while new true false null of in',
+      builtins: 'document console',
+      defs: 'function'
+    },
+    c: {
+      re: /(\/\/.*$|^\s*#.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|(\s+)|([\s\S])/g,
+      keywords: 'int float double char void return for while if else struct',
+      builtins: 'printf',
+      defs: ''
+    }
+  };
+  Object.values(SYNTAX).forEach(s => {
+    s.keywords = new Set(s.keywords.split(' '));
+    s.builtins = new Set(s.builtins.split(' '));
+    s.defs = new Set(s.defs.split(' ').filter(Boolean));
+  });
+
+  function highlightLine(line, lang) {
+    const syn = SYNTAX[lang];
+    const re = new RegExp(syn.re.source, 'g');
+    let html = '';
+    let prev = '';
+    let m;
+    while ((m = re.exec(line)) !== null) {
+      const [tok, comment, str, num, word] = m;
+      if (comment !== undefined) {
+        // in C a line starting with # is an instruction (#include), not a comment
+        const isC = lang === 'c' && comment.trimStart().startsWith('#');
+        html += `<span class="${isC ? 't-k' : 't-c'}">${esc(comment)}</span>`;
+        prev = '';
+      } else if (str !== undefined) {
+        html += `<span class="t-s">${esc(str)}</span>`;
+        prev = '';
+      } else if (num !== undefined) {
+        html += `<span class="t-n">${num}</span>`;
+        prev = '';
+      } else if (word !== undefined) {
+        const callNext = /^\s*\(/.test(line.slice(re.lastIndex));
+        let cls = '';
+        if (syn.defs.has(prev) || (lang === 'c' && /^(int|float|double|char|void)$/.test(prev) && callNext)) cls = 't-f';
+        else if (syn.keywords.has(word)) cls = 't-k';
+        else if (word === 'self') cls = 't-self';
+        else if (syn.builtins.has(word)) cls = 't-b';
+        html += cls ? `<span class="${cls}">${word}</span>` : word;
+        prev = word;
+      } else {
+        html += esc(tok);
+        if (!/^\s+$/.test(tok)) prev = '';
+      }
+      if (tok === '') re.lastIndex++;
+    }
+    return html;
+  }
+
+  // turn a <pre class="code"> into numbered lines that can be highlighted
+  function renderCode(pre) {
+    const lines = pre.textContent.replace(/\s+$/, '').split('\n');
+    const inner = document.createElement('div');
+    inner.className = 'code__inner';
+    const rows = lines.map((text, i) => {
+      const row = document.createElement('div');
+      row.className = 'ln';
+      row.innerHTML = `<span class="ln__no" aria-hidden="true">${i + 1}</span><span class="ln__code">${highlightLine(text, pre.dataset.lang) || ' '}</span>`;
+      inner.append(row);
+      return row;
+    });
+    pre.replaceChildren(inner);
+    return rows;
+  }
+  const code = {};
+  $$('pre.code[data-lang]').forEach(pre => { code[pre.id] = renderCode(pre); });
+  $$('.file__code[data-lang]').forEach(el => {
+    el.innerHTML = el.textContent.split('\n').map(line => highlightLine(line, el.dataset.lang)).join('\n');
+  });
+
+  function setLines(rows, nums, cls) {
+    rows.forEach((row, i) => row.classList.toggle(cls, nums.includes(i + 1)));
+  }
+  const flashTimers = new Map();
+  function flashLines(rows, nums, ms = 1400) {
+    setLines(rows, nums, 'is-hot');
+    clearTimeout(flashTimers.get(rows));
+    flashTimers.set(rows, setTimeout(() => setLines(rows, [], 'is-hot'), ms));
+  }
+  function markLines(pre, rows, nums) {
+    pre.classList.toggle('is-marking', Boolean(nums));
+    setLines(rows, nums || [], 'is-mark');
+  }
+
+  /* =========================================================
+     2. SLIDES & NAVIGATION
+     ========================================================= */
+  const root = document.documentElement;
+  const deck = $('#deck');
+  const controls = $('#controls');
+  const slides = $$('.slide');
+  const total = slides.length;
+  const prevBtn = $('#prevBtn');
+  const nextBtn = $('#nextBtn');
+  const stoppers = []; // auto-play that stops when the slide changes
+  let current = 0;
+
+  slides.forEach((slide, i) => {
+    slide.setAttribute('role', 'group');
+    slide.setAttribute('aria-roledescription', 'slide');
+    slide.setAttribute('aria-label', `${i + 1} of ${total}: ${slide.dataset.title}`);
+  });
+
+  // the three paradigm icons at the top of each paradigm slide
+  const PARADIGMS = [
+    { go: 3, name: 'Procedural programming', glyph: 'g-proc' },
+    { go: 6, name: 'Event-driven programming', glyph: 'g-event' },
+    { go: 9, name: 'Object-oriented programming', glyph: 'g-oop' }
+  ];
+  $$('.pstrip').forEach(nav => {
+    const on = Number(nav.dataset.on);
+    PARADIGMS.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `p${i + 1}` + (i + 1 === on ? ' is-on' : '');
+      btn.dataset.go = p.go;
+      btn.setAttribute('aria-label', `Go to ${p.name.toLowerCase()}`);
+      if (i + 1 === on) btn.setAttribute('aria-current', 'true');
+      btn.innerHTML = `<svg class="glyph" aria-hidden="true"><use href="#${p.glyph}"/></svg>`;
+      attachTip(btn, () => [p.name]);
+      nav.append(btn);
+    });
+  });
+
+  // the route line at the bottom: one station per slide
+  const route = $('#route');
+  const stops = slides.map((slide, i) => {
+    const li = document.createElement('li');
+    const station = document.createElement('button');
+    station.type = 'button';
+    station.className = 'station';
+    station.dataset.spy = `goTo(slide ${i + 1})`;
+    station.setAttribute('aria-label', `Go to slide ${i + 1}: ${slide.dataset.title}`);
+    station.addEventListener('click', () => goTo(i));
+    station.addEventListener('pointerenter', () => {
+      const r = station.getBoundingClientRect();
+      showTip([`${pad(i + 1)} · ${slide.dataset.title}`, slide.dataset.section], r.left + r.width / 2, r.top - 60);
+    });
+    station.addEventListener('pointerleave', hideTip);
+    li.append(station);
+    if (slide.dataset.p) li.style.setProperty('--c', `var(--p${slide.dataset.p})`);
+    route.append(li);
+    return li;
+  });
+
+  function goTo(index, fromHash) {
+    index = Math.max(0, Math.min(total - 1, index));
+    if (index !== current) stoppers.forEach(stop => stop());
+    slides.forEach((slide, i) => {
+      const active = i === index;
+      slide.classList.toggle('is-active', active);
+      slide.classList.toggle('is-past', i < index);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden', String(!active));
+    });
+    current = index;
+    slides[index].scrollTop = 0;
+    hideTip();
+    $('#slideCount').textContent = `${pad(index + 1)} / ${total}`;
+    $('#slideSection').textContent = slides[index].dataset.section;
+    stops.forEach((li, i) => {
+      li.classList.toggle('is-current', i === index);
+      li.classList.toggle('is-done', i < index);
+      const station = li.firstChild;
+      if (i === index) station.setAttribute('aria-current', 'step');
+      else station.removeAttribute('aria-current');
+    });
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === total - 1;
+    if (!fromHash) {
+      try { history.replaceState(null, '', '#slide-' + (index + 1)); } catch (e) { /* not allowed in some frames */ }
+    }
+  }
+
+  function slideFromHash() {
+    const match = location.hash.match(/^#slide-(\d+)$/);
+    return match ? Number(match[1]) - 1 : null;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+  $$('[data-go]').forEach(btn => btn.addEventListener('click', () => goTo(Number(btn.dataset.go) - 1)));
+  window.addEventListener('hashchange', () => {
+    const i = slideFromHash();
+    if (i !== null && i !== current) goTo(i, true);
+  });
+
+  /* ---------- the event spy (slide 8): this presentation's own events ---------- */
+  const spyList = $('#spyLog');
+  const spyEntries = [];
+  function spy(type, target, handler) {
+    spyEntries.unshift({ time: clock(), type, target, handler });
+    spyEntries.length = Math.min(spyEntries.length, 5);
+    spyList.innerHTML = spyEntries.map(e =>
+      `<li><time>${e.time}</time><b>${esc(e.type)}</b><span>${esc(e.target)}</span><span class="arrow">→</span><code>${esc(e.handler)}</code></li>`
+    ).join('');
+  }
+  // every click on a button, with the name of the function that handles it
+  const CLICK_HANDLERS = {
+    prevBtn: 'goTo(current - 1)', nextBtn: 'goTo(current + 1)', ovBtn: 'openOverview()', ovClose: 'closeOverview()',
+    themeBtn: 'toggleTheme()', fsBtn: 'toggleFullscreen()', tillAdd: 'add_croissant()', tillKey: 'clear(event)',
+    qrBox: 'openZoom()', qrChange: 'changeLink()'
+  };
+  document.addEventListener('click', e => {
+    const el = e.target.closest('button, [role="button"]');
+    if (!el || el.disabled) return;
+    let name = (el.getAttribute('aria-label') || el.textContent).replace(/\s+/g, ' ').trim();
+    if (name.length > 30) name = name.slice(0, 29) + '…';
+    const handler = el.dataset.spy || CLICK_HANDLERS[el.id] || (el.dataset.go ? `goTo(slide ${el.dataset.go})` : 'onClick()');
+    spy('click', `"${name}"`, handler);
+  }, true);
+
+  // keyboard: arrows, space, page up/down, home/end, O, T, F (and C on the till slide)
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (!qrZoom.hidden) {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        closeZoom();
+      }
+      return;
+    }
+    if (!overview.hidden) {
+      if (e.key === 'Escape') {
+        spy('keydown', '"Escape"', 'closeOverview()');
+        closeOverview();
+      }
+      return;
+    }
+    const el = document.activeElement;
+    if (el && el.closest('input, select, textarea, [data-own-keys]')) return;
+    const onButton = el && el.closest('button, a, [role="button"]');
+    const key = e.key === ' ' ? 'Space' : e.key;
+    const move = (to, handler) => {
+      e.preventDefault();
+      spy('keydown', `"${key}"`, handler);
+      goTo(to);
+    };
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'PageDown':
+        move(current + 1, 'goTo(current + 1)'); break;
+      case 'ArrowLeft':
+      case 'PageUp':
+        move(current - 1, 'goTo(current - 1)'); break;
+      case ' ':
+        if (onButton) return;
+        move(current + (e.shiftKey ? -1 : 1), e.shiftKey ? 'goTo(current - 1)' : 'goTo(current + 1)'); break;
+      case 'Home':
+        move(0, 'goTo(first slide)'); break;
+      case 'End':
+        move(total - 1, 'goTo(last slide)'); break;
+      case 'o': case 'O':
+        spy('keydown', `"${key}"`, 'openOverview()'); openOverview(); break;
+      case 't': case 'T':
+        spy('keydown', `"${key}"`, 'toggleTheme()'); toggleTheme(); break;
+      case 'f': case 'F':
+        spy('keydown', `"${key}"`, 'toggleFullscreen()'); toggleFullscreen(); break;
+      case 'c': case 'C':
+        if (slides[current].id === 'tillSlide') {
+          e.preventDefault();
+          spy('keydown', `"${key}"`, 'clear(event)');
+          tillClear();
+        }
+        break;
+    }
+  });
+
+  // swipe left / right on phones and tablets
+  let touchX = null;
+  let touchY = null;
+  deck.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1 || e.target.closest('input, select, .scroll-x, .code, .console, [data-own-keys]')) {
+      touchX = null;
+      return;
+    }
+    touchX = e.touches[0].clientX;
+    touchY = e.touches[0].clientY;
+  }, { passive: true });
+  deck.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    const dy = e.changedTouches[0].clientY - touchY;
+    touchX = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      spy('swipe', dx < 0 ? 'left' : 'right', dx < 0 ? 'goTo(current + 1)' : 'goTo(current - 1)');
+      goTo(current + (dx < 0 ? 1 : -1));
+    }
+  }, { passive: true });
+
+  /* ---------- overview of all slides ---------- */
+  const overview = $('#overview');
+  const ovGrid = $('#ovGrid');
+  slides.forEach((slide, i) => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'ov-card';
+    card.dataset.spy = `goTo(slide ${i + 1})`;
+    const no = document.createElement('span');
+    no.className = 'ov-card__no';
+    no.textContent = `${pad(i + 1)} · ${slide.dataset.section}`;
+    const title = document.createElement('span');
+    title.className = 'ov-card__title';
+    title.textContent = slide.dataset.title;
+    card.append(no, title);
+    if (slide.dataset.p) {
+      card.classList.add('has-p');
+      card.style.setProperty('--c', `var(--p${slide.dataset.p})`);
+    }
+    card.addEventListener('click', () => { closeOverview(); goTo(i); });
+    ovGrid.append(card);
+  });
+  function openOverview() {
+    $$('.ov-card', ovGrid).forEach((card, i) => card.classList.toggle('is-current', i === current));
+    overview.hidden = false;
+    deck.inert = true;
+    controls.inert = true;
+    hideTip();
+    $$('.ov-card', ovGrid)[current].focus();
+  }
+  function closeOverview() {
+    overview.hidden = true;
+    deck.inert = false;
+    controls.inert = false;
+    $('#ovBtn').focus();
+  }
+  $('#ovBtn').addEventListener('click', openOverview);
+  $('#ovClose').addEventListener('click', closeOverview);
+  overview.addEventListener('click', e => { if (e.target === overview) closeOverview(); });
+
+  /* ---------- dark mode ---------- */
+  const darkQuery = matchMedia('(prefers-color-scheme: dark)');
+  const savedTheme = store.get('pp-theme');
+  if ((savedTheme === 'dark' || savedTheme === 'light') && !root.dataset.theme) root.dataset.theme = savedTheme;
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : darkQuery.matches);
+  function updateThemeButton() {
+    $('#themeBtn').setAttribute('aria-label', isDark() ? 'Switch to light mode (T)' : 'Switch to dark mode (T)');
+  }
+  function toggleTheme() {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    store.set('pp-theme', root.dataset.theme);
+    updateThemeButton();
+  }
+  $('#themeBtn').addEventListener('click', toggleTheme);
+  if (darkQuery.addEventListener) darkQuery.addEventListener('change', updateThemeButton);
+
+  /* ---------- full screen ---------- */
+  function toggleFullscreen() {
+    if (!document.fullscreenEnabled) return;
+    const request = document.fullscreenElement ? document.exitFullscreen() : root.requestFullscreen();
+    if (request && request.catch) request.catch(() => {});
+  }
+  if (!document.fullscreenEnabled) $('#fsBtn').hidden = true;
+  $('#fsBtn').addEventListener('click', toggleFullscreen);
+
+  /* =========================================================
+     3. STEP-BY-STEP RUNNERS (slides 4 and 11)
+     ========================================================= */
+  function makeStepper({ steps, rows, prefix, render, delay }) {
+    const stepBtn = $(`#${prefix}Step`);
+    const playBtn = $(`#${prefix}Play`);
+    const backBtn = $(`#${prefix}Back`);
+    const resetBtn = $(`#${prefix}Reset`);
+    const count = $(`#${prefix}Count`);
+    const last = steps.length - 1;
+    let i = 0;
+    let timer = 0;
+    function show() {
+      const s = steps[i];
+      setLines(rows, s.line ? [s.line] : [], 'is-current');
+      setLines(rows, s.hot || [], 'is-hot');
+      render(s, steps[i - 1]);
+      count.textContent = `step ${i} of ${last}`;
+      const hadFocus = document.activeElement === stepBtn;
+      backBtn.disabled = i === 0;
+      stepBtn.disabled = i === last;
+      if (hadFocus && i === last) resetBtn.focus();
+    }
+    function go(n) {
+      i = Math.max(0, Math.min(last, n));
+      show();
+    }
+    function stop() {
+      clearInterval(timer);
+      timer = 0;
+      playBtn.textContent = 'Run all';
+      playBtn.setAttribute('aria-pressed', 'false');
+    }
+    function play() {
+      if (timer) { stop(); return; }
+      if (i === last) go(0);
+      playBtn.textContent = 'Pause';
+      playBtn.setAttribute('aria-pressed', 'true');
+      timer = setInterval(() => {
+        go(i + 1);
+        if (i === last) stop();
+      }, delay);
+    }
+    stepBtn.addEventListener('click', () => { stop(); go(i + 1); });
+    backBtn.addEventListener('click', () => { stop(); go(i - 1); });
+    resetBtn.addEventListener('click', () => { stop(); go(0); });
+    playBtn.addEventListener('click', play);
+    stoppers.push(stop);
+    show();
+  }
+
+  /* ---------- slide 4: the procedural program, one line at a time ---------- */
+  const B = '[1.25, 3.5, 0.75]';
+  const G1 = { basket: B };
+  const G2 = { basket: B, subtotal: '5.5' };
+  const G3 = { basket: B, subtotal: '5.5', to_pay: '4.5' };
+  const step = (line, note, g, fn, l, extra) => ({ line, note, g, fn: fn || null, l: l || null, out: [], ...extra });
+  const PROC = [
+    step(0, `Press <b>Step</b> to run the program one line at a time, or <b>Run all</b> to watch it.`, {}),
+    step(3, `Python starts at the top. <code>def</code> stores the function <code>add_up()</code>, but the code inside it doesn't run yet.`, {}),
+    step(9, `<code>apply_offer()</code> is stored too. A function only runs when it's called.`, {}),
+    step(14, `The main program starts: <code>basket</code> is a list of three prices.`, G1),
+    step(15, `Line 15 calls <code>add_up(basket)</code>. The program jumps into the function, and the list goes in as the parameter <code>prices</code>.`, G1, 'add_up', { prices: B }),
+    step(4, `<code>total</code> is a local variable. It only exists inside <code>add_up()</code>.`, G1, 'add_up', { prices: B, total: '0' }),
+    step(5, `Iteration: the loop takes the first price.`, G1, 'add_up', { prices: B, total: '0', price: '1.25' }),
+    step(6, `total = 0 + 1.25`, G1, 'add_up', { prices: B, total: '1.25', price: '1.25' }),
+    step(5, `Back to the top of the loop for the next price.`, G1, 'add_up', { prices: B, total: '1.25', price: '3.5' }),
+    step(6, `total = 1.25 + 3.5`, G1, 'add_up', { prices: B, total: '4.75', price: '3.5' }),
+    step(5, `And the last price.`, G1, 'add_up', { prices: B, total: '4.75', price: '0.75' }),
+    step(6, `total = 4.75 + 0.75`, G1, 'add_up', { prices: B, total: '5.5', price: '0.75' }),
+    step(5, `There are no prices left, so the loop ends.`, G1, 'add_up', { prices: B, total: '5.5', price: '0.75' }),
+    step(7, `<code>return</code> sends 5.5 back to the line that called the function.`, G1, 'add_up', { prices: B, total: '5.5', price: '0.75' }, { ret: '5.5' }),
+    step(15, `Back in the main program: <code>subtotal</code> = 5.5. The function has finished, so its local variables are gone.`, G2),
+    step(16, `Line 16 calls <code>apply_offer(subtotal)</code>, so its parameter <code>total</code> = 5.5.`, G2, 'apply_offer', { total: '5.5' }),
+    step(10, `Selection: is 5.5 &gt;= 5? Yes (<code>True</code>), so the indented line runs.`, G2, 'apply_offer', { total: '5.5' }),
+    step(11, `total = 5.5 − 1`, G2, 'apply_offer', { total: '4.5' }),
+    step(12, `<code>return</code> sends 4.5 back.`, G2, 'apply_offer', { total: '4.5' }, { ret: '4.5' }),
+    step(16, `Back in the main program: <code>to_pay</code> = 4.5.`, G3),
+    step(17, `<code>print()</code> shows the answer. That was the last line, so the program ends.`, G3, null, null, { out: ['To pay: £4.50'] })
+  ];
+  function varRows(vars, before) {
+    const names = Object.keys(vars || {});
+    return names.map(name => {
+      const changed = !before || before[name] !== vars[name];
+      return `<tr${changed ? ' class="is-new"' : ''}><th scope="row">${name}</th><td>${vars[name]}</td></tr>`;
+    }).join('');
+  }
+  makeStepper({
+    steps: PROC,
+    rows: code.procCode,
+    prefix: 'proc',
+    delay: 900,
+    render(s, prev) {
+      $('#procNote').innerHTML = s.note;
+      $('#procGlobals').innerHTML = varRows(s.g, prev && prev.g) || '<tr class="empty"><td>nothing yet</td></tr>';
+      $('#procLocalTitle').textContent = s.fn ? `Inside ${s.fn}() · local` : 'Inside a function · local';
+      let locals = '';
+      if (s.fn) {
+        locals = varRows(s.l, prev && prev.fn === s.fn ? prev.l : null);
+        if (s.ret) locals += `<tr class="ret"><th scope="row">returns</th><td>${s.ret}</td></tr>`;
+      }
+      $('#procLocals').innerHTML = locals || '<tr class="empty"><td>not inside a function right now</td></tr>';
+      $('#procOut').textContent = s.out.join('\n');
+    }
+  });
+
+  /* ---------- slide 11: which describe() runs? ---------- */
+  const POLY = [
+    { line: 0, hot: [], note: `Press <b>Step</b> to see which <code>describe()</code> each object uses.`, out: [] },
+    { line: 20, hot: [2, 3, 4, 13, 14, 15], note: `Line 20 makes two objects. <code>Cake</code>'s constructor runs <code>Product</code>'s constructor with <code>super()</code>, then adds <code>slices</code>.`, out: [] },
+    { line: 22, hot: [9, 10], note: `First time round the loop, <code>item</code> is the <code>Product</code>, so <code>Product</code>'s <code>describe()</code> runs.`, out: ['Croissant: £1.25'] },
+    { line: 22, hot: [17, 18], note: `Second time, <code>item</code> is the <code>Cake</code>. It has its own <code>describe()</code>, so that one runs instead. Same call, different result: that's polymorphism.`, out: ['Croissant: £1.25', 'Lemon cake, 8 slices'] },
+    { line: 23, hot: [6, 7], note: `<code>Cake</code> has no <code>get_price()</code>, so Python uses the one it inherited from <code>Product</code>. Code outside the class can't read <code>__price</code> directly. It has to ask this method.`, out: ['Croissant: £1.25', 'Lemon cake, 8 slices', '12'] }
+  ];
+  makeStepper({
+    steps: POLY,
+    rows: code.polyCode,
+    prefix: 'poly',
+    delay: 1800,
+    render(s) {
+      $('#polyNote').innerHTML = s.note;
+      $('#polyOut').textContent = s.out.join('\n');
+    }
+  });
+
+  // the three OOP ideas: show only their lines
+  const CONCEPTS = { enc: [4, 6, 7, 10], inh: [12, 13, 14, 23], poly: [9, 10, 17, 18, 22] };
+  const polyPre = $('#polyCode');
+  let concept = null;
+  $$('.concept').forEach(btn => {
+    btn.dataset.spy = `showConcept('${btn.dataset.concept}')`;
+    btn.addEventListener('click', () => {
+      concept = concept === btn.dataset.concept ? null : btn.dataset.concept;
+      $$('.concept').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.concept === concept)));
+      markLines(polyPre, code.polyCode, concept ? CONCEPTS[concept] : null);
+    });
+  });
+
+  /* =========================================================
+     4. EVENT-DRIVEN DEMOS (slides 6 and 7)
+     ========================================================= */
+
+  /* ---------- slide 6: the event loop ---------- */
+  const EVENTS = {
+    click: { name: 'Mouse click', short: 'click', handler: 'on_click()', icon: 'i-click' },
+    key: { name: 'Key press', short: 'key C', handler: 'on_key()', icon: 'i-key' },
+    timer: { name: 'Timer', short: 'timer', handler: 'on_timer()', icon: 'i-timer' },
+    sensor: { name: 'Door sensor', short: 'door', handler: 'on_sensor()', icon: 'i-door' }
+  };
+  const evQueueEl = $('#evQueue');
+  const evLoop = $('#evLoop');
+  const evState = $('#evState');
+  const evLog = $('#evLog');
+  const evQueue = [];
+  const evLogItems = [];
+  let evBusy = false;
+  function sendEvent(type) {
+    if (evQueue.length >= 6) return; // the queue on the slide has room for six
+    const ev = EVENTS[type];
+    const tok = document.createElement('li');
+    tok.className = 'ev-tok';
+    tok.innerHTML = `<svg class="glyph" aria-hidden="true"><use href="#${ev.icon}"/></svg>${ev.short}`;
+    evQueueEl.append(tok);
+    evQueue.push({ type, tok });
+    if (!evBusy) {
+      evBusy = true;
+      setTimeout(nextEvent, 450);
+    }
+  }
+  function nextEvent() {
+    const item = evQueue.shift();
+    if (!item) {
+      evBusy = false;
+      evLoop.classList.remove('is-busy');
+      evState.textContent = 'waiting…';
+      return;
+    }
+    const ev = EVENTS[item.type];
+    item.tok.remove();
+    evLoop.classList.add('is-busy');
+    evState.textContent = ev.handler;
+    const row = $(`[data-handler="${item.type}"]`);
+    row.classList.add('is-on');
+    evLogItems.unshift(`<li><time>${clock()}</time><b>${ev.name}</b><span class="arrow">→</span><code>${ev.handler}</code></li>`);
+    evLogItems.length = Math.min(evLogItems.length, 3);
+    evLog.innerHTML = evLogItems.join('');
+    setTimeout(() => {
+      row.classList.remove('is-on');
+      nextEvent();
+    }, 1100);
+  }
+  $$('[data-send]').forEach(btn => btn.addEventListener('click', () => sendEvent(btn.dataset.send)));
+
+  /* ---------- slide 7: the till window ---------- */
+  const tillRows = code.tillCode;
+  setLines(tillRows, [24], 'is-current'); // the program is sitting in mainloop()
+  const tillApp = $('#tillApp');
+  const tillStatus = $('#tillStatus');
+  const tillLogItems = [];
+  let till = 0;
+  let tillTimer = 0;
+  function tillEvent(eventName, handler, lines, change) {
+    change();
+    $('#tillTotal').textContent = `Total: £${till.toFixed(2)}`;
+    flashLines(tillRows, lines);
+    tillApp.classList.remove('is-pulse');
+    void tillApp.offsetWidth; // restart the animation
+    tillApp.classList.add('is-pulse');
+    tillStatus.classList.add('is-busy');
+    $('#tillStatusText').innerHTML = `running <code>${handler}</code>…`;
+    clearTimeout(tillTimer);
+    tillTimer = setTimeout(() => {
+      tillStatus.classList.remove('is-busy');
+      $('#tillStatusText').innerHTML = 'waiting in <code>mainloop()</code> for an event…';
+    }, 1400);
+    tillLogItems.unshift(`<li><time>${clock()}</time><b>${eventName}</b><span class="arrow">→</span><code>${handler}</code><span>total is now £${till.toFixed(2)}</span></li>`);
+    tillLogItems.length = Math.min(tillLogItems.length, 4);
+    $('#tillLog').innerHTML = tillLogItems.join('');
+  }
+  $('#tillAdd').addEventListener('click', () => {
+    tillEvent('click', 'add_croissant()', [5, 6, 7, 8, 19, 20], () => { till = till + 1.25; });
+  });
+  function tillClear() {
+    tillEvent('key press C', 'clear(event)', [10, 11, 12, 13, 22], () => { till = 0; });
+  }
+  $('#tillKey').addEventListener('click', tillClear);
+
+  /* =========================================================
+     5. OBJECTS YOU CAN MAKE (slide 10)
+     ========================================================= */
+  const oopRows = code.oopCode;
+  const START_OBJECTS = [
+    { v: 'croissant', name: 'Croissant', price: 1.25 },
+    { v: 'sourdough', name: 'Sourdough', price: 3.5 }
+  ];
+  const RESERVED = new Set([...SYNTAX.python.keywords, ...SYNTAX.python.builtins, 'basket', 'self', 'product', 'items', 'total', 'tk']);
+  const makeName = $('#makeName');
+  const makePrice = $('#makePrice');
+  const makeError = $('#makeError');
+  let objects = [];
+  let basket = null;
+  let shell = [];
+
+  // a Python variable name from a product name: "Lemon tart" -> lemon_tart
+  function varName(name) {
+    let v = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    if (!v || /^\d/.test(v)) v = 'item_' + v;
+    if (RESERVED.has(v)) v += '_1';
+    const base = v;
+    for (let n = 2; objects.some(o => o.v === v); n++) v = `${base}_${n}`;
+    return v;
+  }
+  const describe = o => `${o.name} costs £${o.price.toFixed(2)}`;
+
+  function renderObjects(fresh) {
+    $('#objs').innerHTML = objects.map(o => `
+      <li class="obj${o.v === fresh ? ' is-fresh' : ''}" data-v="${o.v}">
+        <p class="obj__head"><u>${o.v}</u> : Product</p>
+        <dl class="obj__attrs">
+          <div><dt>name</dt><dd>'${esc(o.name)}'</dd></div>
+          <div><dt>price</dt><dd>${o.literal}</dd></div>
+        </dl>
+        <p class="obj__btns">
+          <button type="button" class="mbtn" data-act="describe" data-spy="${o.v}.describe()">describe()</button>
+          <button type="button" class="mbtn" data-act="add" data-spy="basket.add(${o.v})">add to basket</button>
+        </p>
+      </li>`).join('');
+  }
+  function renderBasket(changed) {
+    const shown = basket.items.slice(-5);
+    const list = (basket.items.length > shown.length ? ['…'] : []).concat(shown).join(', ');
+    const el = $('#basketObj');
+    el.innerHTML = `
+      <p class="obj__head"><u>basket</u> : Basket</p>
+      <dl class="obj__attrs">
+        <div><dt>items</dt><dd>[${list}]</dd></div>
+        <div><dt>total</dt><dd>${pyNum(basket.total)}</dd></div>
+      </dl>`;
+    if (changed) {
+      el.classList.remove('is-fresh');
+      void el.offsetWidth; // restart the animation
+      el.classList.add('is-fresh');
+    }
+  }
+  function renderShell() {
+    const out = $('#shell');
+    out.innerHTML = shell.map(line =>
+      line.kind === 'in' ? `<span class="sh-in">&gt;&gt;&gt; ${esc(line.text)}</span>`
+        : line.kind === 'cmd' ? `<span class="sh-cmd">${esc(line.text)}</span>`
+          : esc(line.text)
+    ).join('\n');
+    out.scrollTop = out.scrollHeight;
+  }
+  function runInShell(command, result) {
+    shell.push({ kind: 'in', text: command });
+    if (result !== undefined) shell.push({ kind: 'out', text: result });
+    if (shell.length > 60) shell.splice(0, shell.length - 60);
+    renderShell();
+  }
+  function updateMakeVar() {
+    $('#makeVar').textContent = varName(makeName.value.trim() || 'item');
+  }
+  function resetOop() {
+    objects = START_OBJECTS.map(o => ({ ...o, literal: String(o.price) }));
+    basket = { items: ['croissant', 'sourdough'], total: 4.75 };
+    shell = [
+      { kind: 'cmd', text: '$ python -i basket_oop.py' },
+      { kind: 'out', text: 'Croissant costs £1.25' },
+      { kind: 'out', text: '4.75' }
+    ];
+    makeError.hidden = true;
+    renderObjects();
+    renderBasket();
+    renderShell();
+    updateMakeVar();
+  }
+
+  makeName.addEventListener('input', updateMakeVar);
+  $('#makeForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = makeName.value.trim().replace(/\s+/g, ' ');
+    const price = Math.round(Number(makePrice.value) * 100) / 100;
+    let error = '';
+    if (!/^[A-Za-z][A-Za-z0-9 -]*$/.test(name)) error = 'Start the name with a letter, and only use letters, numbers and spaces.';
+    else if (!(price >= 0.01 && price <= 99.99)) error = 'The price has to be between 0.01 and 99.99.';
+    else if (objects.length >= 6) error = 'That\'s six objects, which is plenty for one slide. Press "start again" to clear them.';
+    makeError.textContent = error;
+    makeError.hidden = !error;
+    if (error) return;
+    const v = varName(name);
+    const literal = String(price);
+    objects.push({ v, name, price, literal });
+    runInShell(`${v} = Product("${name}", ${literal})`);
+    flashLines(oopRows, [2, 3, 4]);
+    renderObjects(v);
+    updateMakeVar();
+  });
+  $('#objs').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const o = objects.find(x => x.v === btn.closest('.obj').dataset.v);
+    if (!o) return;
+    if (btn.dataset.act === 'describe') {
+      runInShell(`${o.v}.describe()`, `'${describe(o)}'`);
+      flashLines(oopRows, [6, 7]);
+    } else {
+      basket.items.push(o.v);
+      basket.total = basket.total + o.price;
+      runInShell(`basket.add(${o.v})`);
+      runInShell('basket.total', pyNum(basket.total));
+      flashLines(oopRows, [14, 15, 16]);
+      renderBasket(true);
+    }
+  });
+  $('#oopReset').addEventListener('click', resetOop);
+
+  /* =========================================================
+     6. ALL THREE IN ONE PROGRAM (slide 13)
+     ========================================================= */
+  const REGIONS = {
+    3: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19],
+    2: [8, 9, 12, 13, 14, 15, 16, 20],
+    1: [13, 14, 15, 16]
+  };
+  const togetherPre = $('#togetherCode');
+  code.togetherCode.forEach((row, i) => {
+    const rails = document.createElement('span');
+    rails.className = 'rails';
+    rails.setAttribute('aria-hidden', 'true');
+    [3, 2, 1].forEach(p => {
+      const rail = document.createElement('i');
+      rail.className = `rail rail--p${p}` + (REGIONS[p].includes(i + 1) ? ' is-in' : '');
+      rails.append(rail);
+    });
+    row.prepend(rails);
+  });
+  const legs = $$('.leg');
+  let marked = null;
+  function showRegion(p) {
+    if (p) togetherPre.style.setProperty('--mark', `var(--p${p})`);
+    else togetherPre.style.removeProperty('--mark');
+    markLines(togetherPre, code.togetherCode, p ? REGIONS[p] : null);
+  }
+  legs.forEach(btn => {
+    const p = Number(btn.dataset.mark);
+    btn.dataset.spy = `showRegion(${p})`;
+    btn.addEventListener('click', () => {
+      marked = marked === p ? null : p;
+      legs.forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.mark) === marked)));
+      showRegion(marked);
+    });
+    btn.addEventListener('pointerenter', () => showRegion(p));
+    btn.addEventListener('pointerleave', () => showRegion(marked));
+    btn.addEventListener('focus', () => showRegion(p));
+    btn.addEventListener('blur', () => showRegion(marked));
+  });
+
+  /* =========================================================
+     7. FEEDBACK QR CODE (last slide)
+     ========================================================= */
+  const qrBox = $('#qrBox');
+  const qrForm = $('#qrForm');
+  const qrInput = $('#qrInput');
+  const formUrl = () => FORM_URL || store.get('pp-form-url') || '';
+
+  function showQr() {
+    const url = formUrl();
+    const link = $('#qrLink');
+    qrForm.hidden = Boolean(url);
+    $('#qrChange').hidden = !url;
+    link.textContent = url;
+    qrBox.removeAttribute('role');
+    qrBox.removeAttribute('tabindex');
+    qrBox.removeAttribute('aria-label');
+    $('#qrHint').hidden = true;
+    if (!url) {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'Add the link to your Microsoft Form to make the QR code';
+      return;
+    }
+    if (typeof qrcode !== 'function') {
+      qrBox.className = 'qr qr--empty';
+      qrBox.textContent = 'The QR code needs an internet connection. The link is next to this box.';
+      return;
+    }
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    const n = qr.getModuleCount();
+    const size = n + 8; // 4 empty modules around it so phones can read it
+    let d = '';
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        if (qr.isDark(r, c)) d += `M${c + 4},${r + 4}h1v1h-1z`;
+      }
+    }
+    qrBox.className = 'qr';
+    qrBox.innerHTML = `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for my feedback form"><rect class="qr-bg" width="${size}" height="${size}"/><path class="qr-ink" d="${d}"/></svg>`;
+    qrBox.setAttribute('role', 'button');
+    qrBox.tabIndex = 0;
+    qrBox.setAttribute('aria-label', 'QR code for my feedback form. Press to show it full screen');
+    $('#qrHint').hidden = false;
+  }
+
+  // full screen, so the people at the back of the room can scan it too
+  const qrZoom = $('#qrZoom');
+  function openZoom() {
+    if (qrBox.classList.contains('qr--empty')) return;
+    $('#qrZoomBox').innerHTML = qrBox.innerHTML; // my own SVG from showQr()
+    qrZoom.hidden = false;
+    deck.inert = true;
+    controls.inert = true;
+    hideTip();
+    qrZoom.focus();
+  }
+  function closeZoom() {
+    qrZoom.hidden = true;
+    deck.inert = false;
+    controls.inert = false;
+    qrBox.focus();
+  }
+  qrBox.addEventListener('click', openZoom);
+  qrBox.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    e.stopPropagation();
+    openZoom();
+  });
+  qrZoom.addEventListener('click', closeZoom);
+
+  qrForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const url = qrInput.value.trim();
+    const ok = /^https?:\/\/\S+\.\S+/.test(url);
+    $('#qrError').hidden = ok;
+    if (!ok) return;
+    store.set('pp-form-url', url);
+    showQr();
+  });
+  $('#qrChange').addEventListener('click', () => {
+    qrForm.hidden = false;
+    $('#qrChange').hidden = true;
+    qrInput.value = formUrl();
+    qrInput.focus();
+  });
+
+  /* =========================================================
+     START
+     ========================================================= */
+  updateThemeButton();
+  resetOop();
+  showQr();
+  const startSlide = slideFromHash();
+  goTo(startSlide !== null ? startSlide : 0, true);
+})();
+</script>
+</body>
+</html>
